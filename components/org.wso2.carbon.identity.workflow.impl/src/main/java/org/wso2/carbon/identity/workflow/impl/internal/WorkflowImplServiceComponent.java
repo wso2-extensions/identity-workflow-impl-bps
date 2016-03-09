@@ -105,7 +105,7 @@ public class WorkflowImplServiceComponent {
 
             this.addDefaultBPSProfile();
         } catch (Throwable e) {
-            log.error("Error occurred while activating WorkflowImplServiceComponent bundle, " + e.getMessage());
+            log.error("Error occurred while activating WorkflowImplServiceComponent bundle", e);
         }
 
     }
@@ -174,8 +174,7 @@ public class WorkflowImplServiceComponent {
         } catch (WorkflowException e) {
             //This is not thrown exception because this is not blocked to the other functionality. User can create
             // default profile by manually.
-            String errorMsg = "Error occured while adding default bps profile, " + e.getMessage();
-            log.error(errorMsg);
+            log.error("Error occured while adding default bps profile.", e);
         }
     }
 

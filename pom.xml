@@ -40,6 +40,14 @@
         <tag>HEAD</tag>
     </scm>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.wso2.carbon.identity</groupId>
+            <artifactId>org.wso2.carbon.identity.workflow.mgt.bps.stub</artifactId>
+            <version>${identity.framework.version}</version>
+        </dependency>
+    </dependencies>
+
     <repositories>
         <repository>
             <id>wso2-nexus</id>
@@ -118,6 +126,10 @@
         <module>components/org.wso2.carbon.identity.workflow.impl</module>
         <module>components/org.wso2.carbon.identity.workflow.impl.ui</module>
         <module>components/org.wso2.carbon.identity.workflow.impl.stub</module>
+        <module>features/org.wso2.carbon.identity.workflow.impl.feature</module>
+        <module>features/org.wso2.carbon.identity.workflow.impl.server.feature</module>
+        <module>features/org.wso2.carbon.identity.workflow.impl.ui.feature</module>
+
     </modules>
 
 </project>

@@ -125,13 +125,13 @@ public class BPELDeployer implements TemplateInitializer {
             generateProcessArtifact();
             generateHTArtifact();
         } catch (IOException e) {
-            throw new WorkflowImplException("Error when generating process artifacts");
+            throw new WorkflowImplException("Error when generating process artifacts", e);
         }
 
         try {
             deployArtifacts();
         } catch (RemoteException e) {
-            throw new WorkflowRuntimeException("Error occurred when deploying the BPEL");
+            throw new WorkflowRuntimeException("Error occurred when deploying the BPEL", e);
         }
     }
 

@@ -23,11 +23,19 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.axis2.java.security.SSLProtocolSocketFactory;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HttpTransportProperties;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.wso2.carbon.bpel.stub.upload.BPELUploaderStub;
 import org.wso2.carbon.bpel.stub.upload.types.UploadedFileItem;
 import org.wso2.carbon.humantask.stub.upload.HumanTaskUploaderStub;
 import org.wso2.carbon.identity.workflow.impl.WFImplConstant;
+import org.wso2.carbon.identity.workflow.impl.WorkflowImplException;
+import org.wso2.carbon.identity.workflow.impl.internal.WorkflowImplServiceDataHolder;
+import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.xml.stream.XMLStreamException;
 import java.rmi.RemoteException;
@@ -76,6 +84,19 @@ public class WorkflowDeployerClient {
         }
         Options options = serviceClient.getOptions();
         serviceClient.setOptions(options);
+        String mgtTransport = CarbonUtils.getManagementTransport();
+        AxisConfiguration axisConfiguration = WorkflowImplServiceDataHolder.getInstance().getConfigurationContextService().getServerConfigContext().getAxisConfiguration();
+        int mgtTransportPort = CarbonUtils.getTransportProxyPort(axisConfiguration, mgtTransport);
+        if (mgtTransportPort <= 0) {
+            mgtTransportPort = CarbonUtils.getTransportPort(axisConfiguration, mgtTransport);
+        }
+        try {
+            serviceClient.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
+                    new Protocol(mgtTransport, (ProtocolSocketFactory) new SSLProtocolSocketFactory(SSLContextFactory
+                            .getSslContext()), mgtTransportPort));
+        } catch (WorkflowImplException e) {
+            throw new AxisFault("Error while getting SSL Context for creating service client.", e);
+        }
 
         humanTaskUploaderStub = new HumanTaskUploaderStub(bpsURL + HT_UPLOADER_SERVICE);
         ServiceClient htServiceClient = humanTaskUploaderStub._getServiceClient();

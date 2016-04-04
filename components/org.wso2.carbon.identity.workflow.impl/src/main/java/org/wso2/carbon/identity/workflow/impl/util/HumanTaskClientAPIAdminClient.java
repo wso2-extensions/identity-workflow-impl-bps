@@ -26,7 +26,12 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.databinding.types.NCName;
 import org.apache.axis2.databinding.types.URI;
+import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.axis2.java.security.SSLProtocolSocketFactory;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HttpTransportProperties;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.humantask.stub.types.TSimpleQueryInput;
@@ -37,6 +42,9 @@ import org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalArgumentFault;
 import org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalOperationFault;
 import org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalStateFault;
 import org.wso2.carbon.identity.workflow.impl.WFImplConstant;
+import org.wso2.carbon.identity.workflow.impl.WorkflowImplException;
+import org.wso2.carbon.identity.workflow.impl.internal.WorkflowImplServiceDataHolder;
+import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.xml.stream.XMLStreamException;
 import java.rmi.RemoteException;
@@ -73,6 +81,20 @@ public class HumanTaskClientAPIAdminClient {
             String headerString = WFImplConstant.MUTUAL_SSL_HEADER.replaceAll("\\$username", username);
             mutualSSLHeader = AXIOMUtil.stringToOM(headerString);
             serviceClient.addHeader(mutualSSLHeader);
+            String mgtTransport = CarbonUtils.getManagementTransport();
+            AxisConfiguration axisConfiguration = WorkflowImplServiceDataHolder.getInstance()
+                    .getConfigurationContextService().getServerConfigContext().getAxisConfiguration();
+            int mgtTransportPort = CarbonUtils.getTransportProxyPort(axisConfiguration, mgtTransport);
+            if (mgtTransportPort <= 0) {
+                mgtTransportPort = CarbonUtils.getTransportPort(axisConfiguration, mgtTransport);
+            }
+            try {
+                serviceClient.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
+                        new Protocol(mgtTransport, (ProtocolSocketFactory) new SSLProtocolSocketFactory
+                                (SSLContextFactory.getSslContext()), mgtTransportPort));
+            } catch (WorkflowImplException e) {
+                throw new AxisFault("Error while getting SSL Context for creating service client.", e);
+            }
         } catch (XMLStreamException e) {
             throw new AxisFault("Error while creating mutualSSLHeader XML Element.", e);
         }
@@ -85,11 +107,9 @@ public class HumanTaskClientAPIAdminClient {
      *
      * @param queryInput : The simple query object with the filtering criteria.
      * @return : The result set
-     * @throws java.rmi.RemoteException :
-     * @throws org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalArgumentFault
-     *                                  :
-     * @throws org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalStateFault
-     *                                  :
+     * @throws java.rmi.RemoteException                                               :
+     * @throws org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalArgumentFault :
+     * @throws org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalStateFault    :
      */
     public TTaskSimpleQueryResultSet simpleQuery(TSimpleQueryInput queryInput)
             throws RemoteException, IllegalArgumentFault, IllegalStateFault {
@@ -106,13 +126,12 @@ public class HumanTaskClientAPIAdminClient {
      *
      * @param taskId : The id of the task/.
      * @return : The task input OMElement.
-     * @throws RemoteException        :
-     * @throws IllegalStateFault      :
+     * @throws RemoteException                     :
+     * @throws IllegalStateFault                   :
      * @throws IllegalOperationFault:
      * @throws IllegalAccessFault:
      * @throws IllegalArgumentFault:
      * @throws javax.xml.stream.XMLStreamException
-     * 
      */
     public OMElement getInput(URI taskId)
             throws RemoteException, IllegalStateFault, IllegalOperationFault, IllegalAccessFault,
@@ -121,7 +140,8 @@ public class HumanTaskClientAPIAdminClient {
         try {
             String input = (String) stub.getInput(taskId, new NCName(""));
             return AXIOMUtil.stringToOM(input);
-        } catch (RemoteException | IllegalStateFault | IllegalOperationFault | IllegalArgumentFault | IllegalAccessFault | XMLStreamException e) {
+        } catch (RemoteException | IllegalStateFault | IllegalOperationFault | IllegalArgumentFault |
+                IllegalAccessFault | XMLStreamException e) {
             log.error("Error occurred while performing loadTaskInput operation", e);
             throw e;
         }
@@ -129,12 +149,13 @@ public class HumanTaskClientAPIAdminClient {
 
     /**
      * The skip operation.
+     *
      * @param taskId : The task id.
-     * @throws IllegalArgumentFault :
-     * @throws IllegalOperationFault  :
-     * @throws IllegalAccessFault :
-     * @throws IllegalStateFault :
-     * @throws RemoteException :
+     * @throws IllegalArgumentFault  :
+     * @throws IllegalOperationFault :
+     * @throws IllegalAccessFault    :
+     * @throws IllegalStateFault     :
+     * @throws RemoteException       :
      */
     public void skip(URI taskId)
             throws IllegalArgumentFault, IllegalOperationFault, IllegalAccessFault,
@@ -142,7 +163,8 @@ public class HumanTaskClientAPIAdminClient {
         String errMsg = "Error occurred while performing skip operation";
         try {
             stub.skip(taskId);
-        } catch (RemoteException | IllegalStateFault | IllegalOperationFault | IllegalArgumentFault | IllegalAccessFault e) {
+        } catch (RemoteException | IllegalStateFault | IllegalOperationFault | IllegalArgumentFault |
+                IllegalAccessFault e) {
             log.error(errMsg, e);
             throw e;
         }

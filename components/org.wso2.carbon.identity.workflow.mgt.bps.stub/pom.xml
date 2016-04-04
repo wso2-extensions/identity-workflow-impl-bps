@@ -26,9 +26,9 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.identity.workflow.impl.stub</artifactId>
+    <artifactId>org.wso2.carbon.identity.workflow.mgt.bps.stub</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - Workflow Impl Stub</name>
+    <name>WSO2 Carbon - IS Workflow Deployment Stub</name>
     <url>http://wso2.org</url>
 
     <build>
@@ -47,7 +47,31 @@
                         <configuration>
                             <tasks>
                                 <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-                                    <arg line="-uri src/main/resources/WorkflowImplAdminService.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.identity.workflow.impl.stub -ns2p http://bean.impl.workflow.identity.carbon.wso2.org/xsd=org.wso2.carbon.identity.workflow.impl.stub.bean" />
+                                    <arg line="-uri src/main/resources/BPELUploader.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.upload -ns2p http://services.deployer.bpel.carbon.wso2.org=org.wso2.carbon.bpel.stub.upload,http://types.services.deployer.bpel.carbon.wso2.org/xsd=org.wso2.carbon.bpel.stub.upload.types" />
+                                    <classpath refid="maven.dependency.classpath" />
+                                    <classpath refid="maven.compile.classpath" />
+                                    <classpath refid="maven.runtime.classpath" />
+                                </java>
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/HumanTaskUploader.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.humantask.stub.upload -ns2p http://services.deployer.humantask.carbon.wso2.org=org.wso2.carbon.humantask.stub.upload,http://common.core.carbon.wso2.org/xsd=org.wso2.carbon.humantask.stub.upload.types" />
+                                    <classpath refid="maven.dependency.classpath" />
+                                    <classpath refid="maven.compile.classpath" />
+                                    <classpath refid="maven.runtime.classpath" />
+                                </java>
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/HumanTaskClientAPIAdmin.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.humantask.stub.ui.task.client.api -ns2p http://docs.oasis-open.org/ns/bpel4people/ws-humantask/200803=org.wso2.carbon.humantask.stub.ui.task.client.api,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803=org.wso2.carbon.humantask.stub.types,http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803=org.wso2.carbon.humantask.stub.api" />
+                                    <classpath refid="maven.dependency.classpath" />
+                                    <classpath refid="maven.compile.classpath" />
+                                    <classpath refid="maven.runtime.classpath" />
+                                </java>
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/process_mgt.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.mgt -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.stub.mgt.types,http://wso2.org/bps/management/wsdl/ProcessManagement=org.wso2.carbon.bpel.stub.mgt" />
+                                    <classpath refid="maven.dependency.classpath" />
+                                    <classpath refid="maven.compile.classpath" />
+                                    <classpath refid="maven.runtime.classpath" />
+                                </java>
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/package_mgt.wsdl -u -uw -o target/generated-code -p org.wso2.carbon.bpel.stub.mgt -ns2p http://wso2.org/bps/management/schema=org.wso2.carbon.bpel.stub.mgt.types,http://wso2.org/bps/management/wsdl/BPELPackageManagement=org.wso2.carbon.bpel.stub.mgt" />
                                     <classpath refid="maven.dependency.classpath" />
                                     <classpath refid="maven.compile.classpath" />
                                     <classpath refid="maven.runtime.classpath" />
@@ -87,7 +111,9 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.identity.workflow.impl.stub.*;version="${carbon.identity.package.export.version}",
+                            org.wso2.carbon.humantask.stub.*; version="${carbon.identity.package.export.version}",
+                            org.wso2.carbon.bpel.stub.*; version="${carbon.identity.package.export.version}",
+                            org.wso2.carbon.identity.workflow.mgt.bps.stub.*;version="${carbon.identity.package.export.version}",
                         </Export-Package>
                         <Import-Package>
                             javax.activation; version="${javax.activation.import.pkg.version}",

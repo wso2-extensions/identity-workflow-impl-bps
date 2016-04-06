@@ -90,19 +90,21 @@ public class WorkflowDeployerClient {
         if (mgtTransportPort <= 0) {
             mgtTransportPort = CarbonUtils.getTransportPort(axisConfiguration, mgtTransport);
         }
-        try {
-            serviceClient.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
-                    new Protocol(mgtTransport, (ProtocolSocketFactory) new SSLProtocolSocketFactory(SSLContextFactory
-                            .getSslContext()), mgtTransportPort));
-        } catch (WorkflowImplException e) {
-            throw new AxisFault("Error while getting SSL Context for creating service client.", e);
-        }
-
         humanTaskUploaderStub = new HumanTaskUploaderStub(bpsURL + HT_UPLOADER_SERVICE);
         ServiceClient htServiceClient = humanTaskUploaderStub._getServiceClient();
         Options htOptions = htServiceClient.getOptions();
         htServiceClient.setOptions(htOptions);
         htServiceClient.addHeader(mutualSSLHeader);
+        try {
+            serviceClient.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER, new Protocol(mgtTransport,
+                    (ProtocolSocketFactory) new SSLProtocolSocketFactory(SSLContextFactory .getSslContext()),
+                    mgtTransportPort));
+            htServiceClient.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER, new Protocol(mgtTransport,
+                    (ProtocolSocketFactory) new SSLProtocolSocketFactory(SSLContextFactory .getSslContext()),
+                    mgtTransportPort));
+        } catch (WorkflowImplException e) {
+            throw new AxisFault("Error while getting SSL Context for creating service client.", e);
+        }
     }
 
     /**

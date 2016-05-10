@@ -38,12 +38,10 @@
         <dependency>
             <groupId>org.wso2.carbon.identity</groupId>
             <artifactId>org.wso2.carbon.identity.workflow.impl</artifactId>
-            <version>${identity.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity</groupId>
             <artifactId>org.wso2.carbon.identity.workflow.mgt.bps.stub</artifactId>
-            <version>${identity.framework.version}</version>
         </dependency>
     </dependencies>
 

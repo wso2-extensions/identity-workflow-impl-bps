@@ -40,6 +40,43 @@
         <tag>HEAD</tag>
     </scm>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.workflow.impl.stub</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.workflow.impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.workflow.mgt.bps.stub</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.workflow.impl.ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.workflow.impl.server.feature</artifactId>
+                <type>zip</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.workflow.impl.ui.feature</artifactId>
+                <version>${project.version}</version>
+                <type>zip</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <repositories>
         <repository>
             <id>wso2-nexus</id>
@@ -119,11 +156,14 @@
         <module>components/org.wso2.carbon.identity.workflow.impl</module>
         <module>components/org.wso2.carbon.identity.workflow.impl.ui</module>
         <module>components/org.wso2.carbon.identity.workflow.impl.stub</module>
-        <module>features/org.wso2.carbon.identity.workflow.impl.feature</module>
         <module>features/org.wso2.carbon.identity.workflow.impl.server.feature</module>
         <module>features/org.wso2.carbon.identity.workflow.impl.ui.feature</module>
+        <module>features/org.wso2.carbon.identity.workflow.impl.feature</module>
 
     </modules>
+    <properties>
+        <javax.activation.import.pkg.version>[0.0.0, 1.0.0)</javax.activation.import.pkg.version>
+    </properties>
 
 </project>
 

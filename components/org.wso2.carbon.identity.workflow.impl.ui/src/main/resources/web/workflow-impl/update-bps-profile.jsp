@@ -42,10 +42,6 @@
                     .getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
     client = new WorkflowImplAdminServiceClient(cookie, backendServerURL, configContext);
 
-    String bundle = "org.wso2.carbon.identity.workflow.impl.ui.i18n.Resources";
-    ResourceBundle resourceBundle = ResourceBundle.getBundle(bundle, request.getLocale());
-    String forwardTo = "update-bps-profile-finish.jsp";
-
     String profileName = request.getParameter(WorkflowUIConstants.PARAM_BPS_PROFILE_NAME);
 
     BPSProfile bpsProfile = client.getBPSProfiles(profileName);
@@ -93,7 +89,7 @@
         <h2><fmt:message key='workflow.bps.profile.add'/></h2>
 
         <div id="workArea">
-            <form method="post" name="serviceAdd" action="update-bps-profile-finish.jsp">
+            <form method="post" name="serviceAdd" action="update-bps-profile-finish-ajaxprocessor.jsp">
                 <input type="hidden" name="<%=WorkflowUIConstants.PARAM_ACTION%>"
                        value="<%=WorkflowUIConstants.ACTION_VALUE_UPDATE%>">
                 <table class="styledLeft noBorders">

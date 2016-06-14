@@ -108,10 +108,24 @@
     <script type="text/javascript">
 
         function removeProfile(profileName) {
+
             function doDelete() {
-                location.href = 'update-bps-profile-finish.jsp?<%=WorkflowUIConstants.PARAM_ACTION%>=' +
-                '<%=WorkflowUIConstants.ACTION_VALUE_DELETE%>&<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>=' +
-                profileName;
+                $.ajax({
+                    type: 'POST',
+                    url: 'update-bps-profile-finish-ajaxprocessor.jsp',
+                    headers: {
+                        Accept: "text/html"
+                    },
+                    data: '<%=WorkflowUIConstants.PARAM_ACTION%>=' +
+                    '<%=WorkflowUIConstants.ACTION_VALUE_DELETE%>&<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>=' +
+                    profileName,
+                    async: false,
+                    success: function (responseText, status) {
+                        if (status == "success") {
+                            location.assign("list-bps-profiles.jsp");
+                        }
+                    }
+                });
             }
 
             CARBON.showConfirmationDialog('<fmt:message key="confirmation.bpel.profile.delete"/> ' + profileName + '?',

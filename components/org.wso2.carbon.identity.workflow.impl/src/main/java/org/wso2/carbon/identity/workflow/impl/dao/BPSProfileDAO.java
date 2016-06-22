@@ -47,8 +47,7 @@ public class BPSProfileDAO {
      * @param tenantId      ID of tenant domain
      * @throws WorkflowImplException
      */
-    public void addProfile(BPSProfile bpsProfileDTO, int tenantId)
-            throws WorkflowImplException {
+    public void addProfile(BPSProfile bpsProfileDTO, int tenantId) throws WorkflowImplException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement prepStmt = null;
@@ -73,12 +72,11 @@ public class BPSProfileDAO {
             prepStmt.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
-            throw new WorkflowImplException("Error when executing the sql query", e);
+            throw new WorkflowImplException("Error when executing the sql query " + query, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, prepStmt);
         }
     }
-
 
     /**
      * Update existing BPS Profile
@@ -87,8 +85,7 @@ public class BPSProfileDAO {
      * @param tenantId   ID of tenant domain
      * @throws WorkflowImplException
      */
-    public void updateProfile(BPSProfile bpsProfile, int tenantId)
-            throws WorkflowImplException {
+    public void updateProfile(BPSProfile bpsProfile, int tenantId) throws WorkflowImplException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement prepStmt = null;
@@ -113,7 +110,7 @@ public class BPSProfileDAO {
             prepStmt.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
-            throw new WorkflowImplException("Error when executing the sql query", e);
+            throw new WorkflowImplException("Error when executing the sql query " + query, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, prepStmt);
         }
@@ -128,8 +125,8 @@ public class BPSProfileDAO {
      * @return
      * @throws WorkflowImplException
      */
-    public BPSProfile getBPSProfile(String profileName, int tenantId, boolean isWithPasswords) throws
-                                                                                               WorkflowImplException {
+    public BPSProfile getBPSProfile(String profileName, int tenantId, boolean isWithPasswords)
+            throws WorkflowImplException {
 
         BPSProfile bpsProfileDTO = null;
         Connection connection = IdentityDatabaseUtil.getDBConnection();
@@ -158,24 +155,23 @@ public class BPSProfileDAO {
                     try {
                         bpsProfileDTO.setPassword(decryptPassword(password));
                     } catch (CryptoException | UnsupportedEncodingException e) {
-                        throw new WorkflowImplException("Error while decrypting the password for BPEL Profile "
-                                + profileName, e);
+                        throw new WorkflowImplException(
+                                "Error while decrypting the password for BPEL Profile " + profileName, e);
                     }
                 }
             }
         } catch (SQLException e) {
-            throw new WorkflowImplException("Error when executing the sql.", e);
+            throw new WorkflowImplException("Error when executing the sql " + query, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, prepStmt);
         }
         return bpsProfileDTO;
     }
 
-
     /**
      * Retrieve list of existing BPS profiles
      *
-     * @param tenantId  Id of tenant domain to retrieve BPS profiles
+     * @param tenantId Id of tenant domain to retrieve BPS profiles
      * @return
      * @throws WorkflowImplException
      */
@@ -215,8 +211,7 @@ public class BPSProfileDAO {
                     byte[] decryptedPasswordBytes = cryptoUtil.base64DecodeAndDecrypt(password);
                     decryptPassword = new String(decryptedPasswordBytes, WFImplConstant.DEFAULT_CHARSET);
                 } catch (CryptoException | UnsupportedEncodingException e) {
-                    throw new WorkflowImplException("Error while decrypting the password for BPEL Profile " +
-                            name, e);
+                    throw new WorkflowImplException("Error while decrypting the password for BPEL Profile " + name, e);
                 }
                 BPSProfile profileBean = new BPSProfile();
                 profileBean.setManagerHostURL(managerHostName);
@@ -227,13 +222,12 @@ public class BPSProfileDAO {
                 profiles.add(profileBean);
             }
         } catch (SQLException e) {
-            throw new WorkflowImplException("Error when executing the sql.", e);
+            throw new WorkflowImplException("Error when executing the sql " + query, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, prepStmt);
         }
         return profiles;
     }
-
 
     /**
      * Delete a BPS profile
@@ -252,7 +246,7 @@ public class BPSProfileDAO {
             prepStmt.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
-            throw new WorkflowImplException("Error when executing the sql.", e);
+            throw new WorkflowImplException("Error when executing the sql " + query, e);
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, prepStmt);
         }
@@ -281,8 +275,7 @@ public class BPSProfileDAO {
     private byte[] toBytes(char[] chars) {
         CharBuffer charBuffer = CharBuffer.wrap(chars);
         ByteBuffer byteBuffer = Charset.forName(WFImplConstant.DEFAULT_CHARSET).encode(charBuffer);
-        byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),
-                byteBuffer.position(), byteBuffer.limit());
+        byte[] bytes = Arrays.copyOfRange(byteBuffer.array(), byteBuffer.position(), byteBuffer.limit());
         Arrays.fill(charBuffer.array(), '\u0000');
         Arrays.fill(byteBuffer.array(), (byte) 0);
         return bytes;

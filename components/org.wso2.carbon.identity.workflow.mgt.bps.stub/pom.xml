@@ -31,6 +31,17 @@
     <name>WSO2 Carbon - IS Workflow Deployment Stub</name>
     <url>http://wso2.org</url>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2-client</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -111,9 +122,9 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.humantask.stub.*; version="${carbon.identity.package.export.version}",
-                            org.wso2.carbon.bpel.stub.*; version="${carbon.identity.package.export.version}",
-                            org.wso2.carbon.identity.workflow.mgt.bps.stub.*;version="${carbon.identity.package.export.version}",
+                            org.wso2.carbon.humantask.stub.*; version="${carbon.identity.workflow.impl.bps.export.version.range}",
+                            org.wso2.carbon.bpel.stub.*; version="${carbon.identity.workflow.impl.bps.export.version.range}",
+                            org.wso2.carbon.identity.workflow.mgt.bps.stub.*;version="${carbon.identity.workflow.impl.bps.export.version.range}",
                         </Export-Package>
                         <Import-Package>
                             javax.activation; version="${javax.activation.import.pkg.version}",
@@ -140,16 +151,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.axis2.wso2</groupId>
-            <artifactId>axis2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2.wso2</groupId>
-            <artifactId>axis2-client</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

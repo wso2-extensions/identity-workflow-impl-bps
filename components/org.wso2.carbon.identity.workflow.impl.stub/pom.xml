@@ -98,7 +98,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.identity.workflow.impl.stub.*;version="${carbon.identity.workflow.impl.bps.export.version.range}",
+                            org.wso2.carbon.identity.workflow.impl.stub.*;version="${carbon.identity.workflow.impl.bps.export.version}",
                         </Export-Package>
                         <Import-Package>
                             javax.activation; version="${javax.activation.import.pkg.version}",

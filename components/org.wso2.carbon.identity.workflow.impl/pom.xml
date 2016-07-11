@@ -149,7 +149,8 @@
                         <Export-Package>
                             !org.wso2.carbon.identity.workflow.impl.internal,
                             !org.wso2.carbon.identity.workflow.mgt.bps.stub.*,
-                            org.wso2.carbon.identity.workflow.impl.*; version="${carbon.identity.workflow.impl.bps.export.version.range}"
+                            org.wso2.carbon.identity.workflow.impl.*;
+                            version="${carbon.identity.workflow.impl.bps.export.version}"
                         </Export-Package>
                     </instructions>
                 </configuration>

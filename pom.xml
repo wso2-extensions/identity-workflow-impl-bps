@@ -305,8 +305,8 @@
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
 
         <carbon.identity.framework.version>5.2.0</carbon.identity.framework.version>
-        <carbon.identity.workflow.impl.bps.export.version.range>${project.version}
-        </carbon.identity.workflow.impl.bps.export.version.range>
+        <carbon.identity.workflow.impl.bps.export.version>${project.version}
+        </carbon.identity.workflow.impl.bps.export.version>
 
         <axiom.wso2.version>1.2.11.wso2v10</axiom.wso2.version>
 

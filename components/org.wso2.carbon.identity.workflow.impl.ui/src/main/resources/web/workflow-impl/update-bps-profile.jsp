@@ -171,14 +171,11 @@
                     </tr>
                     </tbody>
                 </table>
-                <table style="margin-top: 10px">
-                    <tr>
-                        <td class="buttonRow">
-                            <input class="button" value="<fmt:message key="update"/>" type="button" onclick="doValidation()"/>
-                            <input class="button" value="<fmt:message key="cancel"/>" type="button" onclick="doCancel();"/>
-                        </td>
-                    </tr>
-                </table>
+                <div class="buttonRow" colspan="2" style="margin-top: 10px">
+                    <input class="button" value="<fmt:message key="update"/>" type="button" onclick="doValidation()"/>
+                    <input class="button" style="margin-left: 10px;" value="<fmt:message key="cancel"/>"
+                                   type="button" onclick="doCancel();"/>
+                </div>
                 <br/>
             </form>
         </div>

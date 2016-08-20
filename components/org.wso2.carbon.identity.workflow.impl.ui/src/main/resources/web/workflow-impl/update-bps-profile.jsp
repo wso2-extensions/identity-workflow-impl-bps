@@ -83,6 +83,25 @@
                 passwordField.value="" ;
             }
         }
+
+        function doValidation(){
+            // validate input fields
+            var inputs = document.getElementsByTagName('input');
+            for (var i = 0; i < inputs.length; ++i) {
+                // we only need to validate input text fields here
+                if(inputs[i].type == "text") {
+                    var inputValue = inputs[i].value;
+                    var displayName = inputs[i].getAttribute("displayName");
+                    if(inputValue == null || inputValue.replace(/^\s+|\s+$/g,'') == '') {
+                        CARBON.showWarningDialog(displayName + " cannot be empty.", null, null);
+                        return false;
+                    }
+                }
+            }
+
+            document.serviceAdd.submit();
+        }
+
     </script>
 
     <div id="middle">
@@ -102,6 +121,7 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.name'/></td>
                         <td><input readonly type="text" name="<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>"
+                                   displayName="<fmt:message key='workflow.bps.profile.name'/>"
                                    value="<%=bpsProfile.getProfileName()%>"  style="width:30%" class="text-box-big"/></td>
                     </tr>
                     </tbody>
@@ -117,6 +137,7 @@
                         <td width="30%"><fmt:message key='workflow.bps.profile.manager.host'/></td>
                         <td>
                             <input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_MANAGER_HOST%>" value="<%=bpsProfile.getManagerHostURL()%>"
+                                   displayName="<fmt:message key='workflow.bps.profile.manager.host'/>"
                                    style="width:30%" class="text-box-big"/>
                             <div class="sectionHelp">
                                 <fmt:message key='help.desc.manager'/>
@@ -125,6 +146,7 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.worker.host'/></td>
                         <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>" value="<%=bpsProfile.getWorkerHostURL()%>"
+                                   displayName="<fmt:message key='workflow.bps.profile.worker.host'/>"
                                    style="width:30%" class="text-box-big"/>
                             <div class="sectionHelp">
                                 <fmt:message key='help.desc.worker'/>
@@ -134,12 +156,14 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.auth.user'/></td>
                         <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_USER%>" value="<%=bpsProfile.getUsername()%>"
+                                   displayName="<fmt:message key='workflow.bps.profile.auth.user'/>"
                                    style="width:30%" class="text-box-big"/></td>
                     </tr>
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.auth.password'/></td>
                         <td>
                             <input disabled type="password" id="id_<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>" placeholder="**********" autocomplete="off"
+                                   displayName="<fmt:message key='workflow.bps.profile.name'/>"
                                    style="width:30%" class="text-box-big"/>
                             <input onclick="editBPSAuthPassword();" type="checkbox" id="chkbox_<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>" />
                             <label class="control-label" for="chkbox_<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>">Edit Password</label>
@@ -150,9 +174,8 @@
                 <table style="margin-top: 10px">
                     <tr>
                         <td class="buttonRow">
-                            <input class="button" value="<fmt:message key="update"/>" type="submit"/>
-                            <input class="button" value="<fmt:message key="cancel"/>" type="button"
-                                   onclick="doCancel();"/>
+                            <input class="button" value="<fmt:message key="update"/>" type="button" onclick="doValidation()"/>
+                            <input class="button" value="<fmt:message key="cancel"/>" type="button" onclick="doCancel();"/>
                         </td>
                     </tr>
                 </table>

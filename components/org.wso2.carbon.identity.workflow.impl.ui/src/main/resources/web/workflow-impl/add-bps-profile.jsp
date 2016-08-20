@@ -39,8 +39,28 @@
         function doCancel(){
             window.location = "list-bps-profiles.jsp";
         }
+
         function doValidation(){
-            return doValidateInput(document.getElementById('profile-name'), "<fmt:message key="error.input.validation.msg"/>");
+            // validate input fields
+            var inputs = document.getElementsByTagName('input');
+            var error = false;
+            for (var i = 0; i < inputs.length; ++i) {
+                var inputValue = inputs[i].value;
+                var displayName = inputs[i].getAttribute("displayName");
+                if (inputValue == null || inputValue.replace(/^\s+|\s+$/g,'') == '') {
+                    CARBON.showWarningDialog(displayName + " cannot be empty.");
+                    return false;
+                }
+            }
+
+            // validate profile name for whitelist regex
+            if(!doValidateInput(document.getElementById('profile-name'), "<fmt:message key="error.input.validation.msg"/>")) {
+                return false;
+            }
+
+            // submit the form if no errors encountered
+            document.serviceAdd.submit();
+
         }
     </script>
 
@@ -48,8 +68,7 @@
         <h2><fmt:message key='workflow.bps.profile.add'/></h2>
 
         <div id="workArea">
-            <form method="post" name="serviceAdd" action="update-bps-profile-finish-ajaxprocessor.jsp"
-                  onsubmit="return doValidation();">
+            <form method="post" name="serviceAdd" action="update-bps-profile-finish-ajaxprocessor.jsp">
                 <input type="hidden" name="<%=WorkflowUIConstants.PARAM_ACTION%>"
                        value="<%=WorkflowUIConstants.ACTION_VALUE_ADD%>">
                 <table class="styledLeft noBorders">
@@ -62,6 +81,7 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.name'/></td>
                         <td><input id="profile-name" type="text"
+                                   displayName="<fmt:message key='workflow.bps.profile.name'/>"
                                    name="<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>"
                                    white-list-patterns="^[a-zA-Z0-9]+$" style="width:30%" class="text-box-big"/></td>
                     </tr>
@@ -78,6 +98,7 @@
                         <td width="30%"><fmt:message key='workflow.bps.profile.manager.host'/></td>
                         <td>
                             <div><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_MANAGER_HOST%>"
+                                        displayName="<fmt:message key='workflow.bps.profile.manager.host'/>"
                                    style="width:30%" class="text-box-big"/></div>
                             <div class="sectionHelp">
                                 <fmt:message key='help.desc.manager'/>
@@ -87,7 +108,8 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.worker.host'/></td>
                         <td><div><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
-                                   style="width:30%" class="text-box-big"/></div>
+                                        displayName="<fmt:message key='workflow.bps.profile.worker.host'/>"
+                                        style="width:30%" class="text-box-big"/></div>
                             <div class="sectionHelp">
                                 <fmt:message key='help.desc.worker'/>
                             </div>
@@ -96,11 +118,13 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.auth.user'/></td>
                         <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_USER%>"
+                                   displayName="<fmt:message key='workflow.bps.profile.auth.user'/>"
                                    style="width:30%" class="text-box-big"/></td>
                     </tr>
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.auth.password'/></td>
                         <td><input type="password" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>"
+                                   displayName="<fmt:message key='workflow.bps.profile.auth.password'/>"
                                    style="width:30%" class="text-box-big"/>
                         </td>
                     </tr>
@@ -109,9 +133,8 @@
                 <table style="margin-top: 10px">
                     <tr>
                         <td class="buttonRow">
-                            <input class="button" value="<fmt:message key="add"/>" type="submit"/>
-                            <input class="button" value="<fmt:message key="cancel"/>" type="button"
-                                   onclick="doCancel();"/>
+                            <input class="button" value="<fmt:message key="add"/>" type="button" onclick="doValidation()"/>
+                            <input class="button" value="<fmt:message key="cancel"/>" type="button" onclick="doCancel();"/>
                         </td>
                     </tr>
                 </table>

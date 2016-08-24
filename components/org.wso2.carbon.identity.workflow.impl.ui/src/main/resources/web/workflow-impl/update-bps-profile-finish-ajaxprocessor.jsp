@@ -28,6 +28,7 @@
 <%@ page import="java.util.ResourceBundle" %>
 <%@ page import="org.wso2.carbon.identity.workflow.impl.stub.bean.BPSProfile" %>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.apache.axis2.AxisFault" %>
 
 <%
     String httpMethod = request.getMethod();
@@ -78,7 +79,7 @@
             bpsProfile.setPassword(passwordAsArray);
             client.addBPSProfile(bpsProfile);
 
-        } catch (WorkflowImplAdminServiceWorkflowImplException e) {
+        } catch (AxisFault e) {
             String message = resourceBundle.getString("workflow.error.bps.profile.add");
             CarbonUIMessage.sendCarbonUIMessage(message, CarbonUIMessage.ERROR, request);
             forwardTo = "../admin/error.jsp";
@@ -111,7 +112,7 @@
 
             client.updateBPSProfile(bpsProfile);
 
-        } catch (WorkflowImplAdminServiceWorkflowImplException e) {
+        } catch (AxisFault e) {
             String message = resourceBundle.getString("workflow.error.bps.profile.add");
             CarbonUIMessage.sendCarbonUIMessage(message, CarbonUIMessage.ERROR, request);
             forwardTo = "../admin/error.jsp";
@@ -120,7 +121,7 @@
         try {
             client.deleteBPSProfile(profileName);
             forwardTo = "list-bps-profiles.jsp";
-        } catch (Exception e) {
+        } catch (AxisFault e) {
             String message = resourceBundle.getString("workflow.error.bps.profile.delete");
             CarbonUIMessage.sendCarbonUIMessage(message, CarbonUIMessage.ERROR, request);
             forwardTo = "../admin/error.jsp";

@@ -36,32 +36,21 @@
     <script type="text/javascript" src="../carbon/admin/js/cookies.js"></script>
     <script type="text/javascript" src="../carbon/admin/js/main.js"></script>
     <script type="text/javascript">
-        function doCancel(){
+        function doCancel() {
             window.location = "list-bps-profiles.jsp";
         }
 
-        function doValidation(){
+        function doValidation() {
             // validate input fields
-            var inputs = document.getElementsByTagName('input');
-            var error = false;
-            for (var i = 0; i < inputs.length; ++i) {
-                var inputValue = inputs[i].value;
-                var displayName = inputs[i].getAttribute("displayName");
-                if (inputValue == null || inputValue.replace(/^\s+|\s+$/g,'') == '') {
-                    CARBON.showWarningDialog(displayName + " cannot be empty.");
-                    return false;
-                }
-            }
-
-            // validate profile name for whitelist regex
-            if(!doValidateInput(document.getElementById('profile-name'), "<fmt:message key="error.input.validation.msg"/>")) {
+            var formElement = document.getElementsByName("serviceAdd")[0];
+            if (!doValidateForm(formElement, "<fmt:message key="error.input.validation.error"/>")) {
                 return false;
             }
 
             // submit the form if no errors encountered
             document.serviceAdd.submit();
-
         }
+
     </script>
 
     <div id="middle">
@@ -79,11 +68,15 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td width="30%"><fmt:message key='workflow.bps.profile.name'/></td>
+                        <td width="30%">
+                            <fmt:message key='workflow.bps.profile.name'/><span class="required">*</span>
+                        </td>
                         <td><input id="profile-name" type="text"
-                                   displayName="<fmt:message key='workflow.bps.profile.name'/>"
+                                   label="<fmt:message key='workflow.bps.profile.name'/>"
                                    name="<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>"
-                                   white-list-patterns="^[a-zA-Z0-9]+$" style="width:30%" class="text-box-big"/></td>
+                                   maxlength="45"
+                                   white-list-patterns="^[a-zA-Z0-9]+$" black-list-patterns="^(\s*)$" style="width:30%"
+                                   class="text-box-big"/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -95,37 +88,48 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td width="30%"><fmt:message key='workflow.bps.profile.manager.host'/></td>
+                        <td width="30%">
+                            <fmt:message key='workflow.bps.profile.manager.host'/>
+                            <span class="required">*</span></td>
                         <td>
                             <div><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_MANAGER_HOST%>"
-                                        displayName="<fmt:message key='workflow.bps.profile.manager.host'/>"
-                                   style="width:30%" class="text-box-big"/></div>
+                                        label="<fmt:message key='workflow.bps.profile.manager.host'/>" maxlength="255"
+                                        black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"/></div>
                             <div class="sectionHelp">
                                 <fmt:message key='help.desc.manager'/>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td width="30%"><fmt:message key='workflow.bps.profile.worker.host'/></td>
+                        <td width="30%">
+                            <fmt:message key='workflow.bps.profile.worker.host'/>
+                            <span class="required">*</span>
+                        </td>
                         <td><div><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
-                                        displayName="<fmt:message key='workflow.bps.profile.worker.host'/>"
-                                        style="width:30%" class="text-box-big"/></div>
+                                        label="<fmt:message key='workflow.bps.profile.worker.host'/>" maxlength="255"
+                                        black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"/></div>
                             <div class="sectionHelp">
                                 <fmt:message key='help.desc.worker'/>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td width="30%"><fmt:message key='workflow.bps.profile.auth.user'/></td>
+                        <td width="30%">
+                            <fmt:message key='workflow.bps.profile.auth.user'/>
+                            <span class="required">*</span>
+                        </td>
                         <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_USER%>"
-                                   displayName="<fmt:message key='workflow.bps.profile.auth.user'/>"
-                                   style="width:30%" class="text-box-big"/></td>
+                                   label="<fmt:message key='workflow.bps.profile.auth.user'/>" maxlength="45"
+                                   black-list-patterns="^(\s*)$" style="width:30%" class="text-box-big"/></td>
                     </tr>
                     <tr>
-                        <td width="30%"><fmt:message key='workflow.bps.profile.auth.password'/></td>
+                        <td width="30%">
+                            <fmt:message key='workflow.bps.profile.auth.password'/>
+                            <span class="required">*</span>
+                        </td>
                         <td><input type="password" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>"
-                                   displayName="<fmt:message key='workflow.bps.profile.auth.password'/>"
-                                   style="width:30%" class="text-box-big"/>
+                                   label="<fmt:message key='workflow.bps.profile.auth.password'/>"
+                                   black-list-patterns="^(\s*)$" style="width:30%" class="text-box-big"/>
                         </td>
                     </tr>
                     </tbody>

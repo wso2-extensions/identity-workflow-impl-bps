@@ -19,15 +19,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar"
            prefix="carbon" %>
-<%@ page import="org.wso2.carbon.identity.workflow.impl.ui.WorkflowUIConstants" %>
-<%@ page import="org.wso2.carbon.identity.workflow.impl.ui.WorkflowImplAdminServiceClient" %>
-<%@ page import="org.wso2.carbon.utils.ServerConstants" %>
-<%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.apache.axis2.context.ConfigurationContext" %>
 <%@ page import="org.wso2.carbon.CarbonConstants" %>
-<%@ page import="java.util.ResourceBundle" %>
-
 <%@ page import="org.wso2.carbon.identity.workflow.impl.stub.bean.BPSProfile" %>
+<%@ page import="org.wso2.carbon.identity.workflow.impl.ui.WorkflowImplAdminServiceClient" %>
+<%@ page import="org.wso2.carbon.identity.workflow.impl.ui.WorkflowUIConstants" %>
+<%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
+<%@ page import="org.wso2.carbon.utils.ServerConstants" %>
+
 <script type="text/javascript" src="extensions/js/vui.js"></script>
 <script type="text/javascript" src="../extensions/core/js/vui.js"></script>
 <script type="text/javascript" src="../admin/js/main.js"></script>
@@ -84,19 +83,11 @@
             }
         }
 
-        function doValidation(){
-            // validate input fields
-            var inputs = document.getElementsByTagName('input');
-            for (var i = 0; i < inputs.length; ++i) {
-                // we only need to validate input text fields here
-                if(inputs[i].type == "text") {
-                    var inputValue = inputs[i].value;
-                    var displayName = inputs[i].getAttribute("displayName");
-                    if(inputValue == null || inputValue.replace(/^\s+|\s+$/g,'') == '') {
-                        CARBON.showWarningDialog(displayName + " cannot be empty.", null, null);
-                        return false;
-                    }
-                }
+        function doValidation() {
+            // validate input elements of the form
+            var form = document.getElementsByName("serviceAdd")[0];
+            if (!doValidateForm(form, "<fmt:message key="error.input.validation.error"/>")) {
+                return false;
             }
 
             document.serviceAdd.submit();
@@ -121,7 +112,7 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.name'/></td>
                         <td><input readonly type="text" name="<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>"
-                                   displayName="<fmt:message key='workflow.bps.profile.name'/>"
+                                   label="<fmt:message key='workflow.bps.profile.name'/>" maxlength="45"
                                    value="<%=bpsProfile.getProfileName()%>"  style="width:30%" class="text-box-big"/></td>
                     </tr>
                     </tbody>
@@ -136,18 +127,22 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.manager.host'/></td>
                         <td>
-                            <input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_MANAGER_HOST%>" value="<%=bpsProfile.getManagerHostURL()%>"
-                                   displayName="<fmt:message key='workflow.bps.profile.manager.host'/>"
-                                   style="width:30%" class="text-box-big"/>
+                            <input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_MANAGER_HOST%>"
+                                   value="<%=bpsProfile.getManagerHostURL()%>" maxlength="255"
+                                   black-list-patterns="^(\s*)$"
+                                   label="<fmt:message key='workflow.bps.profile.manager.host'/>"
+                                   style="width:50%" class="text-box-big"/>
                             <div class="sectionHelp">
                                 <fmt:message key='help.desc.manager'/>
                             </div>
                         </td></tr>
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.worker.host'/></td>
-                        <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>" value="<%=bpsProfile.getWorkerHostURL()%>"
-                                   displayName="<fmt:message key='workflow.bps.profile.worker.host'/>"
-                                   style="width:30%" class="text-box-big"/>
+                        <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
+                                   value="<%=bpsProfile.getWorkerHostURL()%>" maxlength="255"
+                                   black-list-patterns="^(\s*)$"
+                                   label="<fmt:message key='workflow.bps.profile.worker.host'/>"
+                                   style="width:60%" class="text-box-big"/>
                             <div class="sectionHelp">
                                 <fmt:message key='help.desc.worker'/>
                             </div>
@@ -155,15 +150,18 @@
                     </tr>
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.auth.user'/></td>
-                        <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_USER%>" value="<%=bpsProfile.getUsername()%>"
-                                   displayName="<fmt:message key='workflow.bps.profile.auth.user'/>"
-                                   style="width:30%" class="text-box-big"/></td>
+                        <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_USER%>"
+                                   value="<%=bpsProfile.getUsername()%>" maxlength="45"
+                                   black-list-patterns="^(\s*)$"
+                                   label="<fmt:message key='workflow.bps.profile.auth.user'/>"
+                                   style="width:60%" class="text-box-big"/></td>
                     </tr>
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.auth.password'/></td>
                         <td>
-                            <input disabled type="password" id="id_<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>" placeholder="**********" autocomplete="off"
-                                   displayName="<fmt:message key='workflow.bps.profile.name'/>"
+                            <input disabled type="password" id="id_<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>"
+                                   name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>" placeholder="**********" autocomplete="off"
+                                   label="<fmt:message key='workflow.bps.profile.name'/>"
                                    style="width:30%" class="text-box-big"/>
                             <input onclick="editBPSAuthPassword();" type="checkbox" id="chkbox_<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>" />
                             <label class="control-label" for="chkbox_<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>">Edit Password</label>

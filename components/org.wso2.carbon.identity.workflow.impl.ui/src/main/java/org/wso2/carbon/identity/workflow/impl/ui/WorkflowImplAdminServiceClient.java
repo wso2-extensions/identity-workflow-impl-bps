@@ -27,7 +27,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.workflow.impl.stub.WorkflowImplAdminServiceStub;
 import org.wso2.carbon.identity.workflow.impl.stub.WorkflowImplAdminServiceWorkflowImplException;
 import org.wso2.carbon.identity.workflow.impl.stub.bean.BPSProfile;
-import java.rmi.RemoteException;
 
 public class WorkflowImplAdminServiceClient {
 
@@ -56,14 +55,15 @@ public class WorkflowImplAdminServiceClient {
     /**
      * Add new BPS profile
      *
-     * @param bpsProfile  Details of new profile to add
-     * @throws RemoteException
-     * @throws WorkflowImplAdminServiceWorkflowImplException
+     * @throws AxisFault
      */
-    public void addBPSProfile(BPSProfile bpsProfile)
-            throws RemoteException, WorkflowImplAdminServiceWorkflowImplException {
+    public void addBPSProfile(BPSProfile bpsProfile) throws AxisFault {
+        try {
+            stub.addBPSProfile(bpsProfile);
+        } catch (Exception e) {
+            handleException("Error when adding BPS Profile.", e);
+        }
 
-        stub.addBPSProfile(bpsProfile);
     }
 
 
@@ -71,12 +71,17 @@ public class WorkflowImplAdminServiceClient {
      * Retrieve BPS Profiles
      *
      * @return
-     * @throws RemoteException
-     * @throws WorkflowImplAdminServiceWorkflowImplException
+     * @throws AxisFault
      */
-    public BPSProfile[] listBPSProfiles() throws RemoteException, WorkflowImplAdminServiceWorkflowImplException {
+    public BPSProfile[] listBPSProfiles() throws AxisFault {
 
-        BPSProfile[] bpsProfiles = stub.listBPSProfiles();
+        BPSProfile[] bpsProfiles = null;
+        try {
+            bpsProfiles = stub.listBPSProfiles();
+        } catch (Exception e) {
+            handleException("Error when retrieving BPS profiles.", e);
+        }
+
         if (bpsProfiles == null) {
             bpsProfiles = new BPSProfile[0];
         }
@@ -86,41 +91,50 @@ public class WorkflowImplAdminServiceClient {
     /**
      * Get BPS Profile detail for given profile name
      *
-     * @param profileName  Name of the profile
+     * @param profileName Name of the profile
      * @return
-     * @throws RemoteException
-     * @throws WorkflowImplAdminServiceWorkflowImplException
+     * @throws AxisFault
      */
-    public BPSProfile getBPSProfiles(String profileName)
-            throws RemoteException, WorkflowImplAdminServiceWorkflowImplException {
-
-        BPSProfile bpsProfile = stub.getBPSProfile(profileName);
-        return bpsProfile;
+    public BPSProfile getBPSProfiles(String profileName) throws AxisFault {
+        try {
+            return stub.getBPSProfile(profileName);
+        } catch (Exception e) {
+            handleException(String.format("Error when retrieving BPS profile for profile name '%s'", profileName), e);
+        }
+        return null;
     }
 
     /**
      * Update BPS Profile
      *
-     * @param bpsProfileDTO  BPS profile object with new details
-     * @throws RemoteException
-     * @throws WorkflowImplAdminServiceWorkflowImplException
+     * @param bpsProfileDTO BPS profile object with new details
+     * @throws AxisFault
      */
-    public void updateBPSProfile(BPSProfile bpsProfileDTO)
-            throws RemoteException, WorkflowImplAdminServiceWorkflowImplException {
-
-        stub.updateBPSProfile(bpsProfileDTO);
+    public void updateBPSProfile(BPSProfile bpsProfileDTO) throws AxisFault {
+        try {
+            stub.updateBPSProfile(bpsProfileDTO);
+        } catch (Exception e) {
+            handleException("Error when updating the BPS profile.", e);
+        }
     }
 
     /**
      * Remove a BPS profile
      *
-     * @param profileName  Name of profile
-     * @throws RemoteException
-     * @throws WorkflowImplAdminServiceWorkflowImplException
+     * @param profileName Name of profile
+     * @throws AxisFault
      */
-    public void deleteBPSProfile(String profileName) throws RemoteException, WorkflowImplAdminServiceWorkflowImplException {
+    public void deleteBPSProfile(String profileName) throws AxisFault {
+        try {
+            stub.removeBPSProfile(profileName);
+        } catch (Exception e) {
+            handleException(String.format("Error when deleting BPS profile '%s'.", profileName), e);
+        }
+    }
 
-        stub.removeBPSProfile(profileName);
+    private void handleException(String msg, Exception e) throws AxisFault {
+        log.error(msg, e);
+        throw new AxisFault(msg, e);
     }
 
 }

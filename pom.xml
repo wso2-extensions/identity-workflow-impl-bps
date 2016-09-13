@@ -76,17 +76,17 @@
             </dependency>
 
             <dependency>
-                <groupId>org.wso2.carbon.identity</groupId>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.core</artifactId>
                 <version>${carbon.identity.framework.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.identity</groupId>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.base</artifactId>
                 <version>${carbon.identity.framework.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.identity</groupId>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.core.ui</artifactId>
                 <version>${carbon.identity.framework.version}</version>
             </dependency>
@@ -123,7 +123,7 @@
                 <type>zip</type>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.identity</groupId>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.workflow.mgt</artifactId>
                 <version>${carbon.identity.framework.version}</version>
             </dependency>
@@ -304,7 +304,7 @@
         <commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
 
-        <carbon.identity.framework.version>5.2.0</carbon.identity.framework.version>
+        <carbon.identity.framework.version>5.5.0-SNAPSHOT</carbon.identity.framework.version>
         <carbon.identity.workflow.impl.bps.export.version>${project.version}
         </carbon.identity.workflow.impl.bps.export.version>
 

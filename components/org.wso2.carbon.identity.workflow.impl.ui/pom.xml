@@ -93,11 +93,11 @@
                             version="${carbon.identity.workflow.impl.bps.import.version.range}",
                             org.wso2.carbon.humantask.stub.upload.types;
                             version="${carbon.identity.workflow.impl.bps.import.version.range}",
-                            org.wso2.carbon.identity.core.*;version="${carbon.identity.framework.package.import.version.range}"
+                            org.wso2.carbon.identity.core.*;version="${identity.framework.imp.pkg.version.range}"
                         </Import-Package>
                         <Export-Package>
                             org.wso2.carbon.identity.workflow.impl.ui.*;
-                            version="${carbon.identity.workflow.impl.bps.export.version}"
+                            version="${identity.workflow.impl.bps.export.version}"
                         </Export-Package>
                         <Carbon-Component>UIBundle</Carbon-Component>
                     </instructions>

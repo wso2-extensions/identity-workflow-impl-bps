@@ -128,9 +128,9 @@
                             version="${carbon.identity.workflow.impl.bps.import.version.range}",
                             org.wso2.carbon.humantask.stub.*;
                             version="${carbon.identity.workflow.impl.bps.import.version.range}",
-                            org.wso2.carbon.identity.base; version="${carbon.identity.framework.package.import.version.range}",
+                            org.wso2.carbon.identity.base; version="${identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.identity.core.util;
-                            version="${carbon.identity.framework.package.import.version.range}",
+                            version="${identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.user.api; version="${carbon.user.api.imp.pkg.version.range}",
                             org.wso2.carbon.user.core.service; version="${carbon.kernel.package.import.version.range}",
                             org.wso2.carbon.user.core.tenant; version="${carbon.kernel.package.import.version.range}",
@@ -140,7 +140,7 @@
                             org.wso2.carbon.core.util; version="${carbon.kernel.package.import.version.range}",
                             org.wso2.carbon.stratos.common.*; version="${carbon.commons.imp.pkg.version}",
                             org.wso2.carbon.identity.workflow.mgt.*;
-                            version="${carbon.identity.framework.package.import.version.range}",
+                            version="${identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.humantask.deployer; resolution:=optional,
                             org.wso2.carbon; version="${carbon.kernel.package.import.version.range}",
                             org.apache.axiom.om.util; version="${axiom.osgi.version.range}"
@@ -150,7 +150,7 @@
                             !org.wso2.carbon.identity.workflow.impl.internal,
                             !org.wso2.carbon.identity.workflow.mgt.bps.stub.*,
                             org.wso2.carbon.identity.workflow.impl.*;
-                            version="${carbon.identity.workflow.impl.bps.export.version}"
+                            version="${identity.workflow.impl.bps.export.version}"
                         </Export-Package>
                     </instructions>
                 </configuration>

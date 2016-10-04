@@ -123,9 +123,9 @@
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
                             org.wso2.carbon.humantask.stub.*;
-                            version="${carbon.identity.workflow.impl.bps.export.version}",
-                            org.wso2.carbon.bpel.stub.*; version="${carbon.identity.workflow.impl.bps.export.version}",
-                            org.wso2.carbon.identity.workflow.mgt.bps.stub.*;version="${carbon.identity.workflow.impl.bps.export.version}",
+                            version="${identity.workflow.impl.bps.export.version}",
+                            org.wso2.carbon.bpel.stub.*; version="${identity.workflow.impl.bps.export.version}",
+                            org.wso2.carbon.identity.workflow.mgt.bps.stub.*;version="${identity.workflow.impl.bps.export.version}",
                         </Export-Package>
                         <Import-Package>
                             javax.activation; version="${javax.activation.import.pkg.version}",

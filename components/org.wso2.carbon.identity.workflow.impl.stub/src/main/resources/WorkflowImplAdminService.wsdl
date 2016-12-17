@@ -1,4 +1,5 @@
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ax2421="http://exception.mgt.workflow.identity.carbon.wso2.org/xsd" xmlns:ax2422="http://base.identity.carbon.wso2.org/xsd" xmlns:ax2425="http://bean.impl.workflow.identity.carbon.wso2.org/xsd" xmlns:ns="http://impl.workflow.identity.carbon.wso2.org/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax2427="http://bean.mgt.workflow.identity.carbon.wso2.org/xsd" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:tns="http://impl.workflow.identity.carbon.wso2.org" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://impl.workflow.identity.carbon.wso2.org">
+
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://impl.workflow.identity.carbon.wso2.org/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ax2470="http://base.identity.carbon.wso2.org/xsd" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax2475="http://bean.mgt.workflow.identity.carbon.wso2.org/xsd" xmlns:tns="http://impl.workflow.identity.carbon.wso2.org" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax2473="http://bean.impl.workflow.identity.carbon.wso2.org/xsd" xmlns:ax2469="http://exception.mgt.workflow.identity.carbon.wso2.org/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://impl.workflow.identity.carbon.wso2.org">
     <wsdl:documentation>WorkflowImplAdminService</wsdl:documentation>
     <wsdl:types>
         <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://bean.impl.workflow.identity.carbon.wso2.org/xsd">
@@ -12,11 +13,11 @@
                 </xs:sequence>
             </xs:complexType>
         </xs:schema>
-        <xs:schema xmlns:ax2423="http://base.identity.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://exception.mgt.workflow.identity.carbon.wso2.org/xsd">
+        <xs:schema xmlns:ax2471="http://base.identity.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://exception.mgt.workflow.identity.carbon.wso2.org/xsd">
             <xs:import namespace="http://base.identity.carbon.wso2.org/xsd"/>
             <xs:complexType name="WorkflowException">
                 <xs:complexContent>
-                    <xs:extension base="ax2422:IdentityException">
+                    <xs:extension base="ax2471:IdentityException">
                         <xs:sequence/>
                     </xs:extension>
                 </xs:complexContent>
@@ -35,10 +36,12 @@
         </xs:schema>
         <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://base.identity.carbon.wso2.org/xsd">
             <xs:complexType name="IdentityException">
-                <xs:sequence/>
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="errorCode" nillable="true" type="xs:string"/>
+                </xs:sequence>
             </xs:complexType>
         </xs:schema>
-        <xs:schema xmlns:ax2424="http://exception.mgt.workflow.identity.carbon.wso2.org/xsd" xmlns:ax2426="http://bean.impl.workflow.identity.carbon.wso2.org/xsd" xmlns:ax2428="http://bean.mgt.workflow.identity.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://impl.workflow.identity.carbon.wso2.org/xsd">
+        <xs:schema xmlns:ax2476="http://bean.mgt.workflow.identity.carbon.wso2.org/xsd" xmlns:ax2474="http://bean.impl.workflow.identity.carbon.wso2.org/xsd" xmlns:ax2472="http://exception.mgt.workflow.identity.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://impl.workflow.identity.carbon.wso2.org/xsd">
             <xs:import namespace="http://exception.mgt.workflow.identity.carbon.wso2.org/xsd"/>
             <xs:import namespace="http://bean.impl.workflow.identity.carbon.wso2.org/xsd"/>
             <xs:import namespace="http://bean.mgt.workflow.identity.carbon.wso2.org/xsd"/>
@@ -51,18 +54,11 @@
             </xs:element>
             <xs:complexType name="WorkflowImplException">
                 <xs:complexContent>
-                    <xs:extension base="ax2421:WorkflowException">
+                    <xs:extension base="ax2472:WorkflowException">
                         <xs:sequence/>
                     </xs:extension>
                 </xs:complexContent>
             </xs:complexType>
-            <xs:element name="addBPSProfile">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="bpsProfileDTO" nillable="true" type="ax2425:BPSProfile"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
             <xs:element name="listBPSProfiles">
                 <xs:complexType>
                     <xs:sequence/>
@@ -71,7 +67,7 @@
             <xs:element name="listBPSProfilesResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax2425:BPSProfile"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax2474:BPSProfile"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -85,14 +81,21 @@
             <xs:element name="getBPSProfileResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax2425:BPSProfile"/>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax2474:BPSProfile"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="addBPSProfile">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="bpsProfileDTO" nillable="true" type="ax2474:BPSProfile"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="updateBPSProfile">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="bpsProfileDTO" nillable="true" type="ax2425:BPSProfile"/>
+                        <xs:element minOccurs="0" name="bpsProfileDTO" nillable="true" type="ax2474:BPSProfile"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -106,18 +109,16 @@
             <xs:element name="removeBPSPackage">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="workflow" nillable="true" type="ax2427:Workflow"/>
+                        <xs:element minOccurs="0" name="workflow" nillable="true" type="ax2475:Workflow"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:schema>
     </wsdl:types>
-    <wsdl:message name="getBPSProfileRequest">
-        <wsdl:part name="parameters" element="ns:getBPSProfile"/>
+    <wsdl:message name="addBPSProfileRequest">
+        <wsdl:part name="parameters" element="ns:addBPSProfile"/>
     </wsdl:message>
-    <wsdl:message name="getBPSProfileResponse">
-        <wsdl:part name="parameters" element="ns:getBPSProfileResponse"/>
-    </wsdl:message>
+    <wsdl:message name="addBPSProfileResponse"/>
     <wsdl:message name="WorkflowImplAdminServiceWorkflowImplException">
         <wsdl:part name="parameters" element="ns:WorkflowImplAdminServiceWorkflowImplException"/>
     </wsdl:message>
@@ -125,84 +126,62 @@
         <wsdl:part name="parameters" element="ns:removeBPSProfile"/>
     </wsdl:message>
     <wsdl:message name="removeBPSProfileResponse"/>
-    <wsdl:message name="removeBPSPackageRequest">
-        <wsdl:part name="parameters" element="ns:removeBPSPackage"/>
-    </wsdl:message>
-    <wsdl:message name="removeBPSPackageResponse"/>
     <wsdl:message name="listBPSProfilesRequest">
         <wsdl:part name="parameters" element="ns:listBPSProfiles"/>
     </wsdl:message>
     <wsdl:message name="listBPSProfilesResponse">
         <wsdl:part name="parameters" element="ns:listBPSProfilesResponse"/>
     </wsdl:message>
+    <wsdl:message name="getBPSProfileRequest">
+        <wsdl:part name="parameters" element="ns:getBPSProfile"/>
+    </wsdl:message>
+    <wsdl:message name="getBPSProfileResponse">
+        <wsdl:part name="parameters" element="ns:getBPSProfileResponse"/>
+    </wsdl:message>
+    <wsdl:message name="removeBPSPackageRequest">
+        <wsdl:part name="parameters" element="ns:removeBPSPackage"/>
+    </wsdl:message>
+    <wsdl:message name="removeBPSPackageResponse"/>
     <wsdl:message name="updateBPSProfileRequest">
         <wsdl:part name="parameters" element="ns:updateBPSProfile"/>
     </wsdl:message>
     <wsdl:message name="updateBPSProfileResponse"/>
-    <wsdl:message name="addBPSProfileRequest">
-        <wsdl:part name="parameters" element="ns:addBPSProfile"/>
-    </wsdl:message>
-    <wsdl:message name="addBPSProfileResponse"/>
     <wsdl:portType name="WorkflowImplAdminServicePortType">
-        <wsdl:operation name="getBPSProfile">
-            <wsdl:input message="tns:getBPSProfileRequest" wsaw:Action="urn:getBPSProfile"/>
-            <wsdl:output message="tns:getBPSProfileResponse" wsaw:Action="urn:getBPSProfileResponse"/>
-            <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:getBPSProfileWorkflowImplAdminServiceWorkflowImplException"/>
+        <wsdl:operation name="addBPSProfile">
+            <wsdl:input message="tns:addBPSProfileRequest" wsaw:Action="urn:addBPSProfile"/>
+            <wsdl:output message="tns:addBPSProfileResponse" wsaw:Action="urn:addBPSProfileResponse"/>
+            <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:addBPSProfileWorkflowImplAdminServiceWorkflowImplException"/>
         </wsdl:operation>
         <wsdl:operation name="removeBPSProfile">
             <wsdl:input message="tns:removeBPSProfileRequest" wsaw:Action="urn:removeBPSProfile"/>
             <wsdl:output message="tns:removeBPSProfileResponse" wsaw:Action="urn:removeBPSProfileResponse"/>
             <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:removeBPSProfileWorkflowImplAdminServiceWorkflowImplException"/>
         </wsdl:operation>
-        <wsdl:operation name="removeBPSPackage">
-            <wsdl:input message="tns:removeBPSPackageRequest" wsaw:Action="urn:removeBPSPackage"/>
-            <wsdl:output message="tns:removeBPSPackageResponse" wsaw:Action="urn:removeBPSPackageResponse"/>
-            <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:removeBPSPackageWorkflowImplAdminServiceWorkflowImplException"/>
-        </wsdl:operation>
         <wsdl:operation name="listBPSProfiles">
             <wsdl:input message="tns:listBPSProfilesRequest" wsaw:Action="urn:listBPSProfiles"/>
             <wsdl:output message="tns:listBPSProfilesResponse" wsaw:Action="urn:listBPSProfilesResponse"/>
             <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:listBPSProfilesWorkflowImplAdminServiceWorkflowImplException"/>
+        </wsdl:operation>
+        <wsdl:operation name="getBPSProfile">
+            <wsdl:input message="tns:getBPSProfileRequest" wsaw:Action="urn:getBPSProfile"/>
+            <wsdl:output message="tns:getBPSProfileResponse" wsaw:Action="urn:getBPSProfileResponse"/>
+            <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:getBPSProfileWorkflowImplAdminServiceWorkflowImplException"/>
+        </wsdl:operation>
+        <wsdl:operation name="removeBPSPackage">
+            <wsdl:input message="tns:removeBPSPackageRequest" wsaw:Action="urn:removeBPSPackage"/>
+            <wsdl:output message="tns:removeBPSPackageResponse" wsaw:Action="urn:removeBPSPackageResponse"/>
+            <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:removeBPSPackageWorkflowImplAdminServiceWorkflowImplException"/>
         </wsdl:operation>
         <wsdl:operation name="updateBPSProfile">
             <wsdl:input message="tns:updateBPSProfileRequest" wsaw:Action="urn:updateBPSProfile"/>
             <wsdl:output message="tns:updateBPSProfileResponse" wsaw:Action="urn:updateBPSProfileResponse"/>
             <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:updateBPSProfileWorkflowImplAdminServiceWorkflowImplException"/>
         </wsdl:operation>
-        <wsdl:operation name="addBPSProfile">
-            <wsdl:input message="tns:addBPSProfileRequest" wsaw:Action="urn:addBPSProfile"/>
-            <wsdl:output message="tns:addBPSProfileResponse" wsaw:Action="urn:addBPSProfileResponse"/>
-            <wsdl:fault message="tns:WorkflowImplAdminServiceWorkflowImplException" name="WorkflowImplAdminServiceWorkflowImplException" wsaw:Action="urn:addBPSProfileWorkflowImplAdminServiceWorkflowImplException"/>
-        </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="WorkflowImplAdminServiceSoap11Binding" type="tns:WorkflowImplAdminServicePortType">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-        <wsdl:operation name="getBPSProfile">
-            <soap:operation soapAction="urn:getBPSProfile" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="WorkflowImplAdminServiceWorkflowImplException">
-                <soap:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="removeBPSProfile">
-            <soap:operation soapAction="urn:removeBPSProfile" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="WorkflowImplAdminServiceWorkflowImplException">
-                <soap:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="removeBPSPackage">
-            <soap:operation soapAction="urn:removeBPSPackage" style="document"/>
+        <wsdl:operation name="addBPSProfile">
+            <soap:operation soapAction="urn:addBPSProfile" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
@@ -225,8 +204,8 @@
                 <soap:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
             </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="updateBPSProfile">
-            <soap:operation soapAction="urn:updateBPSProfile" style="document"/>
+        <wsdl:operation name="removeBPSProfile">
+            <soap:operation soapAction="urn:removeBPSProfile" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
@@ -237,8 +216,32 @@
                 <soap:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
             </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="addBPSProfile">
-            <soap:operation soapAction="urn:addBPSProfile" style="document"/>
+        <wsdl:operation name="getBPSProfile">
+            <soap:operation soapAction="urn:getBPSProfile" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WorkflowImplAdminServiceWorkflowImplException">
+                <soap:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="removeBPSPackage">
+            <soap:operation soapAction="urn:removeBPSPackage" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WorkflowImplAdminServiceWorkflowImplException">
+                <soap:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="updateBPSProfile">
+            <soap:operation soapAction="urn:updateBPSProfile" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
@@ -252,32 +255,8 @@
     </wsdl:binding>
     <wsdl:binding name="WorkflowImplAdminServiceSoap12Binding" type="tns:WorkflowImplAdminServicePortType">
         <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-        <wsdl:operation name="getBPSProfile">
-            <soap12:operation soapAction="urn:getBPSProfile" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="WorkflowImplAdminServiceWorkflowImplException">
-                <soap12:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="removeBPSProfile">
-            <soap12:operation soapAction="urn:removeBPSProfile" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="WorkflowImplAdminServiceWorkflowImplException">
-                <soap12:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="removeBPSPackage">
-            <soap12:operation soapAction="urn:removeBPSPackage" style="document"/>
+        <wsdl:operation name="addBPSProfile">
+            <soap12:operation soapAction="urn:addBPSProfile" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
@@ -300,8 +279,8 @@
                 <soap12:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
             </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="updateBPSProfile">
-            <soap12:operation soapAction="urn:updateBPSProfile" style="document"/>
+        <wsdl:operation name="removeBPSProfile">
+            <soap12:operation soapAction="urn:removeBPSProfile" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
@@ -312,8 +291,32 @@
                 <soap12:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
             </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="addBPSProfile">
-            <soap12:operation soapAction="urn:addBPSProfile" style="document"/>
+        <wsdl:operation name="getBPSProfile">
+            <soap12:operation soapAction="urn:getBPSProfile" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WorkflowImplAdminServiceWorkflowImplException">
+                <soap12:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="removeBPSPackage">
+            <soap12:operation soapAction="urn:removeBPSPackage" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WorkflowImplAdminServiceWorkflowImplException">
+                <soap12:fault use="literal" name="WorkflowImplAdminServiceWorkflowImplException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="updateBPSProfile">
+            <soap12:operation soapAction="urn:updateBPSProfile" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
@@ -327,26 +330,8 @@
     </wsdl:binding>
     <wsdl:binding name="WorkflowImplAdminServiceHttpBinding" type="tns:WorkflowImplAdminServicePortType">
         <http:binding verb="POST"/>
-        <wsdl:operation name="getBPSProfile">
-            <http:operation location="getBPSProfile"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="removeBPSProfile">
-            <http:operation location="removeBPSProfile"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="removeBPSPackage">
-            <http:operation location="removeBPSPackage"/>
+        <wsdl:operation name="addBPSProfile">
+            <http:operation location="addBPSProfile"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
@@ -363,8 +348,8 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="updateBPSProfile">
-            <http:operation location="updateBPSProfile"/>
+        <wsdl:operation name="removeBPSProfile">
+            <http:operation location="removeBPSProfile"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
@@ -372,8 +357,26 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="addBPSProfile">
-            <http:operation location="addBPSProfile"/>
+        <wsdl:operation name="getBPSProfile">
+            <http:operation location="getBPSProfile"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="removeBPSPackage">
+            <http:operation location="removeBPSPackage"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="updateBPSProfile">
+            <http:operation location="updateBPSProfile"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>

@@ -25,6 +25,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
+import org.wso2.carbon.identity.core.util.IdentityIOStreamUtils;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.workflow.impl.ApprovalWorkflow;
 import org.wso2.carbon.identity.workflow.impl.BPELDeployer;
@@ -180,8 +181,9 @@ public class WorkflowImplServiceComponent {
 
     private String readWorkflowImplParamMetaDataXML(String fileName) throws WorkflowRuntimeException {
         String content = null;
+        InputStream resourceAsStream = null;
         try {
-            InputStream resourceAsStream = this.getClass().getClassLoader()
+            resourceAsStream = this.getClass().getClassLoader()
                     .getResourceAsStream(fileName);
             content = WorkflowManagementUtil.readFileFromResource(resourceAsStream);
 
@@ -193,6 +195,8 @@ public class WorkflowImplServiceComponent {
             String errorMsg = "Error occurred while reading file from class path, " + e.getMessage();
             log.error(errorMsg);
             throw new WorkflowRuntimeException(errorMsg, e);
+        } finally {
+            IdentityIOStreamUtils.closeInputStream(resourceAsStream);
         }
         return content;
     }

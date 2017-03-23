@@ -26,6 +26,7 @@
 <%@ page import="org.wso2.carbon.identity.workflow.impl.ui.WorkflowUIConstants" %>
 <%@ page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <script type="text/javascript" src="extensions/js/vui.js"></script>
 <script type="text/javascript" src="../extensions/core/js/vui.js"></script>
@@ -115,7 +116,8 @@
                         <td width="30%"><fmt:message key='workflow.bps.profile.name'/></td>
                         <td><input readonly type="text" name="<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>"
                                    label="<fmt:message key='workflow.bps.profile.name'/>" maxlength="45"
-                                   value="<%=bpsProfile.getProfileName()%>"  style="width:30%" class="text-box-big"/></td>
+                                   value='<%=Encode.forHtml(bpsProfile.getProfileName())%>'  style="width:30%"
+                                   class="text-box-big"/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -130,7 +132,7 @@
                         <td width="30%"><fmt:message key='workflow.bps.profile.manager.host'/></td>
                         <td>
                             <input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_MANAGER_HOST%>"
-                                   value="<%=bpsProfile.getManagerHostURL()%>" maxlength="255"
+                                   value='<%=Encode.forHtml(bpsProfile.getManagerHostURL())%>' maxlength="255"
                                    black-list-patterns="^(\s*)$"
                                    label="<fmt:message key='workflow.bps.profile.manager.host'/>"
                                    style="width:50%" class="text-box-big"/>
@@ -141,7 +143,7 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.worker.host'/></td>
                         <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
-                                   value="<%=bpsProfile.getWorkerHostURL()%>" maxlength="255"
+                                   value='<%=Encode.forHtml(bpsProfile.getWorkerHostURL())%>' maxlength="255"
                                    black-list-patterns="^(\s*)$"
                                    label="<fmt:message key='workflow.bps.profile.worker.host'/>"
                                    style="width:60%" class="text-box-big"/>
@@ -153,7 +155,7 @@
                     <tr>
                         <td width="30%"><fmt:message key='workflow.bps.profile.auth.user'/></td>
                         <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_USER%>"
-                                   value="<%=bpsProfile.getUsername()%>" maxlength="45"
+                                   value='<%=Encode.forHtml(bpsProfile.getUsername())%>' maxlength="45"
                                    black-list-patterns="^(\s*)$"
                                    label="<fmt:message key='workflow.bps.profile.auth.user'/>"
                                    style="width:60%" class="text-box-big"/></td>

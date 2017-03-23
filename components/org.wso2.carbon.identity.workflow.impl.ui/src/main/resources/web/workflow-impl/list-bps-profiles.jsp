@@ -10,6 +10,7 @@
 <%@ page import="org.wso2.carbon.utils.ServerConstants" %>
 <%@ page import="java.util.ResourceBundle" %>
 <%@ page import="org.wso2.carbon.identity.workflow.impl.stub.bean.BPSProfile" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%--
   ~ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
   ~
@@ -128,11 +129,13 @@
                 });
             }
 
-            CARBON.showConfirmationDialog('<fmt:message key="confirmation.bpel.profile.delete"/> ' + profileName + '?',
+            CARBON.showConfirmationDialog('<fmt:message key="confirmation.bpel.profile.delete"/> ' +
+                            encodeURIComponent(profileName) + '?',
                     doDelete, null);
         }
         function editProfile(profileName){
-            location.href = 'update-bps-profile.jsp?<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>='+  profileName;
+            location.href = 'update-bps-profile.jsp?<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>='+
+                    encodeURIComponent(profileName);
         }
     </script>
 
@@ -159,13 +162,13 @@
 
                 %>
                 <tr>
-                    <td><%=profile.getProfileName()%>
+                    <td><%=Encode.forHtmlContent(profile.getProfileName())%>
                     </td>
-                    <td><%=profile.getManagerHostURL()%>
+                    <td><%=Encode.forHtmlContent(profile.getManagerHostURL())%>
                     </td>
-                    <td><%=profile.getWorkerHostURL()%>
+                    <td><%=Encode.forHtmlContent(profile.getWorkerHostURL())%>
                     </td>
-                    <td><%=profile.getUsername()%>
+                    <td><%=Encode.forHtmlContent(profile.getUsername())%>
                     </td>
                     <td>
                         <%
@@ -173,13 +176,13 @@
                                 if (CarbonUIUtil.isUserAuthorized(request,"/permission/admin/manage/identity/workflow/profile/update")){
                         %>
                         <a title="<fmt:message key='workflow.bps.profile.edit.title'/>"
-                           onclick="editProfile('<%=profile.getProfileName()%>');return false;"
+                           onclick="editProfile('<%=Encode.forJavaScript(profile.getProfileName())%>');return false;"
                            href="#" style="background-image: url(images/edit.gif);"
                            class="icon-link"><fmt:message key='edit'/></a>
                         <%}
                         if(CarbonUIUtil.isUserAuthorized(request,"/permission/admin/manage/identity/workflow/profile/delete")) { %>
                         <a title="<fmt:message key='workflow.bps.profile.delete.title'/>"
-                           onclick="removeProfile('<%=profile.getProfileName()%>');return false;"
+                           onclick="removeProfile('<%=Encode.forJavaScript(profile.getProfileName())%>');return false;"
                            href="#" style="background-image: url(images/delete.gif);"
                            class="icon-link"><fmt:message key='delete'/></a>
                         <%

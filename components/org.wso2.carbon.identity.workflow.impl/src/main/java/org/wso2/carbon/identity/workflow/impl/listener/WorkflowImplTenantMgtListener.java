@@ -51,11 +51,12 @@ public class WorkflowImplTenantMgtListener implements TenantMgtListener {
                     .addBPSProfile(bpsProfileDTO, tenantInfoBean
                             .getTenantId());
 
-        }catch (WorkflowImplException e) {
+        } catch (WorkflowImplException e) {
             //This is not thrown exception because this is not blocked to the other functionality. User can create
             // default profile by manually.
-            String errorMsg = "Error occured while adding default bps profile, " + e.getMessage();
-            log.error(errorMsg);
+            String errorMsg = "Error occurred while adding default bps profile for tenant: " + tenantInfoBean
+                    .getTenantDomain();
+            log.error(errorMsg, e);
         }
 
     }

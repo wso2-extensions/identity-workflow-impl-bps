@@ -28,6 +28,7 @@ import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.workflow.impl.bean.BPSProfile;
 import org.wso2.carbon.identity.workflow.impl.internal.WorkflowImplServiceDataHolder;
 import org.wso2.carbon.identity.workflow.impl.util.WorkflowDeployerClient;
+import org.wso2.carbon.identity.workflow.impl.util.WorkflowImplUtils;
 import org.wso2.carbon.identity.workflow.mgt.bean.Parameter;
 import org.wso2.carbon.identity.workflow.mgt.exception.WorkflowRuntimeException;
 import org.wso2.carbon.identity.workflow.mgt.util.WFConstant;
@@ -143,8 +144,8 @@ public class BPELDeployer implements TemplateInitializer {
 
         WorkflowDeployerClient workflowDeployerClient;
         if (bpsProfile.getProfileName().equals(WFImplConstant.DEFAULT_BPS_PROFILE_NAME)) {
-            workflowDeployerClient = new WorkflowDeployerClient(bpsProfile.getManagerHostURL(),
-                    bpsProfile.getUsername());
+            workflowDeployerClient = new WorkflowDeployerClient(WorkflowImplUtils.getServerURL(),
+                                                                bpsProfile.getUsername());
         } else {
             workflowDeployerClient = new WorkflowDeployerClient(bpsProfile.getManagerHostURL(),
                     bpsProfile.getUsername(), bpsProfile.getPassword());

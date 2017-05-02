@@ -26,12 +26,7 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.databinding.types.NCName;
 import org.apache.axis2.databinding.types.URI;
-import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.axis2.java.security.SSLProtocolSocketFactory;
-import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HttpTransportProperties;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.humantask.stub.types.TSimpleQueryInput;
@@ -42,14 +37,11 @@ import org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalArgumentFault;
 import org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalOperationFault;
 import org.wso2.carbon.humantask.stub.ui.task.client.api.IllegalStateFault;
 import org.wso2.carbon.identity.workflow.impl.WFImplConstant;
-import org.wso2.carbon.identity.workflow.impl.WorkflowImplException;
-import org.wso2.carbon.identity.workflow.impl.internal.WorkflowImplServiceDataHolder;
-import org.wso2.carbon.utils.CarbonUtils;
 
-import javax.xml.stream.XMLStreamException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
 
 public class HumanTaskClientAPIAdminClient {
 
@@ -75,31 +67,6 @@ public class HumanTaskClientAPIAdminClient {
     public HumanTaskClientAPIAdminClient(String bpsURL, String username) throws AxisFault {
 
         stub = new HumanTaskClientAPIAdminStub(bpsURL + WFImplConstant.HT_SERVICES_URL);
-        ServiceClient serviceClient = stub._getServiceClient();
-        OMElement mutualSSLHeader;
-        try {
-            String headerString = WFImplConstant.MUTUAL_SSL_HEADER.replaceAll("\\$username", username);
-            mutualSSLHeader = AXIOMUtil.stringToOM(headerString);
-            serviceClient.addHeader(mutualSSLHeader);
-            String mgtTransport = CarbonUtils.getManagementTransport();
-            AxisConfiguration axisConfiguration = WorkflowImplServiceDataHolder.getInstance()
-                    .getConfigurationContextService().getServerConfigContext().getAxisConfiguration();
-            int mgtTransportPort = CarbonUtils.getTransportProxyPort(axisConfiguration, mgtTransport);
-            if (mgtTransportPort <= 0) {
-                mgtTransportPort = CarbonUtils.getTransportPort(axisConfiguration, mgtTransport);
-            }
-            try {
-                serviceClient.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
-                        new Protocol(mgtTransport, (ProtocolSocketFactory) new SSLProtocolSocketFactory
-                                (SSLContextFactory.getSslContext()), mgtTransportPort));
-            } catch (WorkflowImplException e) {
-                throw new AxisFault("Error while getting SSL Context for creating service client.", e);
-            }
-        } catch (XMLStreamException e) {
-            throw new AxisFault("Error while creating mutualSSLHeader XML Element.", e);
-        }
-        Options options = serviceClient.getOptions();
-        serviceClient.setOptions(options);
     }
 
     /**

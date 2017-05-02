@@ -49,6 +49,7 @@ import org.wso2.carbon.identity.workflow.impl.listener.WorkflowImplServiceListen
 import org.wso2.carbon.identity.workflow.impl.util.BPELPackageManagementServiceClient;
 import org.wso2.carbon.identity.workflow.impl.util.HumanTaskClientAPIAdminClient;
 import org.wso2.carbon.identity.workflow.impl.util.ProcessManagementServiceClient;
+import org.wso2.carbon.identity.workflow.impl.util.WorkflowImplUtils;
 import org.wso2.carbon.identity.workflow.mgt.WorkflowManagementService;
 import org.wso2.carbon.identity.workflow.mgt.bean.Parameter;
 import org.wso2.carbon.identity.workflow.mgt.bean.Workflow;
@@ -205,7 +206,8 @@ public class WorkflowImplServiceImpl implements WorkflowImplService {
 
                 if (bpsProfile.getProfileName().equals(WFImplConstant.DEFAULT_BPS_PROFILE_NAME)) {
 
-                    client = new HumanTaskClientAPIAdminClient(host, bpsProfile.getUsername());
+                    client = new HumanTaskClientAPIAdminClient(WorkflowImplUtils.getServerURL(), bpsProfile
+                            .getUsername());
                 } else {
                     client = new HumanTaskClientAPIAdminClient(host, bpsProfile.getUsername(),
                             bpsProfile.getPassword());
@@ -301,9 +303,9 @@ public class WorkflowImplServiceImpl implements WorkflowImplService {
             String host = bpsProfile.getManagerHostURL();
             if (bpsProfileName.equals(WFImplConstant.DEFAULT_BPS_PROFILE_NAME)) {
                 //If emebeded_bps, use mutual ssl authentication
-                bpsPackageClient = new BPELPackageManagementServiceClient(host, bpsProfile
+                bpsPackageClient = new BPELPackageManagementServiceClient(WorkflowImplUtils.getServerURL(), bpsProfile
                         .getUsername());
-                bpsProcessClient = new ProcessManagementServiceClient(host, bpsProfile
+                bpsProcessClient = new ProcessManagementServiceClient(WorkflowImplUtils.getServerURL(), bpsProfile
                         .getUsername());
             } else {
                 //For external BPS profiles, use password authentication

@@ -68,31 +68,6 @@ public class BPELPackageManagementServiceClient {
     public BPELPackageManagementServiceClient(String bpsURL, String username) throws AxisFault {
 
         stub = new BPELPackageManagementServiceStub(bpsURL + WFImplConstant.BPS_PACKAGE_SERVICES_URL);
-        ServiceClient serviceClient = stub._getServiceClient();
-        OMElement mutualSSLHeader;
-        try {
-            String headerString = WFImplConstant.MUTUAL_SSL_HEADER.replaceAll("\\$username", username);
-            mutualSSLHeader = AXIOMUtil.stringToOM(headerString);
-            serviceClient.addHeader(mutualSSLHeader);
-            String mgtTransport = CarbonUtils.getManagementTransport();
-            AxisConfiguration axisConfiguration = WorkflowImplServiceDataHolder.getInstance()
-                    .getConfigurationContextService().getServerConfigContext().getAxisConfiguration();
-            int mgtTransportPort = CarbonUtils.getTransportProxyPort(axisConfiguration, mgtTransport);
-            if (mgtTransportPort <= 0) {
-                mgtTransportPort = CarbonUtils.getTransportPort(axisConfiguration, mgtTransport);
-            }
-            try {
-                serviceClient.getOptions().setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
-                        new Protocol(mgtTransport, (ProtocolSocketFactory) new SSLProtocolSocketFactory
-                                (SSLContextFactory.getSslContext()), mgtTransportPort));
-            } catch (WorkflowImplException e) {
-                throw new AxisFault("Error while getting SSL Context for creating service client.", e);
-            }
-        } catch (XMLStreamException e) {
-            throw new AxisFault("Error while creating mutualSSLHeader XML Element.", e);
-        }
-        Options options = serviceClient.getOptions();
-        serviceClient.setOptions(options);
     }
 
     /**

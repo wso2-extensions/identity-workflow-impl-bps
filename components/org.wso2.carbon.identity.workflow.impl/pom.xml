@@ -114,7 +114,7 @@
                             org.jaxen; version="${axiom.org.jaxen.imp.pkg.version.range}",
                             org.osgi.framework; version="${osgi.framework.imp.pkg.version.range}",
                             org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",
-                            org.wso2.carbon.base; version="${carbon.base.imp.pkg.version.range}",
+                            org.wso2.carbon.base.*; version="${carbon.base.imp.pkg.version.range}",
                             org.wso2.carbon.bpel.stub.upload;
                             version="${carbon.identity.workflow.impl.bps.import.version.range}",
                             org.wso2.carbon.bpel.stub.upload.types;

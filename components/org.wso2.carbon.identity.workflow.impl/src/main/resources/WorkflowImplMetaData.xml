@@ -6,13 +6,13 @@
     <met:TemplateId>MultiStepApprovalTemplate</met:TemplateId>
     <met:ParametersMetaData>
         <met:ParameterMetaData Name="BPSProfile" InputType="Select" isRequired="true" isInputDataRequired="true">
-            <met:DisplayName>BPS Profile</met:DisplayName>
+            <met:DisplayName>BPS Profile(Server Profile Name)</met:DisplayName>
         </met:ParameterMetaData>
         <met:ParameterMetaData Name="HTSubject" DataType="String" InputType="Text" isRequired="true">
-            <met:DisplayName>Task Subject</met:DisplayName>
+            <met:DisplayName>Task Subject(Approval task subject to display)</met:DisplayName>
         </met:ParameterMetaData>
         <met:ParameterMetaData Name="HTDescription" DataType="String" InputType="TextArea">
-            <met:DisplayName>Task Detail</met:DisplayName>
+            <met:DisplayName>Task Detail(Approval task description)</met:DisplayName>
         </met:ParameterMetaData>
     </met:ParametersMetaData>
 </met:WorkflowImpl>

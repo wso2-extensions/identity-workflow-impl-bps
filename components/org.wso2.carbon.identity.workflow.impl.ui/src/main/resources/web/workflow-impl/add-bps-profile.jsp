@@ -129,7 +129,8 @@
                         </td>
                         <td><input type="password" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD%>"
                                    label="<fmt:message key='workflow.bps.profile.auth.password'/>"
-                                   black-list-patterns="^(\s*)$" style="width:30%" class="text-box-big"/>
+                                   black-list-patterns="^(\s*)$" style="width:30%" class="text-box-big"
+                                   autocomplete="off"/>
                         </td>
                     </tr>
                     </tbody>

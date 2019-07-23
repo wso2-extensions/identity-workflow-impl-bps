@@ -165,19 +165,6 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-scr-plugin</artifactId>
-                    <version>${maven.scr.plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>generate-scr-scrdescriptor</id>
-                            <goals>
-                                <goal>scr</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>${maven.bundle.plugin.version}</version>
                     <extensions>true</extensions>
@@ -302,7 +289,7 @@
 
     </modules>
     <properties>
-        <carbon.kernel.version>4.5.0-m1</carbon.kernel.version>
+        <carbon.kernel.version>4.5.0-m3</carbon.kernel.version>
         <carbon.commons.version>4.7.1</carbon.commons.version>
         <commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
@@ -334,8 +321,7 @@
         <commons-lang.wso2.osgi.version.range>[2.6.0,3.0.0)</commons-lang.wso2.osgi.version.range>
         <commons-logging.osgi.version.range>[1.2.0,2.0.0)</commons-logging.osgi.version.range>
 
-        <maven.scr.plugin.version>1.7.2</maven.scr.plugin.version>
-        <maven.bundle.plugin.version>2.4.0</maven.bundle.plugin.version>
+        <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
         <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
 

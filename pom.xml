@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
-        <version>1</version>
+        <version>1.2</version>
     </parent>
 
     <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
@@ -299,13 +299,13 @@
 
         <axiom.wso2.version>1.2.11-wso2v16</axiom.wso2.version>
 
-        <identity.framework.imp.pkg.version.range>[5.13.0, 6.0.0)</identity.framework.imp.pkg.version.range>
+        <identity.framework.imp.pkg.version.range>[5.14.0, 6.0.0)</identity.framework.imp.pkg.version.range>
         <carbon.base.imp.pkg.version.range>[1.0.0, 2.0.0)</carbon.base.imp.pkg.version.range>
         <carbon.kernel.package.import.version.range>[4.5.0, 5.0.0)</carbon.kernel.package.import.version.range>
-        <carbon.identity.workflow.impl.bps.import.version.range>[5.2.0, 6.0.0)
+        <carbon.identity.workflow.impl.bps.import.version.range>[5.3.0, 6.0.0)
         </carbon.identity.workflow.impl.bps.import.version.range>
         <carbon.user.api.imp.pkg.version.range>[1.0.1, 2.0.0)</carbon.user.api.imp.pkg.version.range>
-        <carbon.commons.imp.pkg.version>[4.7.0, 5.0.0)</carbon.commons.imp.pkg.version>
+        <carbon.commons.imp.pkg.version>[4.8.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <axiom.osgi.version.range>[1.2.11, 2.0.0)</axiom.osgi.version.range>
         <axis2.osgi.version.range>[1.6.1.wso2v12, 2.0.0)</axis2.osgi.version.range>

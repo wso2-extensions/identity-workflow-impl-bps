@@ -57,7 +57,7 @@ import java.util.zip.ZipOutputStream;
 
 public class BPELDeployer implements TemplateInitializer {
 
-    private static Log log = LogFactory.getLog(BPELDeployer.class);
+    private static final Log log = LogFactory.getLog(BPELDeployer.class);
     private static final String CLASSPATH_SEPARATOR = "/";
 
     private BPSProfile bpsProfile = null;

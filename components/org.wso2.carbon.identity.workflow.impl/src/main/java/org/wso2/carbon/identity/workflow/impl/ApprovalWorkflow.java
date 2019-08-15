@@ -37,7 +37,7 @@ import java.util.List;
 
 public class ApprovalWorkflow extends AbstractWorkflow {
 
-    private static Log log = LogFactory.getLog(ApprovalWorkflow.class);
+    private static final Log log = LogFactory.getLog(ApprovalWorkflow.class);
 
     @Override
     protected InputData getInputData(ParameterMetaData parameterMetaData) throws WorkflowException {

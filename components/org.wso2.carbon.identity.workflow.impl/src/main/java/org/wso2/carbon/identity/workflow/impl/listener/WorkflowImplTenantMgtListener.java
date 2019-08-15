@@ -32,7 +32,7 @@ import org.wso2.carbon.user.core.UserCoreConstants;
 
 public class WorkflowImplTenantMgtListener implements TenantMgtListener {
 
-    private static Log log = LogFactory.getLog(WorkflowImplTenantMgtListener.class);
+    private static final Log log = LogFactory.getLog(WorkflowImplTenantMgtListener.class);
 
     @Override
     public void onTenantCreate(TenantInfoBean tenantInfoBean) throws StratosException {

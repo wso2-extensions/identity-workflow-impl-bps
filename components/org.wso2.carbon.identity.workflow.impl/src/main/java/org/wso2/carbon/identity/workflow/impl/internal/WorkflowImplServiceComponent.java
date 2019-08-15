@@ -77,7 +77,7 @@ import java.net.URISyntaxException;
  */
 public class WorkflowImplServiceComponent {
 
-    private static Log log = LogFactory.getLog(WorkflowImplServiceComponent.class);
+    private static final Log log = LogFactory.getLog(WorkflowImplServiceComponent.class);
 
     protected void activate(ComponentContext context) {
 

@@ -47,7 +47,7 @@ import java.util.List;
 
 public class RequestExecutor implements WorkFlowExecutor {
 
-    private static Log log = LogFactory.getLog(RequestExecutor.class);
+    private static final Log log = LogFactory.getLog(RequestExecutor.class);
     private static final String EXECUTOR_NAME = "BPELExecutor";
 
     private List<Parameter> parameterList;

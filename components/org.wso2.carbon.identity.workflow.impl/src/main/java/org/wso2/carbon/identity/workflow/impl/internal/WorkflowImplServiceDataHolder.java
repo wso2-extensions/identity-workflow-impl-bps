@@ -34,7 +34,7 @@ import java.util.List;
 public class WorkflowImplServiceDataHolder {
 
     private static WorkflowImplServiceDataHolder instance = new WorkflowImplServiceDataHolder();
-    private static Log log = LogFactory.getLog(WorkflowImplServiceDataHolder.class);
+    private static final Log log = LogFactory.getLog(WorkflowImplServiceDataHolder.class);
 
     private RealmService realmService;
     private ConfigurationContextService configurationContextService;

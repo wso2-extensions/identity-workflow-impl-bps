@@ -62,7 +62,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
          immediate = true)
 public class WorkflowImplServiceComponent {
 
-    private static Log log = LogFactory.getLog(WorkflowImplServiceComponent.class);
+    private static final Log log = LogFactory.getLog(WorkflowImplServiceComponent.class);
 
     @Activate
     protected void activate(ComponentContext context) {

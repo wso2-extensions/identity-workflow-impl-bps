@@ -31,7 +31,7 @@ import java.util.List;
 
 public class WorkflowImplAdminService {
 
-    private static Log log = LogFactory.getLog(WorkflowImplAdminService.class);
+    private static final Log log = LogFactory.getLog(WorkflowImplAdminService.class);
 
     /**
      * Add new BPS profile

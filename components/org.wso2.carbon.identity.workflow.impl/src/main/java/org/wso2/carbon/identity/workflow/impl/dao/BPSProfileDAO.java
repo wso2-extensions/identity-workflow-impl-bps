@@ -252,6 +252,30 @@ public class BPSProfileDAO {
         }
     }
 
+    /**
+     * Delete BPS profiles of given tenant id.
+     *
+     * @param tenantId Id of the tenant to remove BPS profiles
+     * @throws WorkflowImplException
+     */
+    public void removeBPSProfiles(int tenantId) throws WorkflowImplException {
+
+        Connection connection = IdentityDatabaseUtil.getDBConnection();
+        PreparedStatement prepStmt = null;
+        String query = SQLConstants.DELETE_BPS_PROFILES_OF_TENANT_QUERY;
+        try {
+            prepStmt = connection.prepareStatement(query);
+            prepStmt.setInt(1, tenantId);
+
+            prepStmt.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            throw new WorkflowImplException("Error when executing the sql " + query, e);
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(connection, null, prepStmt);
+        }
+    }
+
     private String encryptPassword(char[] passwordValue) throws CryptoException {
 
         CryptoUtil cryptoUtil = CryptoUtil.getDefaultCryptoUtil();

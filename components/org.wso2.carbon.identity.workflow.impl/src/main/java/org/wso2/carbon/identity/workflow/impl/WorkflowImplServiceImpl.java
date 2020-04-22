@@ -134,6 +134,12 @@ public class WorkflowImplServiceImpl implements WorkflowImplService {
 
     }
 
+    /**
+     * Remove all BPS Profiles of a given tenant id.
+     *
+     * @param tenantId Id of the tenant
+     * @throws WorkflowImplException
+     */
     @Override
     public void removeBPSProfiles(int tenantId) throws WorkflowImplException {
 

@@ -76,7 +76,9 @@ public interface WorkflowImplServiceListener {
      * @param tenantId Id of the tenant to remove BPS profiles
      * @throws WorkflowImplException
      */
-    void doPreRemoveBPSProfiles(int tenantId) throws WorkflowImplException;
+    default void doPreRemoveBPSProfiles(int tenantId) throws WorkflowImplException {
+
+    };
 
     /**
      * Trigger after removing a BPS profile
@@ -92,7 +94,9 @@ public interface WorkflowImplServiceListener {
      * @param tenantId Id of the tenant to remove BPS profiles
      * @throws WorkflowImplException
      */
-    void doPostRemoveBPSProfiles(int tenantId) throws WorkflowImplException;
+    default void doPostRemoveBPSProfiles(int tenantId) throws WorkflowImplException {
+
+    };
 
     /**
      * Trigger before retrieving a BPS profile

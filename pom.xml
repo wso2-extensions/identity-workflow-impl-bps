@@ -197,8 +197,8 @@
                 <inherited>true</inherited>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -314,7 +314,7 @@
         <commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
 
-        <carbon.identity.framework.version>5.17.43</carbon.identity.framework.version>
+        <carbon.identity.framework.version>5.17.76</carbon.identity.framework.version>
         <identity.workflow.impl.bps.export.version>${project.version}</identity.workflow.impl.bps.export.version>
 
         <axiom.wso2.version>1.2.11-wso2v16</axiom.wso2.version>

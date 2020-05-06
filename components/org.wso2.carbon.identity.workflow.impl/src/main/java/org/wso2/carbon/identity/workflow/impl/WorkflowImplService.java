@@ -57,7 +57,7 @@ public interface WorkflowImplService {
     /**
      * Remove all BPS profiles of given tenant id.
      *
-     * @param tenantId
+     * @param tenantId Id of the tenant
      * @throws WorkflowImplException
      */
     default void removeBPSProfiles(int tenantId) throws WorkflowImplException {

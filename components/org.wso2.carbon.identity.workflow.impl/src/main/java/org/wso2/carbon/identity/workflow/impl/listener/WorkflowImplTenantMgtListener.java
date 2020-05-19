@@ -102,7 +102,11 @@ public class WorkflowImplTenantMgtListener implements TenantMgtListener {
     }
 
     @Override
-    public void onPreDelete(int i) throws StratosException {
-
+    public void onPreDelete(int tenantId) throws StratosException {
+        try {
+            WorkflowImplServiceDataHolder.getInstance().getWorkflowImplService().removeBPSProfiles(tenantId);
+        } catch (WorkflowImplException e) {
+            throw new StratosException("Error occurred while deleting bps profiles of tenant: " + tenantId, e);
+        }
     }
 }

@@ -91,6 +91,17 @@ public abstract class AbstractWorkflowImplServiceListener implements WorkflowImp
     }
 
     /**
+     * Trigger before removing BPS profiles of a tenant.
+     *
+     * @param tenantId Id of the tenant to remove BPS profiles
+     * @throws WorkflowImplException
+     */
+    @Override
+    public void doPreRemoveBPSProfiles(int tenantId) throws WorkflowImplException {
+        
+    }
+
+    /**
      * Trigger after removing a BPS profile
      *
      * @param profileName Name of the BPS profile to remove
@@ -98,6 +109,17 @@ public abstract class AbstractWorkflowImplServiceListener implements WorkflowImp
      */
     @Override
     public void doPostRemoveBPSProfile(String profileName) throws WorkflowImplException {
+
+    }
+
+    /**
+     * Trigger after removing BPS profiles of a tenant.
+     *
+     * @param tenantId Id of the tenant to remove BPS profiles
+     * @throws WorkflowImplException
+     */
+    @Override
+    public void doPostRemoveBPSProfiles(int tenantId) throws WorkflowImplException {
 
     }
 

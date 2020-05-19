@@ -134,6 +134,29 @@ public class WorkflowImplServiceImpl implements WorkflowImplService {
 
     }
 
+    /**
+     * Remove all BPS Profiles of a given tenant id.
+     *
+     * @param tenantId Id of the tenant
+     * @throws WorkflowImplException
+     */
+    @Override
+    public void removeBPSProfiles(int tenantId) throws WorkflowImplException {
+
+        List<WorkflowImplServiceListener> workflowListenerList =
+                WorkflowImplServiceDataHolder.getInstance().getWorkflowListenerList();
+        for (WorkflowImplServiceListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPreRemoveBPSProfiles(tenantId);
+            }
+        }
+        bpsProfileDAO.removeBPSProfiles(tenantId);
+        for (WorkflowImplServiceListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPostRemoveBPSProfiles(tenantId);
+            }
+        }
+    }
 
     @Override
     public BPSProfile getBPSProfile(String profileName, int tenantId) throws WorkflowImplException {

@@ -71,12 +71,32 @@ public interface WorkflowImplServiceListener {
     void doPreRemoveBPSProfile(String profileName) throws WorkflowImplException;
 
     /**
+     * Trigger before removing BPS profiles of a tenant.
+     *
+     * @param tenantId Id of the tenant to remove BPS profiles
+     * @throws WorkflowImplException
+     */
+    default void doPreRemoveBPSProfiles(int tenantId) throws WorkflowImplException {
+
+    };
+
+    /**
      * Trigger after removing a BPS profile
      *
      * @param profileName Name of the BPS profile to remove
      * @throws WorkflowImplException
      */
     void doPostRemoveBPSProfile(String profileName) throws WorkflowImplException;
+
+    /**
+     * Trigger after removing BPS profiles of a tenant.
+     *
+     * @param tenantId Id of the tenant to remove BPS profiles
+     * @throws WorkflowImplException
+     */
+    default void doPostRemoveBPSProfiles(int tenantId) throws WorkflowImplException {
+
+    };
 
     /**
      * Trigger before retrieving a BPS profile

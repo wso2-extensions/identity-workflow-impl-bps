@@ -46,13 +46,7 @@
 	        importType="http://schemas.xmlsoap.org/wsdl/" />
 	
 	
-	
-	<!-- BPEL4People extension activity -->
-    <extensions>
-        <extension
-                namespace="http://docs.oasis-open.org/ns/bpel4people/bpel4people/200803"
-                mustUnderstand="yes"/>
-    </extensions>
+
 	        
     <!-- ================================================================= -->         
     <!-- PARTNERLINKS                                                      -->
@@ -301,7 +295,7 @@
       <p:outcome part="" queryLanguage="http://tempuri.org">
         <p:documentation p:lang=""></p:documentation>
       </p:outcome>
-      <p:searchBy expressionLanguage="http://tempuri.org" xsi:type="p:tExpression">
+      <p:searchBy expressionLanguage="http://tempuri.org" type="p:tExpression">
         <p:documentation p:lang=""></p:documentation>
       </p:searchBy>
       <p:renderings>

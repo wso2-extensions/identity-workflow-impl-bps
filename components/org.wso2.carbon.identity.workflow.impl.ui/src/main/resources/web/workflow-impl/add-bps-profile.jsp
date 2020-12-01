@@ -119,7 +119,7 @@
                             <span class="required">*</span>
                         </td>
                         <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_USER%>"
-                                   label="<fmt:message key='workflow.bps.profile.auth.user'/>" maxlength="45"
+                                   label="<fmt:message key='workflow.bps.profile.auth.user'/>" maxlength="75"
                                    black-list-patterns="^(\s*)$" style="width:30%" class="text-box-big"/></td>
                     </tr>
                     <tr>

@@ -123,6 +123,7 @@
                             org.wso2.carbon.humantask.stub.*;
                             version="${carbon.identity.workflow.impl.bps.import.version.range}",
                             org.wso2.carbon.identity.base; version="${identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.core;version="${identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.identity.core.util;
                             version="${identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.user.api; version="${carbon.user.api.imp.pkg.version.range}",

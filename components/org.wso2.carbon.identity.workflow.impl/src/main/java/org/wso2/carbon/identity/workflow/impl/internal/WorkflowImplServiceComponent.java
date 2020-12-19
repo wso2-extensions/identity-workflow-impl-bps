@@ -17,12 +17,17 @@
  */
 package org.wso2.carbon.identity.workflow.impl.internal;
 
+import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.MultitenantConstants;
+import org.wso2.carbon.base.api.ServerConfigurationService;
+import org.wso2.carbon.identity.core.URLBuilderException;
+import org.wso2.carbon.identity.core.util.IdentityCoreConstants;
 import org.wso2.carbon.identity.core.util.IdentityCoreInitializedEvent;
 import org.wso2.carbon.identity.core.util.IdentityIOStreamUtils;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
@@ -46,6 +51,7 @@ import org.wso2.carbon.identity.workflow.mgt.util.WorkflowManagementUtil;
 import org.wso2.carbon.identity.workflow.mgt.workflow.AbstractWorkflow;
 import org.wso2.carbon.stratos.common.listeners.TenantMgtListener;
 import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.ConfigurationContextService;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,6 +69,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 public class WorkflowImplServiceComponent {
 
     private static final Log log = LogFactory.getLog(WorkflowImplServiceComponent.class);
+    private static final String INTERNAL_DOMAIN_DEFAULT = "localhost";
 
     @Activate
     protected void activate(ComponentContext context) {
@@ -129,18 +136,20 @@ public class WorkflowImplServiceComponent {
         WorkflowImplServiceDataHolder.getInstance().setConfigurationContextService(contextService);
     }
 
-    private void addDefaultBPSProfile() {
+    private void addDefaultBPSProfile() throws URLBuilderException {
         try {
             WorkflowImplService workflowImplService = WorkflowImplServiceDataHolder.getInstance().getWorkflowImplService();
             BPSProfile currentBpsProfile = workflowImplService.getBPSProfile(WFImplConstant.DEFAULT_BPS_PROFILE_NAME, MultitenantConstants.SUPER_TENANT_ID);
-            String url = IdentityUtil.getServerURL(WorkflowImplServiceDataHolder.getInstance().getConfigurationContextService().getServerConfigContext().getServicePath(), true, true);
+            String url = buildDefaultBPSServerUrl();
             String userName = WorkflowImplServiceDataHolder.getInstance().getRealmService().getBootstrapRealmConfiguration().getAdminUserName();
+            String password = WorkflowImplServiceDataHolder.getInstance().getRealmService()
+                    .getBootstrapRealmConfiguration().getAdminPassword();
             if (currentBpsProfile == null || !currentBpsProfile.getWorkerHostURL().equals(url) || !currentBpsProfile.getUsername().equals(userName)) {
                 BPSProfile bpsProfileDTO = new BPSProfile();
                 bpsProfileDTO.setManagerHostURL(url);
                 bpsProfileDTO.setWorkerHostURL(url);
                 bpsProfileDTO.setUsername(userName);
-                bpsProfileDTO.setPassword(new char[0]);
+                bpsProfileDTO.setPassword(password.toCharArray());
                 bpsProfileDTO.setProfileName(WFImplConstant.DEFAULT_BPS_PROFILE_NAME);
                 if (currentBpsProfile == null) {
                     workflowImplService.addBPSProfile(bpsProfileDTO, MultitenantConstants.SUPER_TENANT_ID);
@@ -205,6 +214,58 @@ public class WorkflowImplServiceComponent {
 
     protected void unsetWorkflowImplServiceListener(WorkflowImplServiceListener workflowListener) {
         WorkflowImplServiceDataHolder.getInstance().getWorkflowListenerList().remove(workflowListener);
+    }
+
+    @Reference(
+            name = "server.configuration.service",
+            service = ServerConfigurationService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetServerConfigurationService"
+    )
+    protected void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        if (log.isDebugEnabled()) {
+            log.debug("Set the ServerConfiguration Service");
+        }
+        WorkflowImplServiceDataHolder.getInstance().setServerConfigurationService(serverConfigurationService);
+    }
+
+    protected void unsetServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        if (log.isDebugEnabled()) {
+            log.debug("Unset the ServerConfiguration Service");
+        }
+        WorkflowImplServiceDataHolder.getInstance().setServerConfigurationService(null);
+    }
+
+    private String buildDefaultBPSServerUrl() {
+
+        String internalHostName = IdentityUtil.getProperty(IdentityCoreConstants.SERVER_HOST_NAME);
+        if (StringUtils.isBlank(internalHostName)) {
+            if (log.isDebugEnabled()) {
+                log.debug("'ServerHostName' property not configured in identity.xml.");
+            }
+            return INTERNAL_DOMAIN_DEFAULT;
+        }
+
+        internalHostName = internalHostName.trim();
+        if (internalHostName.endsWith("/")) {
+            internalHostName = internalHostName.substring(0, internalHostName.length() - 1);
+        }
+
+        String mgtTransport = CarbonUtils.getManagementTransport();
+        AxisConfiguration axisConfiguration = WorkflowImplServiceDataHolder.getInstance().getConfigurationContextService().
+                getServerConfigContext().getAxisConfiguration();
+        int transportPort = CarbonUtils.getTransportPort(axisConfiguration, mgtTransport);
+        StringBuilder serverUrl = (new StringBuilder(mgtTransport)).append("://").append(internalHostName.toLowerCase());
+        if (transportPort != 443) {
+            serverUrl.append(":").append(transportPort);
+        }
+
+        if (serverUrl.toString().endsWith("/")) {
+            serverUrl.setLength(serverUrl.length() - 1);
+        }
+        serverUrl.append("/services");
+        return serverUrl.toString();
     }
 }
 

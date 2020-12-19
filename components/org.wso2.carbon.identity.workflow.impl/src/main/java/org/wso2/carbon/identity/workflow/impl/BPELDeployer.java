@@ -145,7 +145,7 @@ public class BPELDeployer implements TemplateInitializer {
         WorkflowDeployerClient workflowDeployerClient;
         if (bpsProfile.getProfileName().equals(WFImplConstant.DEFAULT_BPS_PROFILE_NAME)) {
             workflowDeployerClient = new WorkflowDeployerClient(WorkflowImplUtils.getServerURL(),
-                                                                bpsProfile.getUsername());
+                                                                bpsProfile.getUsername(), bpsProfile.getPassword());
         } else {
             workflowDeployerClient = new WorkflowDeployerClient(bpsProfile.getManagerHostURL(),
                     bpsProfile.getUsername(), bpsProfile.getPassword());

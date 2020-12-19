@@ -327,9 +327,9 @@ public class WorkflowImplServiceImpl implements WorkflowImplService {
             if (bpsProfileName.equals(WFImplConstant.DEFAULT_BPS_PROFILE_NAME)) {
                 //If emebeded_bps, use mutual ssl authentication
                 bpsPackageClient = new BPELPackageManagementServiceClient(WorkflowImplUtils.getServerURL(), bpsProfile
-                        .getUsername());
+                        .getUsername(), bpsProfile.getPassword());
                 bpsProcessClient = new ProcessManagementServiceClient(WorkflowImplUtils.getServerURL(), bpsProfile
-                        .getUsername());
+                        .getUsername(), bpsProfile.getPassword());
             } else {
                 //For external BPS profiles, use password authentication
                 bpsPackageClient = new BPELPackageManagementServiceClient(host, bpsProfile

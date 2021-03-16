@@ -24,31 +24,60 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
+import org.wso2.carbon.identity.mgt.IdentityMgtConfigException;
+import org.wso2.carbon.identity.mgt.IdentityMgtServiceException;
+import org.wso2.carbon.identity.mgt.NotificationSender;
+import org.wso2.carbon.identity.mgt.NotificationSendingModule;
+import org.wso2.carbon.identity.mgt.config.Config;
+import org.wso2.carbon.identity.mgt.config.ConfigBuilder;
+import org.wso2.carbon.identity.mgt.config.ConfigType;
+import org.wso2.carbon.identity.mgt.config.StorageType;
+import org.wso2.carbon.identity.mgt.dto.NotificationDataDTO;
+import org.wso2.carbon.identity.mgt.mail.DefaultEmailSendingModule;
+import org.wso2.carbon.identity.mgt.mail.Notification;
+import org.wso2.carbon.identity.mgt.mail.NotificationBuilder;
+import org.wso2.carbon.identity.mgt.mail.NotificationData;
 import org.wso2.carbon.identity.workflow.impl.bean.BPSProfile;
 import org.wso2.carbon.identity.workflow.impl.internal.WorkflowImplServiceDataHolder;
 import org.wso2.carbon.identity.workflow.impl.util.WorkflowRequestBuilder;
 import org.wso2.carbon.identity.workflow.mgt.bean.Parameter;
+import org.wso2.carbon.identity.workflow.mgt.bean.RequestParameter;
 import org.wso2.carbon.identity.workflow.mgt.dto.WorkflowRequest;
 import org.wso2.carbon.identity.workflow.mgt.exception.InternalWorkflowException;
 import org.wso2.carbon.identity.workflow.mgt.exception.WorkflowException;
 import org.wso2.carbon.identity.workflow.mgt.util.WFConstant;
 import org.wso2.carbon.identity.workflow.mgt.util.WorkflowManagementUtil;
 import org.wso2.carbon.identity.workflow.mgt.workflow.WorkFlowExecutor;
+import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.core.UserStoreManager;
+import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RequestExecutor implements WorkFlowExecutor {
 
     private static final Log log = LogFactory.getLog(RequestExecutor.class);
     private static final String EXECUTOR_NAME = "BPELExecutor";
+    private static final String DEFAULT_MANAGER_CLAIM = "http://wso2.org/claims/managers";
+    private static final String WORK_FLOW_MANAGER_CLAIM = "WorkFlowManagerClaimConfig";
+    public static final String AXIS2 = "axis2.xml";
+    public static final String AXIS2_FILE = "repository/conf/axis2/axis2.xml";
+    public static final String TRANSPORT_MAILTO = "mailto";
 
     private List<Parameter> parameterList;
     private BPSProfile bpsProfile;
@@ -84,10 +113,13 @@ public class RequestExecutor implements WorkFlowExecutor {
     @Override
     public void execute(WorkflowRequest workFlowRequest) throws WorkflowException {
 
+        Map<String, String> notificationData = new HashMap<>();
         validateExecutionParams();
+        prePareForExecute(workFlowRequest, notificationData);
         OMElement requestBody = WorkflowRequestBuilder.buildXMLRequest(workFlowRequest, this.parameterList);
         try {
             callService(requestBody);
+            triggerWorkFlowNotification(notificationData);
         } catch (AxisFault axisFault) {
             throw new InternalWorkflowException("Error invoking service for request: " +
                                                 workFlowRequest.getUuid(), axisFault);
@@ -159,4 +191,155 @@ public class RequestExecutor implements WorkFlowExecutor {
 
     }
 
+    private void prePareForExecute(WorkflowRequest workFlowRequest, Map<String, String> notificationData)
+            throws WorkflowException {
+
+        RealmService realmService = WorkflowImplServiceDataHolder.getInstance().getRealmService();
+        UserStoreManager userStoreManager = null;
+        String managers = null;
+        try {
+            UserRealm userRealm = realmService.getUserRealm(realmService.getBootstrapRealmConfiguration());
+            userStoreManager = (UserStoreManager) userRealm.getUserStoreManager();
+        } catch (org.wso2.carbon.user.api.UserStoreException e) {
+            log.error(e);
+            throw new WorkflowException("User Store Error occurred.", e);
+        }
+        List<RequestParameter> requestParameters = workFlowRequest.getRequestParameters();
+        for (RequestParameter requestParameter : requestParameters) {
+            if (userStoreManager != null && "Username".equalsIgnoreCase(requestParameter.getName())) {
+                try {
+                    if (requestParameter.getValue() != null &&
+                            userStoreManager.isExistingUser(String.valueOf(requestParameter.getValue()))) {
+                        managers = userStoreManager.getUserClaimValue(String.valueOf(requestParameter.getValue()),
+                                getWorkFlowManagerClaimConfig(), null);
+                        notificationData.put("managers", managers);
+                        notificationData.put("target", String.valueOf(requestParameter.getValue()));
+                    }
+                } catch (org.wso2.carbon.user.api.UserStoreException e) {
+                    throw new WorkflowException("User Store error occurred.", e);
+                }
+            }
+        }
+        boolean switchApprovalManagerDone = false;
+        if (StringUtils.isNotBlank(managers)) {
+            for (Parameter parameter : this.parameterList) {
+                if (!switchApprovalManagerDone &&
+                        parameter.getParamName().equals(WFImplConstant.ParameterName.STEPS_USER_AND_ROLE)) {
+                    String[] key = parameter.getqName().split("-");
+                    String step = key[2];
+                    String value = parameter.getParamValue();
+                    if (StringUtils.isNotBlank(value)) {
+                        String stepName = WFImplConstant.ParameterName.STEPS_USER_AND_ROLE + "-step-" + step + "-users";
+                        if (stepName.equals(parameter.getqName())) {
+                            parameter.setParamValue(managers);
+                            switchApprovalManagerDone = true;
+                        }
+                    }
+                } else if (switchApprovalManagerDone) {
+                    String qName = parameter.getqName();
+                    if (StringUtils.isNotBlank(qName) &&
+                            qName.contains(WFImplConstant.ParameterName.STEPS_USER_AND_ROLE)) {
+                        this.parameterList.remove(parameter);
+                    }
+                }
+            }
+        }
+    }
+
+    private String getWorkFlowManagerClaimConfig() {
+
+        String workFlowManagerClaim = IdentityUtil.getProperty(
+                WORK_FLOW_MANAGER_CLAIM);
+        if (StringUtils.isBlank(workFlowManagerClaim)) {
+            workFlowManagerClaim =
+                    DEFAULT_MANAGER_CLAIM;
+        }
+        return workFlowManagerClaim;
+    }
+
+   /**
+     * Trigger event after initiating the workflow.
+     */
+    private void triggerWorkFlowNotification(Map<String, String> notificationInfo)
+            throws WorkflowException {
+
+        String[] managers = StringUtils.split(notificationInfo.get("managers"), ',');
+        String target = notificationInfo.get("target");
+        RealmService realmService = WorkflowImplServiceDataHolder.getInstance().getRealmService();
+        UserStoreManager userStoreManager = null;
+        UserRealm userRealm = null;
+        try {
+            userRealm = realmService.getUserRealm(realmService.getBootstrapRealmConfiguration());
+            userStoreManager = (UserStoreManager) userRealm.getUserStoreManager();
+        } catch (Exception e) {
+            log.error(e);
+            throw new WorkflowException("User Store error occurred.", e);
+        }
+        for (String manager : managers) {
+            String email = null;
+            if (userStoreManager != null && StringUtils.isNotBlank(manager)) {
+                try {
+                    if (userStoreManager.isExistingUser(manager)) {
+                        email = userStoreManager.getUserClaimValue(manager, "http://wso2.org/claims/emailaddress", null);
+                    }
+                } catch (org.wso2.carbon.user.api.UserStoreException e) {
+                    log.error(e);
+                    throw new WorkflowException("User Store error occurred.", e);
+                }
+            }
+            try {
+                System.setProperty(AXIS2, AXIS2_FILE);
+                ConfigurationContext configurationContext =
+                        ConfigurationContextFactory
+                                .createConfigurationContextFromFileSystem((String) null, (String) null);
+                if (configurationContext.getAxisConfiguration().getTransportsOut()
+                        .containsKey(TRANSPORT_MAILTO) && StringUtils.isNotBlank(email)) {
+                    NotificationSender notificationSender = new NotificationSender();
+                    NotificationDataDTO notificationData = new NotificationDataDTO();
+                    Notification emailNotification = null;
+                    NotificationData emailNotificationData = new NotificationData();
+                    ConfigBuilder configBuilder = ConfigBuilder.getInstance();
+                    String tenantDomain = MultitenantUtils.getTenantDomain(manager);
+                    int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+                    String emailTemplate;
+                    Config config;
+                    try {
+                        config = configBuilder.loadConfiguration(ConfigType.EMAIL, StorageType.REGISTRY, tenantId);
+                    } catch (IdentityMgtConfigException e) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Error occurred while loading email templates for user : " + target, e);
+                        }
+                        throw new WorkflowException("Error occurred while loading email templates for user : "
+                                + manager, e);
+                    }
+                    emailNotificationData.setTagData("Manager", manager);
+                    emailNotificationData.setTagData("Target", target);
+                    emailNotificationData.setSendTo(email);
+                    emailTemplate = config.getProperty("WorkFlowApprovalNotification");
+                    try {
+                        emailNotification = NotificationBuilder.createNotification("EMAIL", emailTemplate,
+                                emailNotificationData);
+                    } catch (IdentityMgtServiceException e) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Error occurred while creating notification from email template : "
+                                    + emailTemplate, e);
+                        }
+                        throw new WorkflowException("Error occurred while creating notification from " +
+                                "email template : " + emailTemplate, e);
+                    }
+                    notificationData.setNotificationAddress(email);
+                    NotificationSendingModule module = new DefaultEmailSendingModule();
+                    module.setNotificationData(notificationData);
+                    module.setNotification(emailNotification);
+                    notificationSender.sendNotification(module);
+                    notificationData.setNotificationSent(true);
+                } else {
+                    throw new WorkflowException("MAILTO transport sender is not defined in axis2 " +
+                            "configuration file");
+                }
+            } catch (AxisFault axisFault) {
+                throw new WorkflowException("Error while getting the SMTP configuration");
+            }
+        }
+    }
 }

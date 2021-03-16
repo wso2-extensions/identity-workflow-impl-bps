@@ -23,6 +23,9 @@
         <relativePath>../../pom.xml</relativePath>
         <version>5.4.2</version>
     </parent>
+    <properties>
+        <carbon.identity.package.import.version.range>[5.0.0, 6.0.0)</carbon.identity.package.import.version.range>
+    </properties>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.identity.workflow.impl</artifactId>
@@ -66,6 +69,12 @@
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.workflow.mgt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity</groupId>
+            <artifactId>org.wso2.carbon.identity.mgt</artifactId>
+            <version>5.0.7</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.commons</groupId>
@@ -129,6 +138,7 @@
                             org.wso2.carbon.user.core.service; version="${carbon.kernel.package.import.version.range}",
                             org.wso2.carbon.user.core.tenant; version="${carbon.kernel.package.import.version.range}",
                             org.wso2.carbon.user.core.util; version="${carbon.kernel.package.import.version.range}",
+                            org.wso2.carbon.user.core; version="${carbon.kernel.package.import.version.range}",
                             org.wso2.carbon.utils; version="${carbon.kernel.package.import.version.range}",
                             org.wso2.carbon.stratos.common.*; version="${carbon.commons.imp.pkg.version}",
                             org.wso2.carbon.core.util; version="${carbon.kernel.package.import.version.range}",
@@ -138,8 +148,8 @@
                             org.wso2.carbon.humantask.deployer; resolution:=optional,
                             org.wso2.carbon; version="${carbon.kernel.package.import.version.range}",
                             org.apache.axiom.om.util; version="${axiom.osgi.version.range}"
-
                         </Import-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.workflow.impl.internal,
                             !org.wso2.carbon.identity.workflow.mgt.bps.stub.*,

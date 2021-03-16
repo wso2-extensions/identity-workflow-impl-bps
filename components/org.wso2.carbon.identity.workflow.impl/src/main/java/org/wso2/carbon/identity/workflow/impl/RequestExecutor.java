@@ -365,7 +365,7 @@ public class RequestExecutor implements WorkFlowExecutor {
         try {
             ln = new LdapName(managerDn);
         } catch (InvalidNameException e) {
-            throw new UserStoreException(e);
+            throw new UserStoreException("Error while extracting manager RDN from DN.", e);
         }
         int lastIndex = (ln.getRdns()).size() - 1;
         String managerRdnValue = ln.getRdn(lastIndex).getValue().toString();
@@ -376,7 +376,7 @@ public class RequestExecutor implements WorkFlowExecutor {
         if (managerCandidates != null && managerCandidates.length > 0) {
             return managerCandidates[0];
         } else {
-            throw new UserStoreException();
+            throw new UserStoreException("Couldn't find any managers for this user.");
         }
     }
 

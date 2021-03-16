@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.mgt.IdentityMgtConfigException;
 import org.wso2.carbon.identity.mgt.IdentityMgtServiceException;
@@ -58,22 +58,30 @@ import org.wso2.carbon.identity.workflow.mgt.exception.WorkflowException;
 import org.wso2.carbon.identity.workflow.mgt.util.WFConstant;
 import org.wso2.carbon.identity.workflow.mgt.util.WorkflowManagementUtil;
 import org.wso2.carbon.identity.workflow.mgt.workflow.WorkFlowExecutor;
+import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.wso2.carbon.user.core.UserStoreConfigConstants.DOMAIN_NAME;
 
 public class RequestExecutor implements WorkFlowExecutor {
 
     private static final Log log = LogFactory.getLog(RequestExecutor.class);
     private static final String EXECUTOR_NAME = "BPELExecutor";
     private static final String DEFAULT_MANAGER_CLAIM = "http://wso2.org/claims/managers";
+    private static final String MANAGER_RDN_CLAIM = "http://wso2.org/claims/managerRDN";
+
     private static final String WORK_FLOW_MANAGER_CLAIM = "WorkFlowManagerClaimConfig";
     public static final String AXIS2 = "axis2.xml";
     public static final String AXIS2_FILE = "repository/conf/axis2/axis2.xml";
@@ -115,7 +123,7 @@ public class RequestExecutor implements WorkFlowExecutor {
 
         Map<String, String> notificationData = new HashMap<>();
         validateExecutionParams();
-        prePareForExecute(workFlowRequest, notificationData);
+        prepareForExecute(workFlowRequest, notificationData);
         OMElement requestBody = WorkflowRequestBuilder.buildXMLRequest(workFlowRequest, this.parameterList);
         try {
             callService(requestBody);
@@ -191,14 +199,16 @@ public class RequestExecutor implements WorkFlowExecutor {
 
     }
 
-    private void prePareForExecute(WorkflowRequest workFlowRequest, Map<String, String> notificationData)
+    private void prepareForExecute(WorkflowRequest workFlowRequest, Map<String, String> notificationData)
             throws WorkflowException {
 
+        String initiator = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+        int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
         RealmService realmService = WorkflowImplServiceDataHolder.getInstance().getRealmService();
-        UserStoreManager userStoreManager = null;
-        String managers = null;
+        UserStoreManager userStoreManager;
+        String manager = null;
         try {
-            UserRealm userRealm = realmService.getUserRealm(realmService.getBootstrapRealmConfiguration());
+            UserRealm userRealm = realmService.getTenantUserRealm(tenantId);
             userStoreManager = (UserStoreManager) userRealm.getUserStoreManager();
         } catch (org.wso2.carbon.user.api.UserStoreException e) {
             log.error(e);
@@ -208,11 +218,11 @@ public class RequestExecutor implements WorkFlowExecutor {
         for (RequestParameter requestParameter : requestParameters) {
             if (userStoreManager != null && "Username".equalsIgnoreCase(requestParameter.getName())) {
                 try {
-                    if (requestParameter.getValue() != null &&
-                            userStoreManager.isExistingUser(String.valueOf(requestParameter.getValue()))) {
-                        managers = userStoreManager.getUserClaimValue(String.valueOf(requestParameter.getValue()),
+                    if (requestParameter.getValue() != null) {
+                        String managerDn = userStoreManager.getUserClaimValue(initiator,
                                 getWorkFlowManagerClaimConfig(), null);
-                        notificationData.put("managers", managers);
+                        manager = getManger(managerDn, initiator, tenantId);
+                        notificationData.put("managers", manager);
                         notificationData.put("target", String.valueOf(requestParameter.getValue()));
                     }
                 } catch (org.wso2.carbon.user.api.UserStoreException e) {
@@ -221,7 +231,7 @@ public class RequestExecutor implements WorkFlowExecutor {
             }
         }
         boolean switchApprovalManagerDone = false;
-        if (StringUtils.isNotBlank(managers)) {
+        if (StringUtils.isNotBlank(manager)) {
             for (Parameter parameter : this.parameterList) {
                 if (!switchApprovalManagerDone &&
                         parameter.getParamName().equals(WFImplConstant.ParameterName.STEPS_USER_AND_ROLE)) {
@@ -231,7 +241,7 @@ public class RequestExecutor implements WorkFlowExecutor {
                     if (StringUtils.isNotBlank(value)) {
                         String stepName = WFImplConstant.ParameterName.STEPS_USER_AND_ROLE + "-step-" + step + "-users";
                         if (stepName.equals(parameter.getqName())) {
-                            parameter.setParamValue(managers);
+                            parameter.setParamValue(manager);
                             switchApprovalManagerDone = true;
                         }
                     }
@@ -263,13 +273,14 @@ public class RequestExecutor implements WorkFlowExecutor {
     private void triggerWorkFlowNotification(Map<String, String> notificationInfo)
             throws WorkflowException {
 
+        int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId();
         String[] managers = StringUtils.split(notificationInfo.get("managers"), ',');
         String target = notificationInfo.get("target");
         RealmService realmService = WorkflowImplServiceDataHolder.getInstance().getRealmService();
-        UserStoreManager userStoreManager = null;
-        UserRealm userRealm = null;
+        UserStoreManager userStoreManager;
+        UserRealm userRealm;
         try {
-            userRealm = realmService.getUserRealm(realmService.getBootstrapRealmConfiguration());
+            userRealm = realmService.getTenantUserRealm(tenantId);
             userStoreManager = (UserStoreManager) userRealm.getUserStoreManager();
         } catch (Exception e) {
             log.error(e);
@@ -291,7 +302,7 @@ public class RequestExecutor implements WorkFlowExecutor {
                 System.setProperty(AXIS2, AXIS2_FILE);
                 ConfigurationContext configurationContext =
                         ConfigurationContextFactory
-                                .createConfigurationContextFromFileSystem((String) null, (String) null);
+                                .createConfigurationContextFromFileSystem(null, null);
                 if (configurationContext.getAxisConfiguration().getTransportsOut()
                         .containsKey(TRANSPORT_MAILTO) && StringUtils.isNotBlank(email)) {
                     NotificationSender notificationSender = new NotificationSender();
@@ -299,8 +310,6 @@ public class RequestExecutor implements WorkFlowExecutor {
                     Notification emailNotification = null;
                     NotificationData emailNotificationData = new NotificationData();
                     ConfigBuilder configBuilder = ConfigBuilder.getInstance();
-                    String tenantDomain = MultitenantUtils.getTenantDomain(manager);
-                    int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
                     String emailTemplate;
                     Config config;
                     try {
@@ -341,5 +350,52 @@ public class RequestExecutor implements WorkFlowExecutor {
                 throw new WorkflowException("Error while getting the SMTP configuration");
             }
         }
+    }
+
+    private String getManger(String managerDn, String initiator, int tenantId) throws UserStoreException {
+
+        RealmConfiguration realmConfig = getInitiatorRealmConfig(initiator, tenantId);
+        LdapName ln;
+        try {
+            ln = new LdapName(managerDn);
+        } catch (InvalidNameException e) {
+            throw new UserStoreException(e);
+        }
+        int lastIndex = (ln.getRdns()).size() - 1;
+        String managerRdnValue = ln.getRdn(lastIndex).getValue().toString();
+
+        RealmService realmService = WorkflowImplServiceDataHolder.getInstance().getRealmService();
+        UserStoreManager userStoreManager = realmService.getUserRealm(realmConfig).getUserStoreManager();
+        String[] managerCandidates = userStoreManager.getUserList(MANAGER_RDN_CLAIM, managerRdnValue, null);
+        if (managerCandidates != null && managerCandidates.length > 0) {
+            return managerCandidates[0];
+        } else {
+            throw new UserStoreException();
+        }
+    }
+
+    private RealmConfiguration getInitiatorRealmConfig(String initiator, int tenantId) throws UserStoreException {
+
+        RealmConfiguration realmConfig;
+        List<RealmConfiguration> realmConfigurations = new ArrayList<>();
+        // Add PRIMARY user store
+        realmConfig = WorkflowImplServiceDataHolder.getInstance().getRealmService().getTenantUserRealm(tenantId)
+                .getRealmConfiguration();
+        realmConfigurations.add(realmConfig);
+        do {
+            // Check for the tenant's secondary user stores
+            realmConfig = realmConfig.getSecondaryRealmConfig();
+            if (realmConfig != null) {
+                realmConfigurations.add(realmConfig);
+            }
+        } while (realmConfig != null);
+
+        String userStoreDomain = UserCoreUtil.extractDomainFromName(initiator);
+        for (RealmConfiguration entry : realmConfigurations) {
+            if (entry.getUserStoreProperties().get(DOMAIN_NAME).equalsIgnoreCase(userStoreDomain)) {
+                return entry;
+            }
+        }
+        return null;
     }
 }

@@ -82,6 +82,7 @@ public class RequestExecutor implements WorkFlowExecutor {
     private static final String DEFAULT_MANAGER_CLAIM = "http://wso2.org/claims/managers";
     private static final String MANAGER_RDN_CLAIM = "http://wso2.org/claims/managerRDN";
 
+
     private static final String WORK_FLOW_MANAGER_CLAIM = "WorkFlowManagerClaimConfig";
     public static final String AXIS2 = "axis2.xml";
     public static final String AXIS2_FILE = "repository/conf/axis2/axis2.xml";
@@ -304,7 +305,12 @@ public class RequestExecutor implements WorkFlowExecutor {
                         ConfigurationContextFactory
                                 .createConfigurationContextFromFileSystem(null, null);
                 if (configurationContext.getAxisConfiguration().getTransportsOut()
-                        .containsKey(TRANSPORT_MAILTO) && StringUtils.isNotBlank(email)) {
+                        .containsKey(TRANSPORT_MAILTO)) {
+                    if (!StringUtils.isNotBlank(email)) {
+                        log.error("Notification will not be triggered as the manager does not have configured the " +
+                                "email" +
+                                " address in his/her profile.");
+                    }
                     NotificationSender notificationSender = new NotificationSender();
                     NotificationDataDTO notificationData = new NotificationDataDTO();
                     Notification emailNotification = null;

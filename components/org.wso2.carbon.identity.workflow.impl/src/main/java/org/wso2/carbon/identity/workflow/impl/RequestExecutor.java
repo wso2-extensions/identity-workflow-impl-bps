@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static org.wso2.carbon.user.core.UserStoreConfigConstants.DOMAIN_NAME;
 
@@ -128,10 +129,14 @@ public class RequestExecutor implements WorkFlowExecutor {
         OMElement requestBody = WorkflowRequestBuilder.buildXMLRequest(workFlowRequest, this.parameterList);
         try {
             callService(requestBody);
-            triggerWorkFlowNotification(notificationData);
         } catch (AxisFault axisFault) {
             throw new InternalWorkflowException("Error invoking service for request: " +
-                                                workFlowRequest.getUuid(), axisFault);
+                    workFlowRequest.getUuid(), axisFault);
+        }
+        try {
+            triggerWorkFlowNotification(notificationData);
+        } catch (WorkflowException workflowException) {
+            log.error("Error occurred while sending the email notification.", workflowException);
         }
     }
 
@@ -231,28 +236,24 @@ public class RequestExecutor implements WorkFlowExecutor {
                 }
             }
         }
-        boolean switchApprovalManagerDone = false;
         if (StringUtils.isNotBlank(manager)) {
+            int switchingStep = Integer.MAX_VALUE;
             for (Parameter parameter : this.parameterList) {
-                if (!switchApprovalManagerDone &&
-                        parameter.getParamName().equals(WFImplConstant.ParameterName.STEPS_USER_AND_ROLE)) {
+                if (parameter.getParamName().equals(WFImplConstant.ParameterName.STEPS_USER_AND_ROLE) &&
+                        StringUtils.isNotBlank(parameter.getParamValue())) {
                     String[] key = parameter.getqName().split("-");
                     String step = key[2];
                     String value = parameter.getParamValue();
-                    if (StringUtils.isNotBlank(value)) {
+                    if (StringUtils.isNotBlank(value) && StringUtils.isNotBlank(step)) {
                         String stepName = WFImplConstant.ParameterName.STEPS_USER_AND_ROLE + "-step-" + step + "-users";
-                        if (stepName.equals(parameter.getqName())) {
-                            parameter.setParamValue(manager);
-                            switchApprovalManagerDone = true;
+                        if (stepName.equalsIgnoreCase(parameter.getqName()) && switchingStep > Integer.parseInt(step)) {
+                            switchingStep = this.parameterList.indexOf(parameter);
                         }
                     }
-                } else if (switchApprovalManagerDone) {
-                    String qName = parameter.getqName();
-                    if (StringUtils.isNotBlank(qName) &&
-                            qName.contains(WFImplConstant.ParameterName.STEPS_USER_AND_ROLE)) {
-                        this.parameterList.remove(parameter);
-                    }
                 }
+            }
+            if (switchingStep != Integer.MAX_VALUE) {
+                this.parameterList.get(switchingStep).setParamValue(manager);
             }
         }
     }
@@ -299,12 +300,17 @@ public class RequestExecutor implements WorkFlowExecutor {
                     throw new WorkflowException("User Store error occurred.", e);
                 }
             }
+            ConfigurationContext configurationContext;
             try {
                 System.setProperty(AXIS2, AXIS2_FILE);
-                ConfigurationContext configurationContext =
+                configurationContext =
                         ConfigurationContextFactory
                                 .createConfigurationContextFromFileSystem(null, null);
-                if (configurationContext.getAxisConfiguration().getTransportsOut()
+            } catch (AxisFault axisFault) {
+                throw new WorkflowException("Error while getting the SMTP configurations");
+            }
+            try {
+                if (configurationContext != null && configurationContext.getAxisConfiguration().getTransportsOut()
                         .containsKey(TRANSPORT_MAILTO)) {
                     if (!StringUtils.isNotBlank(email)) {
                         log.error("Notification will not be triggered as the manager does not have configured the " +
@@ -322,7 +328,7 @@ public class RequestExecutor implements WorkFlowExecutor {
                         config = configBuilder.loadConfiguration(ConfigType.EMAIL, StorageType.REGISTRY, tenantId);
                     } catch (IdentityMgtConfigException e) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Error occurred while loading email templates for user : " + target, e);
+                            log.error("Error occurred while loading email templates for user : " + target, e);
                         }
                         throw new WorkflowException("Error occurred while loading email templates for user : "
                                 + manager, e);
@@ -352,8 +358,10 @@ public class RequestExecutor implements WorkFlowExecutor {
                     throw new WorkflowException("MAILTO transport sender is not defined in axis2 " +
                             "configuration file");
                 }
-            } catch (AxisFault axisFault) {
-                throw new WorkflowException("Error while getting the SMTP configuration");
+            } catch (Exception e) {
+                log.error("Error occurred while sending email notification for manager : " + email + " User: "
+                                + target, e);
+                throw new WorkflowException("Unknown Error: ", e);
             }
         }
     }

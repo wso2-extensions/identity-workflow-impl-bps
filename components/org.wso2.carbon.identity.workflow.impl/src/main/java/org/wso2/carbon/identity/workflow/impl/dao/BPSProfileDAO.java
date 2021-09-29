@@ -253,6 +253,31 @@ public class BPSProfileDAO {
     }
 
     /**
+     * Delete BPS profile from a tenant
+     *
+     * @param profileName BPS profile name.
+     * @param tenantId    Tenant Id.
+     * @throws WorkflowImplException If an error occurred while deleting bps profile.
+     */
+    public void removeBPSProfile(String profileName, int tenantId) throws WorkflowImplException {
+
+        Connection connection = IdentityDatabaseUtil.getDBConnection();
+        PreparedStatement prepStmt = null;
+        String query = SQLConstants.DELETE_TENANTED_BPS_PROFILES_QUERY;
+        try {
+            prepStmt = connection.prepareStatement(query);
+            prepStmt.setString(1, profileName);
+            prepStmt.setInt(2, tenantId);
+            prepStmt.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            throw new WorkflowImplException("Error when executing the sql " + query, e);
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(connection, null, prepStmt);
+        }
+    }
+
+    /**
      * Delete BPS profiles of given tenant id.
      *
      * @param tenantId Id of the tenant to remove BPS profiles

@@ -118,6 +118,7 @@ public class WorkflowImplServiceImpl implements WorkflowImplService {
     @Override
     public void removeBPSProfile(String profileName) throws WorkflowImplException {
 
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         List<WorkflowImplServiceListener> workflowListenerList =
                 WorkflowImplServiceDataHolder.getInstance().getWorkflowListenerList();
         for (WorkflowImplServiceListener workflowListener : workflowListenerList) {
@@ -125,7 +126,7 @@ public class WorkflowImplServiceImpl implements WorkflowImplService {
                 workflowListener.doPreRemoveBPSProfile(profileName);
             }
         }
-        bpsProfileDAO.removeBPSProfile(profileName);
+        bpsProfileDAO.removeBPSProfile(profileName, tenantId);
         for (WorkflowImplServiceListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
                 workflowListener.doPostRemoveBPSProfile(profileName);

@@ -253,7 +253,7 @@ public class BPSProfileDAO {
     }
 
     /**
-     * Delete BPS profile from a tenant
+     * Delete BPS profile from a tenant.
      *
      * @param profileName BPS profile name.
      * @param tenantId    Tenant Id.
@@ -261,19 +261,20 @@ public class BPSProfileDAO {
      */
     public void removeBPSProfile(String profileName, int tenantId) throws WorkflowImplException {
 
-        Connection connection = IdentityDatabaseUtil.getDBConnection();
-        PreparedStatement prepStmt = null;
         String query = SQLConstants.DELETE_TENANTED_BPS_PROFILES_QUERY;
-        try {
-            prepStmt = connection.prepareStatement(query);
-            prepStmt.setString(1, profileName);
-            prepStmt.setInt(2, tenantId);
-            prepStmt.executeUpdate();
-            connection.commit();
+        try (Connection connection = IdentityDatabaseUtil.getDBConnection();
+             PreparedStatement prepStmt = connection.prepareStatement(query)) {
+            try {
+                prepStmt.setString(1, profileName);
+                prepStmt.setInt(2, tenantId);
+                prepStmt.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw new WorkflowImplException("Error when executing the sql " + query, e);
+            }
         } catch (SQLException e) {
             throw new WorkflowImplException("Error when executing the sql " + query, e);
-        } finally {
-            IdentityDatabaseUtil.closeAllConnections(connection, null, prepStmt);
         }
     }
 

@@ -246,7 +246,7 @@
         <commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
 
-        <carbon.identity.framework.version>5.18.197</carbon.identity.framework.version>
+        <carbon.identity.framework.version>5.20.210</carbon.identity.framework.version>
         <identity.workflow.impl.bps.export.version>${project.version}</identity.workflow.impl.bps.export.version>
 
         <axiom.wso2.version>1.2.11-wso2v16</axiom.wso2.version>

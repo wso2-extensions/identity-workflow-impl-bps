@@ -156,7 +156,7 @@
                         <td width="30%"><fmt:message key='workflow.bps.profile.auth.user'/></td>
                         <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_AUTH_USER%>"
                                    value='<%=Encode.forHtml(bpsProfile.getUsername())%>' maxlength="45"
-                                   black-list-patterns="^(\s*)$"
+                                   black-list-patterns="^(\s*)$" autocomplete="off"
                                    label="<fmt:message key='workflow.bps.profile.auth.user'/>"
                                    style="width:60%" class="text-box-big"/></td>
                     </tr>

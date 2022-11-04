@@ -86,6 +86,11 @@
                 <version>${carbon.identity.framework.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.central.log.mgt</artifactId>
+                <version>${carbon.identity.framework.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
                 <artifactId>org.wso2.carbon.identity.workflow.impl.stub</artifactId>
                 <version>${project.version}</version>
@@ -240,13 +245,13 @@
 
     </modules>
     <properties>
-        <carbon.kernel.version>4.6.0</carbon.kernel.version>
+        <carbon.kernel.version>4.9.0-m3</carbon.kernel.version>
         <carbon.kernel.feature.version>4.6.0</carbon.kernel.feature.version>
         <carbon.commons.version>4.7.11</carbon.commons.version>
         <commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
         <commons-lang.wso2.version>2.6.0.wso2v1</commons-lang.wso2.version>
 
-        <carbon.identity.framework.version>5.20.210</carbon.identity.framework.version>
+        <carbon.identity.framework.version>5.25.14</carbon.identity.framework.version>
         <identity.workflow.impl.bps.export.version>${project.version}</identity.workflow.impl.bps.export.version>
 
         <axiom.wso2.version>1.2.11-wso2v16</axiom.wso2.version>

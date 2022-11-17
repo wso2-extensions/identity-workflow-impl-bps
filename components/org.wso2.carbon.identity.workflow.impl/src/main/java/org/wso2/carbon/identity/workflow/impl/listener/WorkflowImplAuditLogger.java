@@ -22,13 +22,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.identity.central.log.mgt.utils.LogConstants;
 import org.wso2.carbon.identity.central.log.mgt.utils.LoggerUtils;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.workflow.impl.WorkflowImplException;
 import org.wso2.carbon.identity.workflow.impl.bean.BPSProfile;
 import org.wso2.carbon.identity.workflow.mgt.bean.Workflow;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 public class WorkflowImplAuditLogger extends AbstractWorkflowImplServiceListener {
 
@@ -47,14 +45,13 @@ public class WorkflowImplAuditLogger extends AbstractWorkflowImplServiceListener
     @Override
     public void doPostAddBPSProfile(BPSProfile bpsProfileDTO, int tenantId) throws WorkflowImplException {
 
-        String initiator = getInitiator(bpsProfileDTO.getUsername());
-        String user = getUserForAuditLog(bpsProfileDTO.getUsername());
         String auditData = "\"" + "Profile Name" + "\" : \"" + bpsProfileDTO.getProfileName()
                 + "\",\"" + "Manager Host URL" + "\" : \"" + bpsProfileDTO.getManagerHostURL()
                 + "\",\"" + "Worker Host URL" + "\" : \"" + bpsProfileDTO.getWorkerHostURL()
-                + "\",\"" + "User" + "\" : \"" + user
+                + "\",\"" + "User" + "\" : \"" + getUserForAuditLog(bpsProfileDTO.getUsername())
                 + "\"";
-        AUDIT_LOG.info(String.format(AUDIT_MESSAGE, initiator, "Add BPS Profile", auditData, AUDIT_SUCCESS));
+        AUDIT_LOG.info(String.format(AUDIT_MESSAGE, getInitiator(), "Add BPS Profile", auditData,
+                AUDIT_SUCCESS));
     }
 
     /**
@@ -66,15 +63,8 @@ public class WorkflowImplAuditLogger extends AbstractWorkflowImplServiceListener
     @Override
     public void doPostRemoveBPSProfile(String profileName) throws WorkflowImplException {
 
-        String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
-        if (StringUtils.isBlank(loggedInUser)) {
-            loggedInUser = CarbonConstants.REGISTRY_SYSTEM_USERNAME;
-        }
-        if (LogConstants.isLogMaskingEnable) {
-            loggedInUser = LoggerUtils.maskContent(loggedInUser);
-        }
         String auditData = "\"" + "Profile Name" + "\" : \"" + profileName + "\"";
-        AUDIT_LOG.info(String.format(AUDIT_MESSAGE, loggedInUser, "Delete BPS Profile", auditData, AUDIT_SUCCESS));
+        AUDIT_LOG.info(String.format(AUDIT_MESSAGE, getInitiator(), "Delete BPS Profile", auditData, AUDIT_SUCCESS));
     }
 
     /**
@@ -87,14 +77,13 @@ public class WorkflowImplAuditLogger extends AbstractWorkflowImplServiceListener
     @Override
     public void doPostUpdateBPSProfile(BPSProfile bpsProfileDTO, int tenantId) throws WorkflowImplException {
 
-        String initiator = getInitiator(bpsProfileDTO.getUsername());
-        String user = getUserForAuditLog(bpsProfileDTO.getUsername());
         String auditData = "\"" + "Profile Name" + "\" : \"" + bpsProfileDTO.getProfileName()
                 + "\",\"" + "Manager Host URL" + "\" : \"" + bpsProfileDTO.getManagerHostURL()
                 + "\",\"" + "Worker Host URL" + "\" : \"" + bpsProfileDTO.getWorkerHostURL()
-                + "\",\"" + "User" + "\" : \"" + user
+                + "\",\"" + "User" + "\" : \"" + getUserForAuditLog(bpsProfileDTO.getUsername())
                 + "\"";
-        AUDIT_LOG.info(String.format(AUDIT_MESSAGE, initiator, "Update BPS Profile", auditData, AUDIT_SUCCESS));
+        AUDIT_LOG.info(String.format(AUDIT_MESSAGE, getInitiator(), "Update BPS Profile", auditData,
+                AUDIT_SUCCESS));
     }
 
     /**
@@ -106,60 +95,51 @@ public class WorkflowImplAuditLogger extends AbstractWorkflowImplServiceListener
     @Override
     public void doPostRemoveBPSPackage(Workflow workflow) throws WorkflowImplException {
 
-        String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
-        if (StringUtils.isBlank(loggedInUser)) {
-            loggedInUser = CarbonConstants.REGISTRY_SYSTEM_USERNAME;
-        }
-        if (LogConstants.isLogMaskingEnable) {
-            loggedInUser = LoggerUtils.maskContent(loggedInUser);
-        }
         String auditData = "\"" + "Workflow Name" + "\" : \"" + workflow.getWorkflowName()
                 + "\",\"" + "Template ID" + "\" : \"" + workflow.getTemplateId()
                 + "\",\"" + "Workflow Description" + "\" : \"" + workflow.getWorkflowDescription()
                 + "\",\"" + "Workflow ID" + "\" : \"" + workflow.getWorkflowId()
                 + "\",\"" + "Workflow Impl ID" + "\" : \"" + workflow.getWorkflowImplId()
                 + "\"";
-        AUDIT_LOG.info(String.format(AUDIT_MESSAGE, loggedInUser, "Remove BPS Package",
+        AUDIT_LOG.info(String.format(AUDIT_MESSAGE, getInitiator(), "Remove BPS Package",
                 "Workflow Impl Admin Service", auditData, AUDIT_SUCCESS));
     }
 
     /**
-     * Return sanitized initiator.
+     * Return initiator.
      *
-     * @param user Username of the initiator.
-     * @return sanitized initiator.
+     * @return initiator based on the log masking config.
      */
-    private String getInitiator(String user) {
+    private String getInitiator() {
 
         String loggedInUser = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         if (StringUtils.isBlank(loggedInUser)) {
             loggedInUser = CarbonConstants.REGISTRY_SYSTEM_USERNAME;
         }
         String initiator = null;
-        if (LogConstants.isLogMaskingEnable) {
-            String tenantDomain = MultitenantUtils.getTenantDomain(user);
-            if (StringUtils.isNotBlank(tenantDomain)) {
-                initiator = IdentityUtil.getInitiatorId(MultitenantUtils.getTenantAwareUsername(user), tenantDomain);
+        if (LoggerUtils.isLogMaskingEnable) {
+            if (StringUtils.isNotBlank(tenantDomain) && StringUtils.isNotBlank(loggedInUser)) {
+                initiator = IdentityUtil.getInitiatorId(loggedInUser, tenantDomain);
             }
             if (StringUtils.isBlank(initiator)) {
-                initiator = LoggerUtils.maskContent(loggedInUser);
+                return LoggerUtils.getMaskedContent(loggedInUser);
             }
-        } else {
-            initiator = loggedInUser;
+            return initiator;
         }
-        return initiator;
+        return loggedInUser;
     }
 
     /**
-     * Return sanitized username.
+     * Return username.
      *
-     * @param user user identifier.
-     * @return santized user identifier.
+     * @param user username.
+     * @return username based on the log masking config.
      */
     private String getUserForAuditLog(String user) {
 
-        if (LogConstants.isLogMaskingEnable) {
-            return LoggerUtils.maskContent(user);
+        if (LoggerUtils.isLogMaskingEnable) {
+            return LoggerUtils.getMaskedContent(user);
         }
         return user;
     }

@@ -60,6 +60,10 @@
             <artifactId>org.wso2.carbon.identity.base</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
+            <artifactId>org.wso2.carbon.identity.central.log.mgt</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
             <artifactId>org.wso2.carbon.identity.workflow.mgt.bps.stub</artifactId>
         </dependency>
@@ -123,6 +127,7 @@
                             org.wso2.carbon.humantask.stub.*;
                             version="${carbon.identity.workflow.impl.bps.import.version.range}",
                             org.wso2.carbon.identity.base; version="${identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.central.log.mgt.utils; version="${identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.identity.core;version="${identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.identity.core.util;
                             version="${identity.framework.imp.pkg.version.range}",

@@ -16,9 +16,14 @@
  * under the License.
  */
 
+
+
 package org.wso2.carbon.identity.workflow.impl;
 
+import com.google.gson.Gson;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.llom.OMAttributeImpl;
+import org.apache.axiom.om.impl.llom.OMElementImpl;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -29,10 +34,16 @@ import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.workflow.impl.bean.BPSProfile;
 import org.wso2.carbon.identity.workflow.impl.internal.WorkflowImplServiceDataHolder;
 import org.wso2.carbon.identity.workflow.impl.util.WorkflowRequestBuilder;
+
+import org.wso2.carbon.identity.workflow.impl.util.model.Variable;
+import org.wso2.carbon.identity.workflow.impl.util.model.WorkFlowRequest;
+import org.wso2.carbon.identity.workflow.impl.util.model.WorkFlowResponse;
 import org.wso2.carbon.identity.workflow.mgt.bean.Parameter;
 import org.wso2.carbon.identity.workflow.mgt.dto.WorkflowRequest;
 import org.wso2.carbon.identity.workflow.mgt.exception.InternalWorkflowException;
@@ -42,13 +53,34 @@ import org.wso2.carbon.identity.workflow.mgt.util.WorkflowManagementUtil;
 import org.wso2.carbon.identity.workflow.mgt.workflow.WorkFlowExecutor;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.EVENT_TYPE;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.NAME_PARAMETER_ATTRIBUTE;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.PROCESS_UUID;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.REQUEST_ID;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.TASK_INITIATOR;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.WORKFLOW_CONFIGURATION;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.WORKFLOW_PARAMETERS;
+
+import static javax.ws.rs.HttpMethod.POST;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class RequestExecutor implements WorkFlowExecutor {
 
     private static final Log log = LogFactory.getLog(RequestExecutor.class);
     private static final String EXECUTOR_NAME = "BPELExecutor";
+
+    private static final Gson gson = new Gson();
 
     private List<Parameter> parameterList;
     private BPSProfile bpsProfile;
@@ -87,10 +119,19 @@ public class RequestExecutor implements WorkFlowExecutor {
         validateExecutionParams();
         OMElement requestBody = WorkflowRequestBuilder.buildXMLRequest(workFlowRequest, this.parameterList);
         try {
-            callService(requestBody);
+            String templateId = getTemplateIdByWorkflowId(parameterList.get(0).getWorkflowId());
+            if("ExternalWorkflowTemplate".equals(templateId)) {
+                callWorkflowService(requestBody);
+            }
+            else{
+                callService(requestBody);
+            }
+
         } catch (AxisFault axisFault) {
             throw new InternalWorkflowException("Error invoking service for request: " +
-                                                workFlowRequest.getUuid(), axisFault);
+                    workFlowRequest.getUuid(), axisFault);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -108,6 +149,104 @@ public class RequestExecutor implements WorkFlowExecutor {
             throw new InternalWorkflowException("Init params for the BPELExecutor is null.");
         }
     }
+    private String getExternalWorkflowId(String workflowId) throws WorkflowException {
+
+        return  WorkflowImplServiceDataHolder.getInstance().getWorkflowManagementService().
+                getExternalWorkflowId(workflowId);
+
+    }
+    private String getTemplateIdByWorkflowId(String workflowId) throws WorkflowException {
+        return  WorkflowImplServiceDataHolder.getInstance().getWorkflowManagementService().
+                getTemplateId(workflowId);
+    }
+    private WorkFlowRequest createWorkflowRequest(OMElement messagePayload) throws WorkflowException {
+
+
+        WorkFlowRequest workFlowRequest = new WorkFlowRequest();
+        workFlowRequest.setWorkflowID(getExternalWorkflowId(this.parameterList.get(0).getWorkflowId()));
+        List<Variable> parameterArray = new ArrayList<>();
+
+        Iterator workflowDetails = messagePayload.getChildElements();
+
+        while (workflowDetails.hasNext()) {
+            OMElementImpl workflowDetail = (OMElementImpl) workflowDetails.next();
+            if (PROCESS_UUID.equals(workflowDetail.getLocalName())) {
+                workFlowRequest.setRequestId(workflowDetail.getText());
+            }
+            if(TASK_INITIATOR.equals(workflowDetail.getLocalName())){
+                Variable variable = new Variable(TASK_INITIATOR, workflowDetail.getText());
+                parameterArray.add(variable);
+            }
+            if (WORKFLOW_PARAMETERS.equals(workflowDetail.getLocalName())) {
+                String parameterName = null;
+                Iterator parameters = workflowDetail.getChildElements();
+
+                while (parameters.hasNext()) {
+                    OMElementImpl parameter = (OMElementImpl) parameters.next();
+                    Iterator parameterValues = parameter.getChildElements();
+                    Iterator parameterAttributes = parameter.getAllAttributes();
+
+                    while (parameters.hasNext()) {
+                        OMAttributeImpl parameterAttribute = (OMAttributeImpl) parameterAttributes.next();
+                        if (NAME_PARAMETER_ATTRIBUTE.equals(parameterAttribute.getLocalName())) {
+                            parameterName = parameterAttribute.getAttributeValue();
+                            break;
+                        }
+                    }
+
+                    while (parameterValues.hasNext()) {
+                        OMElementImpl parameterValue = (OMElementImpl) parameterValues.next();
+                        Iterator parameterItemValues = parameterValue.getChildElements();
+                        while (parameterItemValues.hasNext()) {
+                            OMElementImpl parameterItemValue = (OMElementImpl) parameterItemValues.next();
+                            if(!REQUEST_ID.equals(parameterName)){
+                                Variable variable = new Variable(parameterName, parameterItemValue.getText());
+                                parameterArray.add(variable);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        workFlowRequest.setVariables(parameterArray);
+
+        return workFlowRequest;
+    }
+
+    private void callMediator(String workflowRequest) throws IOException {
+
+        log.info("Workflow Request  Body: "+ workflowRequest);
+        String workflowMediatorURL = bpsProfile.getManagerHostURL();
+
+        URL url = new URL(workflowMediatorURL);
+        log.info("workflow URL"+url);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+        con.setRequestMethod(POST);
+        con.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+        con.setDoOutput(true);
+
+        try (OutputStream os = con.getOutputStream()) {
+            log.info("Go to byte stream");
+
+            byte[] input = workflowRequest.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+            log.info("end  to byte stream 1");
+        }
+        log.info("end to byte stream 2");
+        int responseCode = con.getResponseCode();
+        System.out.println("POST Response Code :: " + responseCode);
+        log.info("End of lie"+responseCode);
+    }
+
+    private void callWorkflowService(OMElement messagePayload) throws IOException, WorkflowException {
+        WorkFlowRequest workFlowRequest = createWorkflowRequest(messagePayload);
+        log.info("Call mediator");
+        callMediator(gson.toJson(workFlowRequest));
+        log.info("End of call service");
+    }
+
 
     private void callService(OMElement messagePayload) throws AxisFault {
 

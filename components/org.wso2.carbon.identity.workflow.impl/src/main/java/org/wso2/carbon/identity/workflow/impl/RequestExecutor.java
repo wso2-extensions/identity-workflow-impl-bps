@@ -69,6 +69,7 @@ import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.N
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.PROCESS_UUID;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.REQUEST_ID;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.TASK_INITIATOR;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.TEMPLATE_ID;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.WORKFLOW_CONFIGURATION;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.WORKFLOW_PARAMETERS;
 
@@ -120,7 +121,7 @@ public class RequestExecutor implements WorkFlowExecutor {
         OMElement requestBody = WorkflowRequestBuilder.buildXMLRequest(workFlowRequest, this.parameterList);
         try {
             String templateId = getTemplateIdByWorkflowId(parameterList.get(0).getWorkflowId());
-            if("ExternalWorkflowTemplate".equals(templateId)) {
+            if(TEMPLATE_ID.equals(templateId)) {
                 callWorkflowService(requestBody);
             }
             else{
@@ -216,11 +217,9 @@ public class RequestExecutor implements WorkFlowExecutor {
 
     private void callMediator(String workflowRequest) throws IOException {
 
-        log.info("Workflow Request  Body: "+ workflowRequest);
         String workflowMediatorURL = bpsProfile.getManagerHostURL();
 
         URL url = new URL(workflowMediatorURL);
-        log.info("workflow URL"+url);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         con.setRequestMethod(POST);
@@ -228,23 +227,18 @@ public class RequestExecutor implements WorkFlowExecutor {
         con.setDoOutput(true);
 
         try (OutputStream os = con.getOutputStream()) {
-            log.info("Go to byte stream");
-
             byte[] input = workflowRequest.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
-            log.info("end  to byte stream 1");
+
         }
-        log.info("end to byte stream 2");
         int responseCode = con.getResponseCode();
         System.out.println("POST Response Code :: " + responseCode);
-        log.info("End of lie"+responseCode);
+
     }
 
     private void callWorkflowService(OMElement messagePayload) throws IOException, WorkflowException {
         WorkFlowRequest workFlowRequest = createWorkflowRequest(messagePayload);
-        log.info("Call mediator");
         callMediator(gson.toJson(workFlowRequest));
-        log.info("End of call service");
     }
 
 

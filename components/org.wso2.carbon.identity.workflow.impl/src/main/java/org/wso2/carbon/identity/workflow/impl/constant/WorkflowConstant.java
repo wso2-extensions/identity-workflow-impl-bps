@@ -27,6 +27,8 @@ public class WorkflowConstant {
     public static final String TASK_INITIATOR = "taskInitiator";
     public static final String EVENT_TYPE = "eventType";
 
-    public static final String REQUEST_ID="REQUEST ID";
+    public static final String REQUEST_ID = "REQUEST ID";
+
+    public static final String TEMPLATE_ID = "ExternalWorkflowTemplate";
 
 }

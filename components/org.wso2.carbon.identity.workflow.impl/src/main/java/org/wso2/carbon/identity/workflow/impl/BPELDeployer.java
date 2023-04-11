@@ -106,10 +106,7 @@ public class BPELDeployer implements TemplateInitializer {
                     (bpsProfileName, tenantId);
         }
         htName = processName + BPELDeployer.Constants.HT_SUFFIX;
-        if(!"choreo".equals(bpsProfile.getUsername())) {
-log.info("This is gone"+bpsProfile.getUsername());
-            generateAndDeployArtifacts();
-        }
+        generateAndDeployArtifacts();
     }
 
     private boolean validateParams(List<Parameter> parameterList) {

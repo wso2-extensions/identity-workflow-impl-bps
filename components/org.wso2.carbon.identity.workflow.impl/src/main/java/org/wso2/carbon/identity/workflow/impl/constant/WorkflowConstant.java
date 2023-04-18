@@ -18,6 +18,9 @@
 
 package org.wso2.carbon.identity.workflow.impl.constant;
 
+/**
+ * Define the workflow constants related to the workflow request send to external workflow mediator
+ */
 public class WorkflowConstant {
 
     public static final String PROCESS_UUID = "uuid";

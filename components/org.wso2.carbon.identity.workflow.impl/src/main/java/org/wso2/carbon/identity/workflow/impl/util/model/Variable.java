@@ -20,11 +20,16 @@
 
 package org.wso2.carbon.identity.workflow.impl.util.model;
 
+/**
+ *  Define the Variable of the workflow request
+ */
+
 public class Variable {
     private String name;
     private String value;
 
     public Variable(String name, String value) {
+
         this.name = name;
         this.value = value;
     }

@@ -21,6 +21,7 @@
 package org.wso2.carbon.identity.workflow.impl;
 
 import com.google.gson.Gson;
+import com.hazelcast.util.CollectionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.llom.OMAttributeImpl;
 import org.apache.axiom.om.impl.llom.OMElementImpl;
@@ -43,7 +44,6 @@ import org.wso2.carbon.identity.workflow.impl.util.WorkflowRequestBuilder;
 
 import org.wso2.carbon.identity.workflow.impl.util.model.Variable;
 import org.wso2.carbon.identity.workflow.impl.util.model.WorkFlowRequest;
-import org.wso2.carbon.identity.workflow.impl.util.model.WorkFlowResponse;
 import org.wso2.carbon.identity.workflow.mgt.bean.Parameter;
 import org.wso2.carbon.identity.workflow.mgt.dto.WorkflowRequest;
 import org.wso2.carbon.identity.workflow.mgt.exception.InternalWorkflowException;
@@ -61,16 +61,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
-import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.EVENT_TYPE;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.NAME_PARAMETER_ATTRIBUTE;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.PROCESS_UUID;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.REQUEST_ID;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.TASK_INITIATOR;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.TEMPLATE_ID;
-import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.WORKFLOW_CONFIGURATION;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.WORKFLOW_PARAMETERS;
 
 import static javax.ws.rs.HttpMethod.POST;
@@ -120,14 +117,16 @@ public class RequestExecutor implements WorkFlowExecutor {
         validateExecutionParams();
         OMElement requestBody = WorkflowRequestBuilder.buildXMLRequest(workFlowRequest, this.parameterList);
         try {
-            String templateId = getTemplateIdByWorkflowId(parameterList.get(0).getWorkflowId());
-            if(TEMPLATE_ID.equals(templateId)) {
-                callWorkflowService(requestBody);
-            }
-            else{
-                callService(requestBody);
-            }
+            if(CollectionUtil.isNotEmpty(parameterList)) {
+                String templateId = getTemplateIdByWorkflowId(this.parameterList.get(0).getWorkflowId());
 
+                if(TEMPLATE_ID.equals(templateId)) {
+                    callExternalWorkflowService(requestBody);
+                }
+                else{
+                    callService(requestBody);
+                }
+            }
         } catch (AxisFault axisFault) {
             throw new InternalWorkflowException("Error invoking service for request: " +
                     workFlowRequest.getUuid(), axisFault);
@@ -157,11 +156,11 @@ public class RequestExecutor implements WorkFlowExecutor {
 
     }
     private String getTemplateIdByWorkflowId(String workflowId) throws WorkflowException {
+
         return  WorkflowImplServiceDataHolder.getInstance().getWorkflowManagementService().
                 getTemplateId(workflowId);
     }
     private WorkFlowRequest createWorkflowRequest(OMElement messagePayload) throws WorkflowException {
-
 
         WorkFlowRequest workFlowRequest = new WorkFlowRequest();
         workFlowRequest.setWorkflowID(getExternalWorkflowId(this.parameterList.get(0).getWorkflowId()));
@@ -171,44 +170,41 @@ public class RequestExecutor implements WorkFlowExecutor {
 
         while (workflowDetails.hasNext()) {
             OMElementImpl workflowDetail = (OMElementImpl) workflowDetails.next();
-            if (PROCESS_UUID.equals(workflowDetail.getLocalName())) {
-                workFlowRequest.setRequestId(workflowDetail.getText());
-            }
-            if(TASK_INITIATOR.equals(workflowDetail.getLocalName())){
-                Variable variable = new Variable(TASK_INITIATOR, workflowDetail.getText());
-                parameterArray.add(variable);
-            }
-            if (WORKFLOW_PARAMETERS.equals(workflowDetail.getLocalName())) {
-                String parameterName = null;
-                Iterator parameters = workflowDetail.getChildElements();
-
-                while (parameters.hasNext()) {
-                    OMElementImpl parameter = (OMElementImpl) parameters.next();
-                    Iterator parameterValues = parameter.getChildElements();
-                    Iterator parameterAttributes = parameter.getAllAttributes();
+            switch (workflowDetail.getLocalName()){
+                case PROCESS_UUID:
+                    workFlowRequest.setRequestId(workflowDetail.getText());
+                case TASK_INITIATOR:
+                    Variable variable = new Variable(TASK_INITIATOR, workflowDetail.getText());
+                    parameterArray.add(variable);
+                case WORKFLOW_PARAMETERS:
+                    String parameterName = null;
+                    Iterator parameters = workflowDetail.getChildElements();
 
                     while (parameters.hasNext()) {
-                        OMAttributeImpl parameterAttribute = (OMAttributeImpl) parameterAttributes.next();
-                        if (NAME_PARAMETER_ATTRIBUTE.equals(parameterAttribute.getLocalName())) {
-                            parameterName = parameterAttribute.getAttributeValue();
-                            break;
-                        }
-                    }
+                        OMElementImpl parameter = (OMElementImpl) parameters.next();
+                        Iterator parameterValues = parameter.getChildElements();
+                        Iterator parameterAttributes = parameter.getAllAttributes();
 
-                    while (parameterValues.hasNext()) {
-                        OMElementImpl parameterValue = (OMElementImpl) parameterValues.next();
-                        Iterator parameterItemValues = parameterValue.getChildElements();
-                        while (parameterItemValues.hasNext()) {
-                            OMElementImpl parameterItemValue = (OMElementImpl) parameterItemValues.next();
-                            if(!REQUEST_ID.equals(parameterName)){
-                                Variable variable = new Variable(parameterName, parameterItemValue.getText());
-                                parameterArray.add(variable);
+                        while (parameters.hasNext()) {
+                            OMAttributeImpl parameterAttribute = (OMAttributeImpl) parameterAttributes.next();
+                            if (NAME_PARAMETER_ATTRIBUTE.equals(parameterAttribute.getLocalName())) {
+                                parameterName = parameterAttribute.getAttributeValue();
+                                break;
+                            }
+                        }
+                        while (parameterValues.hasNext()) {
+                            OMElementImpl parameterValue = (OMElementImpl) parameterValues.next();
+                            Iterator parameterItemValues = parameterValue.getChildElements();
+                            while (parameterItemValues.hasNext()) {
+                                OMElementImpl parameterItemValue = (OMElementImpl) parameterItemValues.next();
+                                if(!REQUEST_ID.equals(parameterName)){
+                                    variable = new Variable(parameterName, parameterItemValue.getText());
+                                    parameterArray.add(variable);
+                                }
                             }
                         }
                     }
-                }
             }
-
         }
         workFlowRequest.setVariables(parameterArray);
 
@@ -229,14 +225,11 @@ public class RequestExecutor implements WorkFlowExecutor {
         try (OutputStream os = con.getOutputStream()) {
             byte[] input = workflowRequest.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
-
         }
-        int responseCode = con.getResponseCode();
-        System.out.println("POST Response Code :: " + responseCode);
-
     }
 
-    private void callWorkflowService(OMElement messagePayload) throws IOException, WorkflowException {
+    private void callExternalWorkflowService(OMElement messagePayload) throws IOException, WorkflowException {
+
         WorkFlowRequest workFlowRequest = createWorkflowRequest(messagePayload);
         callMediator(gson.toJson(workFlowRequest));
     }

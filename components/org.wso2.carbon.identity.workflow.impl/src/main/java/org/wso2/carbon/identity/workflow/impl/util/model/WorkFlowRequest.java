@@ -21,6 +21,9 @@ package org.wso2.carbon.identity.workflow.impl.util.model;
 
 import java.util.List;
 
+/**
+ * Define the structure the of the common payload of workflow request
+ */
 public class WorkFlowRequest {
     private String requestId;
     private String workflowID;

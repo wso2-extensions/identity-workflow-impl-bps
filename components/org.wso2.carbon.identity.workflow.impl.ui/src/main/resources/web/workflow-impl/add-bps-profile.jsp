@@ -43,13 +43,26 @@
         function doValidation() {
             // validate input fields
             var formElement = document.getElementsByName("serviceAdd")[0];
-            if (!doValidateForm(formElement, "<fmt:message key="error.input.validation.error"/>")) {
-                return false;
-            }
+            //if (!doValidateForm(formElement, "<fmt:message key="error.input.validation.error"/>")) {
+            //    return false;
+            //}
 
             // submit the form if no errors encountered
             document.serviceAdd.submit();
         }
+           function handleChange(){
+     var selectedValue = document.getElementById('myDropdown').value;
+      if (selectedValue === 'BPS') {
+   document.getElementById('externalClass').style.display = 'none';
+          document.getElementById('bpsClass').style.display = 'block';
+          console.log(selectedValue);
+      } if(selectedValue === 'External') {
+        document.getElementById('bpsClass').style.display = 'none';
+          document.getElementById('externalClass').style.display = 'block';
+          console.log(selectedValue);
+
+      }
+    }
 
     </script>
 
@@ -65,7 +78,25 @@
                     <tr>
                         <th colspan="2"><fmt:message key="workflow.bps.profile"/></th>
                     </tr>
+
                     </thead>
+                     <thead>
+                                                               <tr>
+                                                                                   <td width="30%" style="padding-left:10px" >
+                                                                                       <fmt:message key='workflow.select.profile.type'/>
+                                                                                   </td>
+                                                                                   <td>
+                                                                                     <div style="padding-left:10px">
+                                                                                        <select id="myDropdown" onchange="handleChange(this)">
+                                                                                            <option value="BPS" selected>BPS Profile</option>
+                                                                                            <option value="External">External Workflow Profile</option>
+                                                                                        </select>
+
+                                                                                      </div>
+                                                                                   </td>
+                                                                                 </tr>
+                                                            </thead>
+
                     <tbody>
                     <tr>
                         <td width="30%">
@@ -86,7 +117,8 @@
                         <th colspan="2"><fmt:message key="workflow.bps.profile.connection.details"/></th>
                     </tr>
                     </thead>
-                    <tbody>
+
+                <tbody id="bpsClass">
                     <tr>
                         <td width="30%">
                             <fmt:message key='workflow.bps.profile.manager.host'/>
@@ -105,7 +137,7 @@
                             <fmt:message key='workflow.bps.profile.worker.host'/>
                             <span class="required">*</span>
                         </td>
-                        <td><div><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
+                        <td><div><input type="text" name="<%=WorkflowUIConstants.ENGINE_URL%>"
                                         label="<fmt:message key='workflow.bps.profile.worker.host'/>" maxlength="255"
                                         black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"/></div>
                             <div class="sectionHelp">
@@ -135,7 +167,37 @@
                                    autocomplete="off"/>
                         </td>
                     </tr>
-                    </tbody>
+                </tbody>
+
+                <tbody id="externalClass"  style="display:none;">
+
+                  <tr>
+                                          <td width="30%">
+                                              <fmt:message key='workflow.bps.profile.worker.host'/>
+                                              <span class="required">*</span>
+                                          </td>
+                                          <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
+                                                          label="<fmt:message key='workflow.bps.profile.worker.host'/>" maxlength="255"
+                                                          black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"/>
+                                              <div class="sectionHelp">
+                                                  <fmt:message key='help.desc.worker'/>
+                                              </div>
+                                          </td>
+                                      </tr>
+
+                    <tr>
+                        <td width="30%">
+                         <fmt:message key='workflow.bps.profile.apiKey'/>
+
+                        </td>
+                            <td><input type="text" name="<%=WorkflowUIConstants.WORKFLOW_APIKEY%>"
+                                                       label="<fmt:message key='workflow.bps.profile.auth.password'/>"
+                                                       black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"
+                                                       autocomplete="off"/>
+                            </td>
+                    </tr>
+
+                </tbody>
                 </table>
                 <div class="buttonRow" style="margin-top: 10px">
                     <input class="button" value="<fmt:message key="add"/>" type="button" onclick="doValidation()"/>

@@ -54,6 +54,7 @@ public class WorkflowUIConstants {
     public static final String PARAM_SERVICE_ACTION = "serviceAction";
     public static final String PARAM_SERVICE_AUTH_USERNAME = "serviceUser";
     public static final String PARAM_SERVICE_AUTH_PASSWORD = "serviceUserPassword";
+    public static final String WORKFLOW_APIKEY= "apiKey";
 
     public static final String PARAM_SERVICE_ASSOCIATION_PRIORITY = "priority";
     public static final String PARAM_ASSOCIATION_CONDITION = "condition";

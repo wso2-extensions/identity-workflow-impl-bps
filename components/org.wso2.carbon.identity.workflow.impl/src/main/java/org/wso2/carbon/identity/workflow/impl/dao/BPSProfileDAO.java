@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.workflow.impl.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.wso2.carbon.core.util.CryptoException;
 import org.wso2.carbon.core.util.CryptoUtil;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
@@ -53,10 +54,17 @@ public class BPSProfileDAO {
         PreparedStatement prepStmt = null;
         String query = SQLConstants.ADD_BPS_PROFILE_QUERY;
         String profileName = bpsProfileDTO.getProfileName();
-        String encryptedPassword;
+        String encryptedPassword = "";
+        String encryptedApiKey = "";
 
         try {
-            encryptedPassword = encryptPassword(bpsProfileDTO.getPassword());
+            if(StringUtils.isNotEmpty(bpsProfileDTO.getApiKey())) {
+                encryptedApiKey = encryptData(bpsProfileDTO.getApiKey().toCharArray());
+            }
+            if(bpsProfileDTO.getPassword() != null && bpsProfileDTO.getPassword().length > 0) {
+                encryptedPassword = encryptData(bpsProfileDTO.getPassword());
+            }
+
         } catch (CryptoException e) {
             throw new WorkflowImplException("Error while encrypting the passwords of BPS Profile: " + profileName, e);
         }
@@ -69,6 +77,7 @@ public class BPSProfileDAO {
             prepStmt.setString(4, bpsProfileDTO.getUsername());
             prepStmt.setString(5, encryptedPassword);
             prepStmt.setInt(6, tenantId);
+            prepStmt.setString(7, encryptedApiKey);
             prepStmt.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
@@ -91,10 +100,16 @@ public class BPSProfileDAO {
         PreparedStatement prepStmt = null;
         String query = SQLConstants.UPDATE_BPS_PROFILE_QUERY;
         String profileName = bpsProfile.getProfileName();
-        String encryptedPassword;
+        String encryptedPassword = "";
+        String encryptedApiKey = "";
 
         try {
-            encryptedPassword = encryptPassword(bpsProfile.getPassword());
+            if(StringUtils.isNotEmpty(bpsProfile.getApiKey())) {
+                encryptedApiKey = encryptData(bpsProfile.getApiKey().toCharArray());
+            }
+            if(bpsProfile.getPassword() != null && bpsProfile.getPassword().length > 0) {
+                encryptedPassword = encryptData(bpsProfile.getPassword());
+            }
         } catch (CryptoException e) {
             throw new WorkflowImplException("Error while encrypting the passwords of BPS Profile: " + profileName, e);
         }
@@ -105,8 +120,10 @@ public class BPSProfileDAO {
             prepStmt.setString(2, bpsProfile.getWorkerHostURL());
             prepStmt.setString(3, bpsProfile.getUsername());
             prepStmt.setString(4, encryptedPassword);
-            prepStmt.setInt(5, tenantId);
-            prepStmt.setString(6, bpsProfile.getProfileName());
+            prepStmt.setString(5, encryptedApiKey);
+            prepStmt.setInt(6, tenantId);
+
+            prepStmt.setString(7, bpsProfile.getProfileName());
             prepStmt.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
@@ -152,8 +169,16 @@ public class BPSProfileDAO {
 
                 if (isWithPasswords) {
                     String password = rs.getString(SQLConstants.PASSWORD_COLUMN);
+                    String apiKey = rs.getString("API_KEY");
                     try {
-                        bpsProfileDTO.setPassword(decryptPassword(password));
+                        if(StringUtils.isNotEmpty(apiKey)) {
+                            String apiKeyString = new String(decryptData(apiKey));
+                           bpsProfileDTO.setApiKey(apiKeyString);
+                        }
+                        if(StringUtils.isNotEmpty(password)){
+                            bpsProfileDTO.setPassword(decryptData(password));
+                        }
+
                     } catch (CryptoException | UnsupportedEncodingException e) {
                         throw new WorkflowImplException(
                                 "Error while decrypting the password for BPEL Profile " + profileName, e);
@@ -302,16 +327,16 @@ public class BPSProfileDAO {
         }
     }
 
-    private String encryptPassword(char[] passwordValue) throws CryptoException {
+    private String encryptData(char[] data) throws CryptoException {
 
         CryptoUtil cryptoUtil = CryptoUtil.getDefaultCryptoUtil();
-        return cryptoUtil.encryptAndBase64Encode(toBytes(passwordValue));
+        return cryptoUtil.encryptAndBase64Encode(toBytes(data));
     }
 
-    private char[] decryptPassword(String passwordValue) throws UnsupportedEncodingException, CryptoException {
+    private char[] decryptData(String data) throws UnsupportedEncodingException, CryptoException {
 
         CryptoUtil cryptoUtil = CryptoUtil.getDefaultCryptoUtil();
-        byte[] decryptedPasswordBytes = cryptoUtil.base64DecodeAndDecrypt(passwordValue);
+        byte[] decryptedPasswordBytes = cryptoUtil.base64DecodeAndDecrypt(data);
         return (new String(decryptedPasswordBytes, WFImplConstant.DEFAULT_CHARSET)).toCharArray();
 
     }

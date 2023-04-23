@@ -60,6 +60,7 @@
         String workerHost = request.getParameter(WorkflowUIConstants.PARAM_BPS_WORKER_HOST);
         String username = request.getParameter(WorkflowUIConstants.PARAM_BPS_AUTH_USER);
         String password = request.getParameter(WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD);
+        String apiKey = request.getParameter(WorkflowUIConstants.WORKFLOW_APIKEY);
         String[] passwordAsArray;
         if (StringUtils.isNotBlank(password)) {
 
@@ -77,6 +78,7 @@
             bpsProfile.setWorkerHostURL(workerHost);
             bpsProfile.setUsername(username);
             bpsProfile.setPassword(passwordAsArray);
+            bpsProfile.setApiKey(apiKey);
             client.addBPSProfile(bpsProfile);
 
         } catch (AxisFault e) {
@@ -89,6 +91,7 @@
         String workerHost = request.getParameter(WorkflowUIConstants.PARAM_BPS_WORKER_HOST);
         String username = request.getParameter(WorkflowUIConstants.PARAM_BPS_AUTH_USER);
         String password = request.getParameter(WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD);
+        String apiKey = request.getParameter(WorkflowUIConstants.WORKFLOW_APIKEY);
         String[] passwordAsArray;
         if (StringUtils.isNotBlank(password)) {
 
@@ -105,6 +108,7 @@
             bpsProfile.setManagerHostURL(managerHost);
             bpsProfile.setWorkerHostURL(workerHost);
             bpsProfile.setUsername(username);
+            bpsProfile.setApiKey(apiKey);
 
             if(StringUtils.isNotBlank(password)) {
                 bpsProfile.setPassword(passwordAsArray);

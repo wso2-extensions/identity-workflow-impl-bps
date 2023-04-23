@@ -27,6 +27,17 @@ public class BPSProfile {
     private String workerHostURL;
     private String username;
     private char[] password;
+    private String apiKey;
+
+    public String getApiKey() {
+
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+
+        this.apiKey = apiKey;
+    }
 
     public String getProfileName() {
         return profileName;

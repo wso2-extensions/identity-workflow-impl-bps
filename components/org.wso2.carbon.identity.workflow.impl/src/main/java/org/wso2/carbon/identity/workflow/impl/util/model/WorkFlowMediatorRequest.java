@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Define the structure the of the common payload of workflow request
  */
-public class WorkFlowRequest {
+public class WorkFlowMediatorRequest {
     private String requestId;
     private String workflowID;
     private List<Variable> variables;
@@ -32,10 +32,10 @@ public class WorkFlowRequest {
 
 
 
-    public WorkFlowRequest() {
+    public WorkFlowMediatorRequest() {
 
     }
-    public WorkFlowRequest(String processDefinitionId, String workflowID, List<Variable> variables) {
+    public WorkFlowMediatorRequest(String processDefinitionId, String workflowID, List<Variable> variables) {
         this.requestId = processDefinitionId;
         this.variables = variables;
         this.workflowID=workflowID;

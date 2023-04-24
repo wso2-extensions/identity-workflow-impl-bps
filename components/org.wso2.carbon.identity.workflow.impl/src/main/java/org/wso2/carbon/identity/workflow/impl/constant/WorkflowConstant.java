@@ -31,7 +31,20 @@ public class WorkflowConstant {
     public static final String EVENT_TYPE = "eventType";
 
     public static final String REQUEST_ID = "REQUEST ID";
+    public static final String  MEDIATOR_API_KEY = "API-Key";
+    public static final String DESCRIPTION = "The operation should be approved by an authorized person with given " +
+            "role, to complete.";
+
+    public static final String APPROVAL_TEMPLATE_NAME = "External Workflow Template";
 
     public static final String TEMPLATE_ID = "ExternalWorkflowTemplate";
+
+    public static final String BPS_PROFILE = "BPSProfile";
+
+    public static final String HT_SUBJECT = "HTSubject";
+
+    public static final String TEMPLATE_PARAMETER_METADATA_FILE_NAME = "ExternalWorkflowTemplateMetaData.xml";
+
+    public static final String WORKFLOW_IMPL_PARAMETER_METADATA_FILE_NAME = "ExternalWorkflowImplMetaData.xml";
 
 }

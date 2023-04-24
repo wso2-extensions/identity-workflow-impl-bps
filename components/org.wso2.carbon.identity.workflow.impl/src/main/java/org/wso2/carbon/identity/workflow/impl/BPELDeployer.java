@@ -107,6 +107,7 @@ public class BPELDeployer implements TemplateInitializer {
         }
         htName = processName + BPELDeployer.Constants.HT_SUFFIX;
         generateAndDeployArtifacts();
+        
     }
 
     private boolean validateParams(List<Parameter> parameterList) {

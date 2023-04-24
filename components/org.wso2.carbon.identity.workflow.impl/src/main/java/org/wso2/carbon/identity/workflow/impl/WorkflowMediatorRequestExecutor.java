@@ -52,6 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.MEDIATOR_API_KEY;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.NAME_PARAMETER_ATTRIBUTE;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.PROCESS_UUID;
 import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.REQUEST_ID;
@@ -188,12 +189,12 @@ public class WorkflowMediatorRequestExecutor implements WorkFlowExecutor {
     private void callMediator(String workflowRequest) throws IOException {
 
         String workflowMediatorURL = bpsProfile.getWorkerHostURL();
-
         URL url = new URL(workflowMediatorURL);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         con.setRequestMethod(POST);
         con.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+        con.setRequestProperty(MEDIATOR_API_KEY, bpsProfile.getApiKey());
         con.setDoOutput(true);
 
         try (OutputStream os = con.getOutputStream()) {

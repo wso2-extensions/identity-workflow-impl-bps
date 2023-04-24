@@ -137,7 +137,7 @@
                             <fmt:message key='workflow.bps.profile.worker.host'/>
                             <span class="required">*</span>
                         </td>
-                        <td><div><input type="text" name="<%=WorkflowUIConstants.ENGINE_URL%>"
+                        <td><div><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
                                         label="<fmt:message key='workflow.bps.profile.worker.host'/>" maxlength="255"
                                         black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"/></div>
                             <div class="sectionHelp">
@@ -176,7 +176,7 @@
                                               <fmt:message key='workflow.bps.profile.worker.host'/>
                                               <span class="required">*</span>
                                           </td>
-                                          <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
+                                          <td><input type="text" name="<%=WorkflowUIConstants.PARAM_WORKFLOW_WORKER_HOST%>"
                                                           label="<fmt:message key='workflow.bps.profile.worker.host'/>" maxlength="255"
                                                           black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"/>
                                               <div class="sectionHelp">

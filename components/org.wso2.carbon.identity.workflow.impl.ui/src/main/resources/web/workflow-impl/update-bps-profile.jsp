@@ -102,7 +102,7 @@ document.querySelector(".external").style.display = 'block';
             }
         }
         function editApiKey(){
-        alert("goto api key");
+
                     var passwordField = document.getElementById("id_<%=WorkflowUIConstants.WORKFLOW_APIKEY%>");
                     if(document.getElementById('chkbox_<%=WorkflowUIConstants.WORKFLOW_APIKEY%>').checked){
                         passwordField.disabled=false;
@@ -132,7 +132,7 @@ document.querySelector(".external").style.display = 'block';
             document.serviceAdd.submit();
         }
    function doValidationExternal() {
-      alert(document.getElementsByName("<%=WorkflowUIConstants.WORKFLOW_APIKEY%>").innerHTML);
+
             // validate input elements of the form
             var form = document.getElementsByName("serviceExternal")[0];
           //  if (!doValidateForm(form, "<fmt:message key="error.input.validation.error"/>")) {

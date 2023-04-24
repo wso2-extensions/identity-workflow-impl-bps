@@ -60,7 +60,9 @@
         String workerHost = request.getParameter(WorkflowUIConstants.PARAM_BPS_WORKER_HOST);
         String username = request.getParameter(WorkflowUIConstants.PARAM_BPS_AUTH_USER);
         String password = request.getParameter(WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD);
+        String workflowWorkerHost = request.getParameter(WorkflowUIConstants.PARAM_WORKFLOW_WORKER_HOST);
         String apiKey = request.getParameter(WorkflowUIConstants.WORKFLOW_APIKEY);
+
         String[] passwordAsArray;
         if (StringUtils.isNotBlank(password)) {
 
@@ -75,7 +77,14 @@
             BPSProfile bpsProfile = new BPSProfile();
             bpsProfile.setProfileName(profileName);
             bpsProfile.setManagerHostURL(managerHost);
-            bpsProfile.setWorkerHostURL(workerHost);
+            if(workflowWorkerHost == ""){
+             bpsProfile.setWorkerHostURL(workerHost);
+            }
+            else{
+              bpsProfile.setWorkerHostURL(workflowWorkerHost);
+            }
+
+
             bpsProfile.setUsername(username);
             bpsProfile.setPassword(passwordAsArray);
             bpsProfile.setApiKey(apiKey);
@@ -89,10 +98,12 @@
     }else if (WorkflowUIConstants.ACTION_VALUE_UPDATE.equals(action)) {
         String managerHost = request.getParameter(WorkflowUIConstants.PARAM_BPS_MANAGER_HOST);
         String workerHost = request.getParameter(WorkflowUIConstants.PARAM_BPS_WORKER_HOST);
+
         String username = request.getParameter(WorkflowUIConstants.PARAM_BPS_AUTH_USER);
         String password = request.getParameter(WorkflowUIConstants.PARAM_BPS_AUTH_PASSWORD);
         String apiKey = request.getParameter(WorkflowUIConstants.WORKFLOW_APIKEY);
         String[] passwordAsArray;
+System.out.println(workerHost);
         if (StringUtils.isNotBlank(password)) {
 
             passwordAsArray = new String[password.length()];
@@ -103,10 +114,10 @@
             passwordAsArray = new String[0];
         }
         try {
-            BPSProfile bpsProfile = new BPSProfile();
+         BPSProfile bpsProfile = new BPSProfile();
+            bpsProfile.setWorkerHostURL(workerHost);
             bpsProfile.setProfileName(profileName);
             bpsProfile.setManagerHostURL(managerHost);
-            bpsProfile.setWorkerHostURL(workerHost);
             bpsProfile.setUsername(username);
             bpsProfile.setApiKey(apiKey);
 

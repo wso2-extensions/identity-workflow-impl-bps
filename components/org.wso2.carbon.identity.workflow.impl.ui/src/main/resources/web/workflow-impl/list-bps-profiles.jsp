@@ -256,9 +256,8 @@
                                   
                                     if (profile != null) {
                                     
-                                            if(profile.getUsername() != ""){
-                                                continue;
-                                            }
+                                            if(profile.getUsername() == "" || profile.getUsername() == null){
+
 
                         %>
                         <tr>
@@ -291,6 +290,7 @@
                             </td>
                         </tr>
                         <%
+                                    }
                                     }
                                 }
                             } else {%>

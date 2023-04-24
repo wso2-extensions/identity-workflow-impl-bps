@@ -207,7 +207,8 @@ public class BPSProfileDAO {
         ResultSet rs;
         List<BPSProfile> profiles = new ArrayList<>();
         String query = SQLConstants.LIST_BPS_PROFILES_QUERY;
-        String decryptPassword;
+        String decryptPassword = null;
+        String decryptedApiKey = null;
         CryptoUtil cryptoUtil = CryptoUtil.getDefaultCryptoUtil();
         try {
             Object classCheckResult = null;
@@ -232,9 +233,17 @@ public class BPSProfileDAO {
                 String workerHostName = rs.getString(SQLConstants.HOST_URL_WORKER_COLUMN);
                 String user = rs.getString(SQLConstants.USERNAME_COLUMN);
                 String password = rs.getString(SQLConstants.PASSWORD_COLUMN);
+                String apiKey = rs.getString(SQLConstants.APIKEY_COLUMN);
                 try {
-                    byte[] decryptedPasswordBytes = cryptoUtil.base64DecodeAndDecrypt(password);
-                    decryptPassword = new String(decryptedPasswordBytes, WFImplConstant.DEFAULT_CHARSET);
+                    if(password != ""){
+                        byte[] decryptedPasswordBytes = cryptoUtil.base64DecodeAndDecrypt(password);
+                        decryptPassword = new String(decryptedPasswordBytes, WFImplConstant.DEFAULT_CHARSET);
+                    }
+                    if(apiKey != ""){
+                        byte[] decryptedPasswordBytes = cryptoUtil.base64DecodeAndDecrypt(apiKey);
+                        decryptedApiKey = new String(decryptedPasswordBytes, WFImplConstant.DEFAULT_CHARSET);
+                    }
+
                 } catch (CryptoException | UnsupportedEncodingException e) {
                     throw new WorkflowImplException("Error while decrypting the password for BPEL Profile " + name, e);
                 }
@@ -244,6 +253,7 @@ public class BPSProfileDAO {
                 profileBean.setProfileName(name);
                 profileBean.setUsername(user);
                 profileBean.setPassword(decryptPassword.toCharArray());
+                profileBean.setApiKey(decryptedApiKey);
                 profiles.add(profileBean);
             }
         } catch (SQLException e) {

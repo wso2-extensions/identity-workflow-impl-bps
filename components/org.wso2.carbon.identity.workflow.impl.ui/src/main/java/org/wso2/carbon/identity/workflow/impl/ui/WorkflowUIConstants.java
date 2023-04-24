@@ -49,6 +49,7 @@ public class WorkflowUIConstants {
     public static final String PARAM_BPS_PROFILE_NAME = "bpsProfileName";
     public static final String PARAM_BPS_MANAGER_HOST = "bpsManagerHost";
     public static final String PARAM_BPS_WORKER_HOST = "bpsWorkerHost";
+    public static final String PARAM_WORKFLOW_WORKER_HOST = "workflowWorkerHost";
     public static final String PARAM_BPS_AUTH_USER = "bpsUser";
     public static final String PARAM_BPS_AUTH_PASSWORD = "bpsPassword";
     public static final String PARAM_SERVICE_ACTION = "serviceAction";

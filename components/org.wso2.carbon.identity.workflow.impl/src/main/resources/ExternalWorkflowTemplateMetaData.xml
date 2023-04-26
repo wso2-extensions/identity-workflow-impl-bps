@@ -18,9 +18,9 @@
 
 <met:MetaData xmlns:met="http://metadata.bean.mgt.workflow.identity.carbon.wso2.org">
     <met:Template>
-        <met:TemplateId>ExternalWorkflowTemplate</met:TemplateId>
-        <met:TemplateName>ExternalWorkflowTemplate</met:TemplateName>
-        <met:TemplateDescription>External Workflow Template</met:TemplateDescription>
+        <met:TemplateId>WorkflowMediatorTemplate</met:TemplateId>
+        <met:TemplateName>WorkflowMediatorTemplate</met:TemplateName>
+        <met:TemplateDescription>Workflow Mediator</met:TemplateDescription>
         <met:ParametersMetaData xmlns:met="http://metadata.bean.mgt.workflow.identity.carbon.wso2.org">
             <met:ParameterMetaData Name="ExternalWorkflowIdentifier" InputType="Text" isRequired="true">
                 <met:DisplayName>External Workflow Identifier</met:DisplayName>

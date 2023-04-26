@@ -32,9 +32,9 @@ public class WorkflowConstant {
     public static final String DESCRIPTION = "The operation should be approved by an authorized person with given " +
             "role, to complete.";
 
-    public static final String APPROVAL_TEMPLATE_NAME = "External Workflow Template";
+    public static final String APPROVAL_TEMPLATE_NAME = "Workflow Mediator";
 
-    public static final String TEMPLATE_ID = "ExternalWorkflowTemplate";
+    public static final String TEMPLATE_ID = "WorkflowMediatorTemplate";
 
     public static final String BPS_PROFILE = "BPSProfile";
 

@@ -36,17 +36,20 @@ import java.util.List;
 
 import static org.wso2.carbon.identity.workflow.impl.WFImplConstant.ParameterName.BPS_PROFILE;
 
+/**
+ *  Workflow Template for External workflow mediator
+ */
 public class ExternalWorkflowTemplateImpl extends AbstractWorkflow {
-
-
 
     public ExternalWorkflowTemplateImpl(Class<? extends TemplateInitializer> templateInitializerClass,
                                         Class<? extends WorkFlowExecutor> workFlowExecutorClass, String metaDataXML) {
+
         super(templateInitializerClass, workFlowExecutorClass, metaDataXML);
     }
 
     @Override
     protected InputData getInputData(ParameterMetaData parameterMetaData) throws WorkflowException {
+
         InputData inputData = null;
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         if (parameterMetaData != null && parameterMetaData.getName() != null) {
@@ -61,10 +64,14 @@ public class ExternalWorkflowTemplateImpl extends AbstractWorkflow {
                     Item[] items = new Item[bpsProfiles.size()];
                     for (int i = 0; i < bpsProfiles.size(); i++) {
                         BPSProfile bpsProfile = bpsProfiles.get(i);
-                        Item item = new Item();
-                        item.setKey(bpsProfile.getProfileName());
-                        item.setValue(bpsProfile.getProfileName());
-                        items[i] = item;
+                        //filter only workflow mediator profile
+                      if( bpsProfile.getUsername()==null || bpsProfile.getUsername()==""){
+                          Item item = new Item();
+                          item.setKey(bpsProfile.getProfileName());
+                          item.setValue(bpsProfile.getProfileName());
+                          items[i] = item;
+                      }
+
                     }
                     mapType.setItem(items);
                 }
@@ -73,6 +80,10 @@ public class ExternalWorkflowTemplateImpl extends AbstractWorkflow {
         return inputData;
     }
 
+    /**
+     *  No need to deploy the template since the workflow is already deployed in External BPS Engine
+     * @param parameterList
+     */
     @Override
     public void deploy(List<Parameter> parameterList) {
 

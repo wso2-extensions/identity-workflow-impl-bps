@@ -18,13 +18,13 @@
 
 <met:MetaData xmlns:met="http://metadata.bean.mgt.workflow.identity.carbon.wso2.org">
     <met:WorkflowImpl>
-        <met:WorkflowImplId>ExternalWorkflow</met:WorkflowImplId>
-        <met:WorkflowImplName>ExternalWorkflow</met:WorkflowImplName>
-        <met:WorkflowImplDescription>External Workflow</met:WorkflowImplDescription>
-        <met:TemplateId>ExternalWorkflowTemplate</met:TemplateId>
+        <met:WorkflowImplId>WorkflowMediator</met:WorkflowImplId>
+        <met:WorkflowImplName>WorkflowMediator</met:WorkflowImplName>
+        <met:WorkflowImplDescription>Workflow Mediator</met:WorkflowImplDescription>
+        <met:TemplateId>WorkflowMediatorTemplate</met:TemplateId>
         <met:ParametersMetaData>
             <met:ParameterMetaData Name="BPSProfile" InputType="Select" isRequired="true" isInputDataRequired="true">
-                <met:DisplayName>BPS Profile(Server Profile Name)</met:DisplayName>
+                <met:DisplayName>Workflow Profile </met:DisplayName>
             </met:ParameterMetaData>
         </met:ParametersMetaData>
     </met:WorkflowImpl>

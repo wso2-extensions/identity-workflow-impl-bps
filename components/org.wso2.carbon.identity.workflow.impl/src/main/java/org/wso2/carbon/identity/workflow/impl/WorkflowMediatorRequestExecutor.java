@@ -33,7 +33,7 @@ import org.wso2.carbon.identity.workflow.impl.bean.BPSProfile;
 import org.wso2.carbon.identity.workflow.impl.internal.WorkflowImplServiceDataHolder;
 import org.wso2.carbon.identity.workflow.impl.util.WorkflowRequestBuilder;
 
-import org.wso2.carbon.identity.workflow.impl.util.model.Variable;
+import org.wso2.carbon.identity.workflow.impl.util.model.WorkflowVariable;
 import org.wso2.carbon.identity.workflow.impl.util.model.WorkFlowMediatorRequest;
 import org.wso2.carbon.identity.workflow.mgt.bean.Parameter;
 import org.wso2.carbon.identity.workflow.mgt.dto.WorkflowRequest;
@@ -138,8 +138,8 @@ public class WorkflowMediatorRequestExecutor implements WorkFlowExecutor {
     private WorkFlowMediatorRequest createWorkflowRequest(OMElement messagePayload) throws WorkflowException {
 
         WorkFlowMediatorRequest workFlowMediatorRequest = new WorkFlowMediatorRequest();
-        workFlowMediatorRequest.setWorkflowID(getExternalWorkflowId(this.parameterList.get(0).getWorkflowId()));
-        List<Variable> parameterArray = new ArrayList<>();
+        workFlowMediatorRequest.setWorkflow_iD(getExternalWorkflowId(this.parameterList.get(0).getWorkflowId()));
+        List<WorkflowVariable> parameterArray = new ArrayList<>();
 
         Iterator workflowDetails = messagePayload.getChildElements();
 
@@ -147,10 +147,10 @@ public class WorkflowMediatorRequestExecutor implements WorkFlowExecutor {
             OMElementImpl workflowDetail = (OMElementImpl) workflowDetails.next();
             switch (workflowDetail.getLocalName()) {
                 case PROCESS_UUID:
-                    workFlowMediatorRequest.setRequestId(workflowDetail.getText());
+                    workFlowMediatorRequest.setRequest_id(workflowDetail.getText());
                 case TASK_INITIATOR:
-                    Variable variable = new Variable(TASK_INITIATOR, workflowDetail.getText());
-                    parameterArray.add(variable);
+                    WorkflowVariable workflowVariable = new WorkflowVariable(TASK_INITIATOR, workflowDetail.getText());
+                    parameterArray.add(workflowVariable);
                 case WORKFLOW_PARAMETERS:
                     String parameterName = null;
                     Iterator parameters = workflowDetail.getChildElements();
@@ -173,15 +173,15 @@ public class WorkflowMediatorRequestExecutor implements WorkFlowExecutor {
                             while (parameterItemValues.hasNext()) {
                                 OMElementImpl parameterItemValue = (OMElementImpl) parameterItemValues.next();
                                 if (!REQUEST_ID.equals(parameterName)) {
-                                    variable = new Variable(parameterName, parameterItemValue.getText());
-                                    parameterArray.add(variable);
+                                    workflowVariable = new WorkflowVariable(parameterName, parameterItemValue.getText());
+                                    parameterArray.add(workflowVariable);
                                 }
                             }
                         }
                     }
             }
         }
-        workFlowMediatorRequest.setVariables(parameterArray);
+        workFlowMediatorRequest.setWorkflow_variables(parameterArray);
 
         return workFlowMediatorRequest;
     }

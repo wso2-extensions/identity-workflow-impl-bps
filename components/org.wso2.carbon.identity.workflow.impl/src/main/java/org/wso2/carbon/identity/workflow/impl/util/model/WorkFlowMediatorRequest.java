@@ -25,9 +25,9 @@ import java.util.List;
  * Define the structure the of the common payload of workflow request
  */
 public class WorkFlowMediatorRequest {
-    private String requestId;
-    private String workflowID;
-    private List<Variable> variables;
+    private String request_id;
+    private String workflow_iD;
+    private List<WorkflowVariable> workflow_Workflow_variables;
 
 
 
@@ -35,30 +35,34 @@ public class WorkFlowMediatorRequest {
     public WorkFlowMediatorRequest() {
 
     }
-    public WorkFlowMediatorRequest(String processDefinitionId, String workflowID, List<Variable> variables) {
-        this.requestId = processDefinitionId;
-        this.variables = variables;
-        this.workflowID=workflowID;
+    public WorkFlowMediatorRequest(String processDefinitionId, String workflow_iD, List<WorkflowVariable> workflow_Workflow_variables) {
+
+        this.request_id = processDefinitionId;
+        this.workflow_Workflow_variables = workflow_Workflow_variables;
+        this.workflow_iD = workflow_iD;
     }
 
-    public String getRequestId() {
-        return requestId;
+    public String getRequest_id() {
+
+        return request_id;
     }
 
-    public void setRequestId(String processDefinitionId) {
-        this.requestId = processDefinitionId;
+    public void setRequest_id(String processDefinitionId) {
+
+        this.request_id = processDefinitionId;
     }
 
-    public List<Variable> getVariables() {
-        return variables;
+    public List<WorkflowVariable> getWorkflow_variables() {
+        return workflow_Workflow_variables;
     }
 
-    public void setVariables(List<Variable> variables) {
-        this.variables = variables;
+    public void setWorkflow_variables(List<WorkflowVariable> workflow_Workflow_variables) {
+
+        this.workflow_Workflow_variables = workflow_Workflow_variables;
     }
 
-    public void setWorkflowID(String workflowName) {
+    public void setWorkflow_iD(String workflowName) {
 
-        this.workflowID = workflowName;
+        this.workflow_iD = workflowName;
     }
 }

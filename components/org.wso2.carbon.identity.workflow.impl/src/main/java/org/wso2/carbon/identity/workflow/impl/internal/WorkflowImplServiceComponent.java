@@ -33,6 +33,8 @@ import org.wso2.carbon.identity.core.util.IdentityIOStreamUtils;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.workflow.impl.ApprovalWorkflow;
 import org.wso2.carbon.identity.workflow.impl.BPELDeployer;
+import org.wso2.carbon.identity.workflow.impl.ExternalWorkflowTemplate;
+import org.wso2.carbon.identity.workflow.impl.ExternalWorkflowTemplateImpl;
 import org.wso2.carbon.identity.workflow.impl.RequestExecutor;
 import org.wso2.carbon.identity.workflow.impl.WFImplConstant;
 import org.wso2.carbon.identity.workflow.impl.WorkflowImplService;
@@ -47,6 +49,7 @@ import org.wso2.carbon.identity.workflow.mgt.WorkflowManagementService;
 import org.wso2.carbon.identity.workflow.mgt.exception.WorkflowException;
 import org.wso2.carbon.identity.workflow.mgt.exception.WorkflowRuntimeException;
 import org.wso2.carbon.identity.workflow.mgt.listener.WorkflowListener;
+import org.wso2.carbon.identity.workflow.mgt.template.AbstractTemplate;
 import org.wso2.carbon.identity.workflow.mgt.util.WorkflowManagementUtil;
 import org.wso2.carbon.identity.workflow.mgt.workflow.AbstractWorkflow;
 import org.wso2.carbon.stratos.common.listeners.TenantMgtListener;
@@ -62,6 +65,9 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.TEMPLATE_PARAMETER_METADATA_FILE_NAME;
+import static org.wso2.carbon.identity.workflow.impl.constant.WorkflowConstant.WORKFLOW_IMPL_PARAMETER_METADATA_FILE_NAME;
 
 @Component(
          name = "org.wso2.carbon.identity.workflow.impl", 
@@ -80,6 +86,12 @@ public class WorkflowImplServiceComponent {
             bundleContext.registerService(WorkflowListener.class, new WorkflowListenerImpl(), null);
             bundleContext.registerService(WorkflowImplServiceListener.class, new WorkflowImplAuditLogger(), null);
             bundleContext.registerService(WorkflowImplServiceListener.class, new WorkflowImplValidationListener(), null);
+            bundleContext.registerService(AbstractTemplate.class,
+                    new ExternalWorkflowTemplate(readWorkflowImplParamMetaDataXML(TEMPLATE_PARAMETER_METADATA_FILE_NAME)), null);
+
+            bundleContext.registerService(AbstractWorkflow.class, new ExternalWorkflowTemplateImpl(BPELDeployer.class,
+                            RequestExecutor.class, readWorkflowImplParamMetaDataXML(WORKFLOW_IMPL_PARAMETER_METADATA_FILE_NAME)),
+                    null);
             WorkflowImplServiceDataHolder.getInstance().setWorkflowImplService(new WorkflowImplServiceImpl());
             WorkflowImplTenantMgtListener workflowTenantMgtListener = new WorkflowImplTenantMgtListener();
             ServiceRegistration tenantMgtListenerSR = bundleContext.registerService(TenantMgtListener.class.getName(), workflowTenantMgtListener, null);

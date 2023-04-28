@@ -45,6 +45,8 @@
     client = new WorkflowImplAdminServiceClient(cookie, backendServerURL, configContext);
 
     String profileName = request.getParameter(WorkflowUIConstants.PARAM_BPS_PROFILE_NAME);
+    String profileType = request.getParameter("profileType");
+   
 
     BPSProfile bpsProfile = client.getBPSProfiles(profileName);
 
@@ -63,7 +65,30 @@
     <script type="text/javascript" src="../carbon/admin/js/breadcrumbs.js"></script>
     <script type="text/javascript" src="../carbon/admin/js/cookies.js"></script>
     <script type="text/javascript" src="../carbon/admin/js/main.js"></script>
+    
     <script type="text/javascript">
+      
+          var abc = "<%=profileType%>";
+   
+
+    if(abc == "External"){
+        
+    console.log("External")
+    $(document).ready(function() {
+        document.querySelector(".bps").style.display = 'none';
+
+document.querySelector(".external").style.display = 'block';
+});
+   
+        }
+        if(abc == "BPS"){
+            $(document).ready(function() {
+                console.log("BPS");
+            document.querySelector(".external").style.display = 'none';
+            document.querySelector(".bps").style.display = 'block';
+});
+           
+        }
         function doCancel(){
             window.location = "list-bps-profiles.jsp";
         }
@@ -76,6 +101,16 @@
                 passwordField.value="" ;
             }
         }
+        function editApiKey(){
+
+                    var passwordField = document.getElementById("id_<%=WorkflowUIConstants.WORKFLOW_APIKEY%>");
+                    if(document.getElementById('chkbox_<%=WorkflowUIConstants.WORKFLOW_APIKEY%>').checked){
+                        passwordField.disabled=false;
+                    }else{
+                        passwordField.disabled=true;
+                        passwordField.value="" ;
+                    }
+                }
         function editCarbonAuthPassword(){
             var passwordField = document.getElementById("id_<%=WorkflowUIConstants.PARAM_CARBON_AUTH_PASSWORD%>");
             if(document.getElementById('chkbox_<%=WorkflowUIConstants.PARAM_CARBON_AUTH_PASSWORD%>').checked){
@@ -86,22 +121,33 @@
             }
         }
 
-        function doValidation() {
+        function doValidationBps() {
+
             // validate input elements of the form
             var form = document.getElementsByName("serviceAdd")[0];
-            if (!doValidateForm(form, "<fmt:message key="error.input.validation.error"/>")) {
-                return false;
-            }
+          //  if (!doValidateForm(form, "<fmt:message key="error.input.validation.error"/>")) {
+          //      return false;
+           // }
 
             document.serviceAdd.submit();
         }
+   function doValidationExternal() {
 
+            // validate input elements of the form
+            var form = document.getElementsByName("serviceExternal")[0];
+          //  if (!doValidateForm(form, "<fmt:message key="error.input.validation.error"/>")) {
+             //   return false;
+          //  }
+
+            document.serviceExternal.submit();
+        }
     </script>
 
     <div id="middle">
         <h2><fmt:message key='workflow.bps.profile.add'/></h2>
 
-        <div id="workArea">
+        <div id="workArea" class="bps"  >
+
             <form method="post" name="serviceAdd" action="update-bps-profile-finish-ajaxprocessor.jsp">
                 <input type="hidden" name="<%=WorkflowUIConstants.PARAM_ACTION%>"
                        value="<%=WorkflowUIConstants.ACTION_VALUE_UPDATE%>">
@@ -174,7 +220,68 @@
                     </tbody>
                 </table>
                 <div class="buttonRow" colspan="2" style="margin-top: 10px">
-                    <input class="button" value="<fmt:message key="update"/>" type="button" onclick="doValidation()"/>
+                    <input class="button" value="<fmt:message key="update"/>" type="button" onclick="doValidationBps()"/>
+                    <input class="button" style="margin-left: 10px;" value="<fmt:message key="cancel"/>"
+                                   type="button" onclick="doCancel();"/>
+                </div>
+                <br/>
+            </form>
+        </div>
+        <div id="workArea"  class="external" >
+            <form method="post" name="serviceExternal" action="update-bps-profile-finish-ajaxprocessor.jsp">
+                <input type="hidden" name="<%=WorkflowUIConstants.PARAM_ACTION%>"
+                       value="<%=WorkflowUIConstants.ACTION_VALUE_UPDATE%>">
+                <table class="styledLeft noBorders">
+                    <thead>
+                    <tr>
+                        <th colspan="2"><fmt:message key="workflow.bps.profile"/></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td width="30%"><fmt:message key='workflow.bps.profile.name'/></td>
+                        <td><input readonly type="text" name="<%=WorkflowUIConstants.PARAM_BPS_PROFILE_NAME%>"
+                                   label="<fmt:message key='workflow.bps.profile.name'/>" maxlength="45"
+                                   value='<%=Encode.forHtml(bpsProfile.getProfileName())%>'  style="width:30%"
+                                   class="text-box-big"/></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="styledLeft noBorders" style="margin-top: 10px">
+                    <thead>
+                    <tr>
+                        <th colspan="2"><fmt:message key="workflow.bps.profile.connection.details"/></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                        <td width="30%"><fmt:message key='workflow.bps.profile.worker.host'/></td>
+                        <td><input type="text" name="<%=WorkflowUIConstants.PARAM_BPS_WORKER_HOST%>"
+                                   value='<%=Encode.forHtml(bpsProfile.getWorkerHostURL())%>' maxlength="255"
+                                   black-list-patterns="^(\s*)$"
+                                   label="<fmt:message key='workflow.bps.profile.worker.host'/>"
+                                   style="width:60%" class="text-box-big"/>
+                            <div class="sectionHelp">
+                                <fmt:message key='help.desc.worker'/>
+                            </div>
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <td width="30%"><fmt:message key='workflow.bps.profile.apiKey'/></td>
+                        <td>
+                            <input disabled type="text" id="id_<%=WorkflowUIConstants.WORKFLOW_APIKEY%>"
+                                   name="<%=WorkflowUIConstants.WORKFLOW_APIKEY%>" placeholder="**********" autocomplete="off"
+                                   label="<fmt:message key='workflow.bps.profile.name'/>"
+                                   style="width:30%" class="text-box-big"/>
+                            <input onclick="editApiKey();" type="checkbox" id="chkbox_<%=WorkflowUIConstants.WORKFLOW_APIKEY%>" />
+                            <label class="control-label" for="chkbox_<%=WorkflowUIConstants.WORKFLOW_APIKEY%>">Edit Api Key</label>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="buttonRow" colspan="2" style="margin-top: 10px">
+                    <input class="button" value="<fmt:message key="update"/>" type="button" onclick="doValidationExternal()"/>
                     <input class="button" style="margin-left: 10px;" value="<fmt:message key="cancel"/>"
                                    type="button" onclick="doCancel();"/>
                 </div>

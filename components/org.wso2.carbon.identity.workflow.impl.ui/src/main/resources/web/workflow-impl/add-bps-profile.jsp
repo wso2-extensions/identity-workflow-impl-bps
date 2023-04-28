@@ -53,12 +53,12 @@
            function handleChange(){
      var selectedValue = document.getElementById('myDropdown').value;
       if (selectedValue === 'BPS') {
-   document.getElementById('externalClass').style.display = 'none';
+   document.getElementById('workflowMediatorClass').style.display = 'none';
           document.getElementById('bpsClass').style.display = 'block';
           console.log(selectedValue);
-      } if(selectedValue === 'External') {
+      } if(selectedValue === 'WorkflowMediator') {
         document.getElementById('bpsClass').style.display = 'none';
-          document.getElementById('externalClass').style.display = 'block';
+          document.getElementById('workflowMediatorClass').style.display = 'block';
           console.log(selectedValue);
 
       }
@@ -82,14 +82,14 @@
                     </thead>
                      <thead>
                                                                <tr>
-                                                                                   <td width="30%" style="padding-left:10px" >
+                                                                                   <td width="30%" style="padding:10px" >
                                                                                        <fmt:message key='workflow.select.profile.type'/>
                                                                                    </td>
                                                                                    <td>
-                                                                                     <div style="padding-left:10px">
+                                                                                     <div style="padding:10px">
                                                                                         <select id="myDropdown" onchange="handleChange(this)">
-                                                                                            <option value="BPS" selected>BPS Profile</option>
-                                                                                            <option value="External">External Workflow Profile</option>
+                                                                                            <option value="BPS" selected>BPS</option>
+                                                                                            <option value="WorkflowMediator">Workflow Mediator</option>
                                                                                         </select>
 
                                                                                       </div>
@@ -169,19 +169,17 @@
                     </tr>
                 </tbody>
 
-                <tbody id="externalClass"  style="display:none;">
+                <tbody id="workflowMediatorClass"  style="display:none;">
 
                   <tr>
                                           <td width="30%">
-                                              <fmt:message key='workflow.bps.profile.worker.host'/>
+                                              <fmt:message key='workflow.mediator.host'/>
                                               <span class="required">*</span>
                                           </td>
                                           <td><input type="text" name="<%=WorkflowUIConstants.PARAM_WORKFLOW_WORKER_HOST%>"
-                                                          label="<fmt:message key='workflow.bps.profile.worker.host'/>" maxlength="255"
+                                                          label="<fmt:message key='workflow.mediator.host'/>" maxlength="255"
                                                           black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"/>
-                                              <div class="sectionHelp">
-                                                  <fmt:message key='help.desc.worker'/>
-                                              </div>
+
                                           </td>
                                       </tr>
 
@@ -190,7 +188,7 @@
                          <fmt:message key='workflow.bps.profile.apiKey'/>
 
                         </td>
-                            <td><input type="text" name="<%=WorkflowUIConstants.WORKFLOW_APIKEY%>"
+                            <td><input type="password" name="<%=WorkflowUIConstants.WORKFLOW_APIKEY%>"
                                                        label="<fmt:message key='workflow.bps.profile.auth.password'/>"
                                                        black-list-patterns="^(\s*)$" style="width:60%" class="text-box-big"
                                                        autocomplete="off"/>

@@ -141,12 +141,12 @@
                 function handleChange(){
              var selectedValue = document.getElementById('myDropdown').value;
               if (selectedValue === 'BPS') {
-           document.querySelector(".external").style.display = 'none';
+           document.querySelector(".WorkflowMediatorClass").style.display = 'none';
                   document.querySelector(".bps").style.display = 'block';
                   console.log(selectedValue);
-              } if(selectedValue === 'External') {
+              } if(selectedValue === 'WorkflowMediator') {
                document.querySelector(".bps").style.display = 'none';
-                  document.querySelector(".external").style.display = 'block';
+                  document.querySelector(".WorkflowMediatorClass").style.display = 'block';
                   console.log(selectedValue);
 
               }
@@ -156,9 +156,10 @@
     <div id="middle">
         <h2><fmt:message key='workflow.bps.profile.list'/></h2>
         <div style="padding-left:10px">
+        <span>Select Profile Type</span>
                                                                                                 <select id="myDropdown" onchange="handleChange(this)">
-                                                                                                    <option value="BPS" selected>BPS Profile</option>
-                                                                                                    <option value="External">External Workflow Profile</option>
+                                                                                                    <option value="BPS" selected>BPS</option>
+                                                                                                    <option value="WorkflowMediator">Workflow Mediator</option>
                                                                                                 </select>
 
                                                                                               </div>
@@ -237,14 +238,14 @@
                               prevKey="prev" nextKey="next"/>
             <br/>
         </div>
-          <div id="workArea" style="display:none" class="external">
+          <div id="workArea" style="display:none" class="WorkflowMediatorClass">
 
                     <table class="styledLeft" id="servicesTable">
                         <thead>
                         <tr>
                             <th width="12%"><fmt:message key="workflow.bps.profile.name"/></th>
 
-                            <th width="20%"><fmt:message key="workflow.bps.profile.worker.host"/></th>
+                            <th width="20%"><fmt:message key="workflow.mediator.host"/></th>
 
                             <th><fmt:message key="actions"/></th>
                         </tr>

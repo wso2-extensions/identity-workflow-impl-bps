@@ -18,6 +18,9 @@
 
 package org.wso2.carbon.identity.workflow.impl.constant;
 
+/**
+ * Define the workflow constants related to the workflow request send to external workflow mediator
+ */
 public class WorkflowConstant {
 
     public static final String PROCESS_UUID = "uuid";
@@ -27,14 +30,14 @@ public class WorkflowConstant {
     public static final String TASK_INITIATOR = "taskInitiator";
     public static final String EVENT_TYPE = "eventType";
 
-    public static final String REQUEST_ID="REQUEST ID";
-
+    public static final String REQUEST_ID = "REQUEST ID";
+    public static final String  MEDIATOR_API_KEY = "API-Key";
     public static final String DESCRIPTION = "The operation should be approved by an authorized person with given " +
             "role, to complete.";
 
-    public static final String APPROVAL_TEMPLATE_NAME = "Workflow Mediator";
+    public static final String APPROVAL_TEMPLATE_NAME = "External Workflow Template";
 
-    public static final String TEMPLATE_ID = "WorkflowMediatorTemplate";
+    public static final String TEMPLATE_ID = "ExternalWorkflowTemplate";
 
     public static final String BPS_PROFILE = "BPSProfile";
 

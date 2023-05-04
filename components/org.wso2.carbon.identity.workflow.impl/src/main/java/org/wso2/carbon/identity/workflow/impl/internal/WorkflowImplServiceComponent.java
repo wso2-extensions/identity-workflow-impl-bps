@@ -35,8 +35,6 @@ import org.wso2.carbon.identity.workflow.impl.ApprovalWorkflow;
 import org.wso2.carbon.identity.workflow.impl.BPELDeployer;
 import org.wso2.carbon.identity.workflow.impl.ExternalWorkflowTemplate;
 import org.wso2.carbon.identity.workflow.impl.ExternalWorkflowTemplateImpl;
-import org.wso2.carbon.identity.workflow.impl.ExternalWorkflowTemplate;
-import org.wso2.carbon.identity.workflow.impl.ExternalWorkflowTemplateImpl;
 import org.wso2.carbon.identity.workflow.impl.RequestExecutor;
 import org.wso2.carbon.identity.workflow.impl.WFImplConstant;
 import org.wso2.carbon.identity.workflow.impl.WorkflowImplService;

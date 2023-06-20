@@ -102,7 +102,7 @@ public class WorkflowImplAuditLogger extends AbstractWorkflowImplServiceListener
                 + "\",\"" + "Workflow Impl ID" + "\" : \"" + workflow.getWorkflowImplId()
                 + "\"";
         AUDIT_LOG.info(String.format(AUDIT_MESSAGE, getInitiator(), "Remove BPS Package",
-                "Workflow Impl Admin Service", auditData, AUDIT_SUCCESS));
+                auditData, AUDIT_SUCCESS));
     }
 
     /**

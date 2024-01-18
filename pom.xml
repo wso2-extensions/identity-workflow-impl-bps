@@ -123,9 +123,9 @@
                 <type>zip</type>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
                 <artifactId>org.wso2.carbon.identity.workflow.mgt</artifactId>
-                <version>${carbon.identity.framework.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -153,6 +153,114 @@
                 <groupId>org.apache.ws.commons.axiom.wso2</groupId>
                 <artifactId>axiom</artifactId>
                 <version>${axiom.wso2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+                <version>${cxf-bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-rs-service-description</artifactId>
+                <version>${cxf-bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring-web.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring-web.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>${javax.ws.rs-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-jaxrs</artifactId>
+                <version>${swagger-jaxrs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.dataformat</groupId>
+                        <artifactId>jackson-dataformat-yaml</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>jsr311-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-json-provider</artifactId>
+                <version>${jackson-jaxrs-json-provider.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.governance</groupId>
+                <artifactId>org.wso2.carbon.identity.recovery</artifactId>
+                <version>${identity.governance.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.business-process</groupId>
+                <artifactId>org.wso2.carbon.humantask</artifactId>
+                <version>${carbon.business-process.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.business-process</groupId>
+                <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
+                <version>${carbon.business-process.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson-dataformat-xml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.orbit.javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${version.org.wso2.orbit.javax.xml.bind}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.event</artifactId>
+                <version>5.25.597</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.orbit.org.owasp.encoder</groupId>
+                <artifactId>encoder</artifactId>
+                <version>${encoder.wso2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
+                <artifactId>org.wso2.carbon.identity.workflow.mgt.stub</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- Pax Logging -->
@@ -242,6 +350,7 @@
         <module>features/org.wso2.carbon.identity.workflow.impl.server.feature</module>
         <module>features/org.wso2.carbon.identity.workflow.impl.ui.feature</module>
         <module>features/org.wso2.carbon.identity.workflow.impl.feature</module>
+        <module>components/org.wso2.carbon.identity.workflow.core</module>
 
     </modules>
     <properties>
@@ -281,6 +390,24 @@
         <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
         <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
+
+        <cxf-bundle.version>3.5.0</cxf-bundle.version>
+        <spring-web.version>5.3.25</spring-web.version>
+        <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>
+        <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
+        <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>
+        <jackson-jaxrs-json-provider.version>2.13.2</jackson-jaxrs-json-provider.version>
+        <identity.governance.version>1.8.62</identity.governance.version>
+        <carbon.business-process.version>4.5.2</carbon.business-process.version>
+        <jackson-databind.version>2.13.4.2</jackson-databind.version>
+        <jackson-dataformat-xml.version>2.13.2</jackson-dataformat-xml.version>
+
+        <version.org.wso2.orbit.javax.xml.bind>2.3.1.wso2v1</version.org.wso2.orbit.javax.xml.bind>
+        <encoder.wso2.version>1.2.0.wso2v1</encoder.wso2.version>
+
+        <carbon.identity.package.import.version.range>[5.14.0, 6.0.0)</carbon.identity.package.import.version.range>
+        <import.package.version.commons.logging>[1.2.0,2.0.0)</import.package.version.commons.logging>
+        <org.wso2.carbon.database.utils.version.range>[2.0.0,2.2.0)</org.wso2.carbon.database.utils.version.range>
 
         <!-- Pax Logging Version -->
         <pax.logging.api.version>1.10.1</pax.logging.api.version>

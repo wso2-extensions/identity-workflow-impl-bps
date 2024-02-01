@@ -35,6 +35,19 @@ subscriptions =["PRE_AUTHENTICATION"]
 
 11. Re-enable workflow approval API by adding the configuration below to the <IS_HOME>/repository/conf/deployment.toml
 
+```
+[[api_resources]]
+name = "workflow Approval API"
+identifier = "/me/approval-tasks"
+requiresAuthorization = true
+type = "TENANT"
+description = "API representation of the workflow Approval API"
+
+[[api_resources.scopes]]
+displayName = "View Workflow Approvals"
+name = "internal_humantask_view"
+
+```
 
 # Related REST APIs to workflow
 

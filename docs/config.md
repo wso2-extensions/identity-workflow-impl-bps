@@ -5,10 +5,9 @@ To use workflow with WSO2 Identity Server 7 onwards, you need to follow below st
 # Instructions to enable workflow
 
 1. Unzip the zip file.
-2. Run identity workflow-related db scripts against the identity  <IS_HOME>/repository/database/ IDENTITY_DB(WSO2IDENTITY_DB.mv.db).
-   If the production db run the scripts against it after configuring it from [here](https://is.docs.wso2.com/en/next/deploy/configure/databases/carbon-database/).
+2. If the system is in a production environment, execute the identity workflow-related database scripts on the production Identity Server database.  Follow [this](https://is.docs.wso2.com/en/next/deploy/configure/databases/carbon-database/)  guide to configure a production database. In case you are not utilizing a production database and are instead using the H2 database, run the identity workflow-related database scripts against the identity database located at <IS_HOME>/repository/database/IDENTITY_DB (WSO2IDENTITY_DB.mv.db).
 3. Copy bps-datasources.xml to  <IS_HOME>/repository/conf/datasources.
-4. Copy the provided file (jpadb.mv.db) or Run bps-related scripts against the database in <IS_HOME>/repository/database/JPA_DB(jpadb.mv.db). If you need to change to a different db follow this [guide](https://is.docs.wso2.com/en/next/deploy/configure/databases/carbon-database/change-datasource-bpsds/) and copy bps-datasources.xml.j2 to <IS_HOME>/repository/resources/conf/templates/repository/conf/datasources/bps-datasources.xml.j2
+4. Copy the provided file (jpadb.mv.db) or run bps-related scripts against the database in <IS_HOME>/repository/database/JPA_DB(jpadb.mv.db). If you need to change to a different db follow this [guide](https://is.docs.wso2.com/en/next/deploy/configure/databases/carbon-database/change-datasource-bpsds/) and copy bps-datasources.xml.j2 to <IS_HOME>/repository/resources/conf/templates/repository/conf/datasources/bps-datasources.xml.j2
 5. Copy 4 XML files in xml folder to <IS_HOME>/repository/conf.
 6. Add all jars in the dropins folder to <IS_HOME>/repository/components/dropins.
 7. Copy weblib jars to <IS_HOME>/repository/deployment/server/webapps/api/WEB-INF/lib.

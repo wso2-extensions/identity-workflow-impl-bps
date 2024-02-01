@@ -2,7 +2,7 @@
 
 To use workflow with WSO2 Identity Server 7 onwards, you need to follow below steps. 
 
-# Instructions to enable workkflow
+# Instructions to enable workflow
 
 1. Unzip the zip file.
 2. Run identity workflow-related db scripts against the identity  <IS_HOME>/repository/database/ IDENTITY_DB(WSO2IDENTITY_DB.mv.db).

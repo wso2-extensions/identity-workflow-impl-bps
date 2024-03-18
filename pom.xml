@@ -392,7 +392,7 @@
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
 
         <cxf-bundle.version>3.5.0</cxf-bundle.version>
-        <spring-web.version>5.3.25</spring-web.version>
+        <spring-web.version>5.3.32-wso2v1</spring-web.version>
         <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>

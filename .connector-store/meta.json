@@ -9,5 +9,12 @@
         "workflow-connector",
         "workflow"
     ],
-    "releases": []
+    "releases": [
+        {
+            "tagName": "1.0.0",
+            "products": [
+                "IS 7.0.0"
+            ]
+        }
+    ]
 }

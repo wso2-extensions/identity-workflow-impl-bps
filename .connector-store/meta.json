@@ -1,0 +1,17 @@
+{
+    "name": "Workflow Connector",
+    "owner": "WSO2",
+    "category": "User Management",
+    "documentationUrl": "https://github.com/wso2-extensions/identity-workflow-impl-bps/blob/master/docs/config.md",
+    "description": "TThe WSO2 Identity Server Workflow Connector enhances control over identity operations by allowing organizations to implement customized workflows. This feature enables the imposition of specific constraints and approval processes, such as manager approval for tasks like 'User Add.' By defining predefined paths, it ensures adherence to security protocols and compliance requirements, offering a flexible and adaptable approach to identity governance.",
+    "status": "Active",
+    "labels": ["workflow", "workflow-connector"],
+    "releases": [
+        {
+            "tagName": "1.0.0",
+            "products": [
+                "IS 7.0.0"
+            ]
+        }
+    ]
+}

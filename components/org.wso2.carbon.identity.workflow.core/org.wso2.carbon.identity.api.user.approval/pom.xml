@@ -20,7 +20,7 @@
     <parent>
         <artifactId>org.wso2.carbon.identity.workflow.core</artifactId>
         <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
-        <version>5.5.8</version>
+        <version>5.5.9-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

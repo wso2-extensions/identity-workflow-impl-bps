@@ -18,12 +18,13 @@
 
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalService;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.core.factories.UserApprovalServiceFactory;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 
 import java.util.List;
+
 import javax.ws.rs.core.Response;
 
 /**
@@ -31,8 +32,16 @@ import javax.ws.rs.core.Response;
  */
 public class MeApiServiceImpl extends MeApiService {
 
-    @Autowired
-    UserApprovalService userApprovalService;
+    private final UserApprovalService userApprovalService;
+
+    public MeApiServiceImpl() {
+
+        try {
+            this.userApprovalService = UserApprovalServiceFactory.getUserApprovalService();
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while initiating UserApprovalService", e);
+        }
+    }
 
     @Override
     public Response getApprovalTaskInfo(String taskId) {

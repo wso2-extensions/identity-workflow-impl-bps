@@ -20,7 +20,7 @@
     <parent>
         <artifactId>workflow-mgt-feature</artifactId>
         <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
-        <version>5.5.15</version>
+        <version>5.5.16-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,30 +16,24 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.api.user.approval.common;
+package org.wso2.carbon.identity.rest.api.user.approval.v1.core.factories;
 
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.humantask.core.TaskOperationService;
 import org.wso2.carbon.humantask.core.TaskOperationServiceImpl;
+import org.wso2.carbon.identity.api.user.approval.common.UserApprovalServiceHolder;
+import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalService;
 
-/**
- * Service holder class for user approvals.
- */
-public class UserApprovalServiceHolder {
+public class UserApprovalServiceFactory {
 
-    private static class TaskOperationServiceHolder {
+    private static final UserApprovalService SERVICE;
 
-        static final TaskOperationService SERVICE = new TaskOperationServiceImpl();
+    static {
+        TaskOperationService taskOperationService = UserApprovalServiceHolder.getTaskOperationService();
+        SERVICE = new UserApprovalService(taskOperationService);
     }
 
-    /**
-     * Get TaskOperationService osgi service.
-     *
-     * @return TaskOperationService
-     */
-    public static TaskOperationService getTaskOperationService() {
+    public static UserApprovalService getUserApprovalService() {
 
-        return TaskOperationServiceHolder.SERVICE;
+        return SERVICE;
     }
 }
-

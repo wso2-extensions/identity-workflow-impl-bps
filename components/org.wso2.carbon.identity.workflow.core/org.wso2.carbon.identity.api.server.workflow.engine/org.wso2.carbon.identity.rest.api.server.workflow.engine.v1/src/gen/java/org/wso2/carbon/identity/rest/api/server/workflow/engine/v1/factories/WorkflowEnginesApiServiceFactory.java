@@ -23,10 +23,10 @@ import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.impl.Workflow
 
 public class WorkflowEnginesApiServiceFactory {
 
-   private final static WorkflowEnginesApiService service = new WorkflowEnginesApiServiceImpl();
+   private final static WorkflowEnginesApiService SERVICE = new WorkflowEnginesApiServiceImpl();
 
-   public static WorkflowEnginesApiService getWorkflowEnginesApi()
-   {
-      return service;
+   public static WorkflowEnginesApiService getWorkflowEnginesApi() {
+
+      return SERVICE;
    }
 }

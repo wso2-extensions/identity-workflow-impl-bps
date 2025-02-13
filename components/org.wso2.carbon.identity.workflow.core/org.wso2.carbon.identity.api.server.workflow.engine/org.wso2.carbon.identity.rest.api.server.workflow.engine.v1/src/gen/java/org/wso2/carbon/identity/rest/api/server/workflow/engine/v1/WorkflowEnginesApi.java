@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.rest.api.server.workflow.engine.v1;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.dto.*;
 import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.WorkflowEnginesApiService;
 import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.factories.WorkflowEnginesApiServiceFactory;
@@ -43,13 +42,14 @@ import javax.ws.rs.*;
 @io.swagger.annotations.Api(value = "/workflow-engines", description = "the workflow-engines API")
 public class WorkflowEnginesApi  {
 
-   @Autowired
    private WorkflowEnginesApiService delegate;
 
+   public WorkflowEnginesApi() {
+
+      this.delegate = WorkflowEnginesApiServiceFactory.getWorkflowEnginesApi();
+    }
+
     @GET
-    
-    
-    
     @io.swagger.annotations.ApiOperation(value = "Retrieve all the available workflow engines.", notes = "Retrieve metadata information of all the workflow engines in the system.\n\n  <b>Permission required:</b>\n    * /permission/admin/manage/humantask/viewtasks\n", response = WorkFlowEngineDTO.class, responseContainer = "List")
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "search results matching criteria"),

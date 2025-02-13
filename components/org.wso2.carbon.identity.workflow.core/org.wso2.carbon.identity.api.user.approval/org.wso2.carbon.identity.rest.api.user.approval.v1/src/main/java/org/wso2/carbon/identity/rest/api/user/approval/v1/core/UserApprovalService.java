@@ -34,10 +34,10 @@ import org.wso2.carbon.humantask.client.api.types.TSimpleQueryCategory;
 import org.wso2.carbon.humantask.client.api.types.TSimpleQueryInput;
 import org.wso2.carbon.humantask.client.api.types.TStatus;
 import org.wso2.carbon.humantask.client.api.types.TTaskSimpleQueryResultSet;
+import org.wso2.carbon.humantask.core.TaskOperationService;
 import org.wso2.carbon.humantask.core.api.client.TaskOperationsImpl;
 import org.wso2.carbon.humantask.core.dao.TaskStatus;
 import org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant;
-import org.wso2.carbon.identity.api.user.approval.common.UserApprovalServiceHolder;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.core.functions.TTaskSimpleQueryResultRowToExternal;
@@ -50,6 +50,7 @@ import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.TaskSummaryDTO;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.ws.rs.core.Response;
 
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.SERVER_ERROR_CHANGING_APPROVALS_STATE;
@@ -62,9 +63,6 @@ import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_NON_EXISTING_TASK_ID;
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_NOT_ACCEPTABLE_INPUT_FOR_NEXT_STATE;
 import static org.wso2.carbon.identity.api.user.approval.common.ApprovalConstant.ErrorMessage.USER_ERROR_UNAUTHORIZED_USER;
-import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.APPROVE;
-import static org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO.ActionEnum.REJECT;
-
 /**
  * Call internal osgi services to perform user's approval task related operations
  */
@@ -78,9 +76,21 @@ public class UserApprovalService {
     private static final String APPROVAL_DATA_STRING = "<sch:ApprovalCBData xmlns:sch=\"http://ht.bpel.mgt.workflow" +
             ".identity.carbon.wso2.org/wsdl/schema\"><approvalStatus>%s</approvalStatus></sch:ApprovalCBData>";
 
+    private final TaskOperationService taskOperationService;
+
+    public UserApprovalService(TaskOperationService taskOperationService) {
+
+        try {
+            this.taskOperationService = taskOperationService;
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while initializing UserApprovalService.", e);
+        }
+    }
+
     /**
      * Search available approval tasks for the current authenticated user
-     * @param limit number of records to be returned
+     *
+     * @param limit  number of records to be returned
      * @param offset start page
      * @param status state of the tasks [RESERVED, READY or COMPLETED]
      * @return
@@ -100,8 +110,7 @@ public class UserApprovalService {
 
             queryInput.setSimpleQueryCategory(TSimpleQueryCategory.CLAIMABLE);
             queryInput.setStatus(tStatuses);
-            TTaskSimpleQueryResultSet taskResults = UserApprovalServiceHolder.getTaskOperationService()
-                    .simpleQuery(queryInput);
+            TTaskSimpleQueryResultSet taskResults = taskOperationService.simpleQuery(queryInput);
             if (taskResults != null && taskResults.getRow() != null) {
                 return Arrays.stream(taskResults.getRow()).map(new TTaskSimpleQueryResultRowToExternal())
                         .collect(Collectors.toList());
@@ -115,10 +124,12 @@ public class UserApprovalService {
 
     /**
      * Get details of a task identified by the taskId
+     *
      * @param taskId
      * @return
      */
     public TaskDataDTO getTaskData(String taskId) {
+
         TaskOperationsImpl taskOperations = new TaskOperationsImpl();
         URI taskIdURI = getUri(taskId);
         try {
@@ -149,6 +160,7 @@ public class UserApprovalService {
     }
 
     private URI getUri(String taskId) {
+
         URI taskIdURI;
         try {
             taskIdURI = new URI(taskId);
@@ -162,10 +174,12 @@ public class UserApprovalService {
      * Update the state of a task identified by the task id
      * User can reserve the task by claiming, or release a reserved task to himself
      * Or user can approve or reject a task
+     *
      * @param taskId
      * @param nextState
      */
     public void updateStatus(String taskId, StateDTO nextState) {
+
         TaskOperationsImpl taskOperations = new TaskOperationsImpl();
         URI taskIdURI = getUri(taskId);
         try {
@@ -201,8 +215,8 @@ public class UserApprovalService {
         }
     }
 
-    private void completeTask(TaskOperationsImpl taskOperations, URI taskIdURI, String action) throws
-            Exception {
+    private void completeTask(TaskOperationsImpl taskOperations, URI taskIdURI, String action) throws Exception {
+
         taskOperations.start(taskIdURI);
         taskOperations.complete(taskIdURI, String.format(APPROVAL_DATA_STRING, action));
     }
@@ -222,6 +236,7 @@ public class UserApprovalService {
     }
 
     private TStatus[] getRequiredTStatuses(List<String> status) {
+
         List<String> allStatuses = Arrays.asList(TaskStatus.RESERVED.toString(), TaskStatus.READY.toString(),
                 TaskStatus.COMPLETED.toString());
         TStatus[] tStatuses = getTStatus(allStatuses);
@@ -237,10 +252,12 @@ public class UserApprovalService {
     }
 
     private TStatus[] getTStatus(List<String> statuses) {
+
         return statuses.stream().map(s -> getTStatus(s)).toArray(TStatus[]::new);
     }
 
     private TStatus getTStatus(String status) {
+
         TStatus tStatus = new TStatus();
         tStatus.setTStatus(status);
         return tStatus;
@@ -277,6 +294,7 @@ public class UserApprovalService {
      * @return
      */
     private APIError handleError(Response.Status status, ApprovalConstant.ErrorMessage error) {
+
         return new APIError(status, getErrorBuilder(error).build());
 
     }

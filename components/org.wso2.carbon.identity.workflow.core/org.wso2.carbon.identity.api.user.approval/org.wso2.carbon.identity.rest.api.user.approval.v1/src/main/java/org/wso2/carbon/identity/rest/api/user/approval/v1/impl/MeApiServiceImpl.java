@@ -50,21 +50,26 @@ public class MeApiServiceImpl extends MeApiService {
     @Override
     public Response updateStateOfTask(String taskId, StateDTO nextState) {
 
-        org.wso2.carbon.identity.workflow.engine.dto.StateDTO nextStateDTO = new org.wso2.carbon.identity.workflow.engine.dto.StateDTO();
-        if (nextState.getAction() == StateDTO.ActionEnum.APPROVE){
-            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.APPROVE);
-            approvalEventService.updateStatus(taskId, nextStateDTO);
-        } else if (nextState.getAction() == StateDTO.ActionEnum.REJECT){
-            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.REJECT);
-            approvalEventService.updateStatus(taskId, nextStateDTO);
-        } else if (nextState.getAction() == StateDTO.ActionEnum.RELEASE){
-            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.RELEASE);
-            approvalEventService.updateStatus(taskId, nextStateDTO);
-        } else if (nextState.getAction() == StateDTO.ActionEnum.CLAIM){
-            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.CLAIM);
-            approvalEventService.updateStatus(taskId, nextStateDTO);
-        }
+        org.wso2.carbon.identity.workflow.engine.dto.StateDTO nextStateDTO = convertState(nextState);
+        approvalEventService.updateStatus(taskId, nextStateDTO);
 
         return Response.ok().build();
+    }
+
+    private org.wso2.carbon.identity.workflow.engine.dto.StateDTO convertState(StateDTO nextState) {
+
+        org.wso2.carbon.identity.workflow.engine.dto.StateDTO nextStateDTO = new org.wso2.carbon.identity.workflow.engine.dto.StateDTO();
+
+        if (nextState.getAction() == StateDTO.ActionEnum.APPROVE) {
+            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.APPROVE);
+        } else if (nextState.getAction() == StateDTO.ActionEnum.REJECT) {
+            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.REJECT);
+        } else if (nextState.getAction() == StateDTO.ActionEnum.RELEASE) {
+            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.RELEASE);
+        } else if (nextState.getAction() == StateDTO.ActionEnum.CLAIM) {
+            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.CLAIM);
+        }
+
+        return nextStateDTO;
     }
 }

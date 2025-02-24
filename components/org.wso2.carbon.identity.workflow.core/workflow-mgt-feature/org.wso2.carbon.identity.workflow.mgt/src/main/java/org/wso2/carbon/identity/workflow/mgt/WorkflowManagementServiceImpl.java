@@ -365,7 +365,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         Workflow oldWorkflow = workflowDAO.getWorkflow(workflow.getWorkflowId());
         if (oldWorkflow == null) {
             workflowDAO.addWorkflow(workflow, tenantId);
-            WorkflowManagementUtil.createAppRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
+//            WorkflowManagementUtil.createAppRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
         } else {
             workflowDAO.removeWorkflowParams(workflow.getWorkflowId());
             workflowDAO.updateWorkflow(workflow);
@@ -529,13 +529,13 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             List<WorkflowListener> workflowListenerList =
                     WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
 
-            for (WorkflowListener workflowListener : workflowListenerList) {
-                if (workflowListener.isEnable()) {
-                    workflowListener.doPreDeleteWorkflow(workflow);
-                }
-            }
+//            for (WorkflowListener workflowListener : workflowListenerList) {
+//                if (workflowListener.isEnable()) {
+//                    workflowListener.doPreDeleteWorkflow(workflow);
+//                }
+//            }
 
-            WorkflowManagementUtil.deleteWorkflowRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
+//            WorkflowManagementUtil.deleteWorkflowRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
             workflowDAO.removeWorkflowParams(workflowId);
             workflowDAO.removeWorkflow(workflowId);
 

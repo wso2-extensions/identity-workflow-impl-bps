@@ -16,20 +16,20 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.impl;
+package org.wso2.carbon.identity.rest.api.server.workflow.engine.v1;
 
 import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.*;
 import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.model.*;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import java.io.InputStream;
 import java.util.List;
-
+import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.model.Error;
+import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.model.WorkflowEngine;
 import javax.ws.rs.core.Response;
 
-public class WorkflowEnginesApiServiceImpl implements WorkflowEnginesApiService {
 
-    @Override
-    public Response searchWorkFlowEngines() {
+public interface WorkflowEnginesApiService {
 
-        // do some magic!
-        return Response.ok().entity("magic!").build();
-    }
+      public Response searchWorkFlowEngines();
 }

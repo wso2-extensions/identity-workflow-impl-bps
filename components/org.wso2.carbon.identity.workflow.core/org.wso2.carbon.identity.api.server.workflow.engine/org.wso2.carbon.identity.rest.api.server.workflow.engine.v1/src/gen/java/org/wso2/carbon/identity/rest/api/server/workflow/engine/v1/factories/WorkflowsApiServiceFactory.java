@@ -18,15 +18,15 @@
 
 package org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.factories;
 
-import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.WorkflowEnginesApiService;
-import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.impl.WorkflowEnginesApiServiceImpl;
+import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.WorkflowsApiService;
+import org.wso2.carbon.identity.rest.api.server.workflow.engine.v1.impl.WorkflowsApiServiceImpl;
 
-public class WorkflowEnginesApiServiceFactory {
+public class WorkflowsApiServiceFactory {
 
-   private final static WorkflowEnginesApiService SERVICE = new WorkflowEnginesApiServiceImpl();
+   private final static WorkflowsApiService service = new WorkflowsApiServiceImpl();
 
-   public static WorkflowEnginesApiService getWorkflowEnginesApi() {
-
-      return SERVICE;
+   public static WorkflowsApiService getWorkflowsApi()
+   {
+      return service;
    }
 }

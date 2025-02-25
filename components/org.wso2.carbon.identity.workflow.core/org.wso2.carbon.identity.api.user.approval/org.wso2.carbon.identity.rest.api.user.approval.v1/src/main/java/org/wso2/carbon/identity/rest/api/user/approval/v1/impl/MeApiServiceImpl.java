@@ -19,12 +19,10 @@
 package org.wso2.carbon.identity.rest.api.user.approval.v1.impl;
 
 import org.wso2.carbon.identity.rest.api.user.approval.v1.MeApiService;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.core.UserApprovalService;
-import org.wso2.carbon.identity.rest.api.user.approval.v1.core.factories.UserApprovalServiceFactory;
+import org.wso2.carbon.identity.workflow.engine.ApprovalEventService;
 import org.wso2.carbon.identity.rest.api.user.approval.v1.dto.StateDTO;
 
 import java.util.List;
-
 import javax.ws.rs.core.Response;
 
 /**
@@ -32,33 +30,41 @@ import javax.ws.rs.core.Response;
  */
 public class MeApiServiceImpl extends MeApiService {
 
-    private final UserApprovalService userApprovalService;
-
-    public MeApiServiceImpl() {
-
-        try {
-            this.userApprovalService = UserApprovalServiceFactory.getUserApprovalService();
-        } catch (Exception e) {
-            throw new RuntimeException("Error occurred while initiating UserApprovalService", e);
-        }
-    }
+    ApprovalEventService approvalEventService;
+     public MeApiServiceImpl(){
+         this.approvalEventService = new ApprovalEventService();
+     }
 
     @Override
     public Response getApprovalTaskInfo(String taskId) {
 
-        return Response.ok().entity(userApprovalService.getTaskData(taskId)).build();
+        return Response.ok().entity(approvalEventService.getTaskData(taskId)).build();
     }
 
     @Override
     public Response listApprovalTasksForLoggedInUser(Integer limit, Integer offset, List<String> status) {
 
-        return Response.ok().entity(userApprovalService.listTasks(limit, offset, status)).build();
+        return Response.ok().entity(approvalEventService.listTasks(limit, offset, status)).build();
     }
 
     @Override
     public Response updateStateOfTask(String taskId, StateDTO nextState) {
 
-        userApprovalService.updateStatus(taskId, nextState);
+        org.wso2.carbon.identity.workflow.engine.dto.StateDTO nextStateDTO = new org.wso2.carbon.identity.workflow.engine.dto.StateDTO();
+        if (nextState.getAction() == StateDTO.ActionEnum.APPROVE){
+            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.APPROVE);
+            approvalEventService.updateStatus(taskId, nextStateDTO);
+        } else if (nextState.getAction() == StateDTO.ActionEnum.REJECT){
+            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.REJECT);
+            approvalEventService.updateStatus(taskId, nextStateDTO);
+        } else if (nextState.getAction() == StateDTO.ActionEnum.RELEASE){
+            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.RELEASE);
+            approvalEventService.updateStatus(taskId, nextStateDTO);
+        } else if (nextState.getAction() == StateDTO.ActionEnum.CLAIM){
+            nextStateDTO.setAction(org.wso2.carbon.identity.workflow.engine.dto.StateDTO.ActionEnum.CLAIM);
+            approvalEventService.updateStatus(taskId, nextStateDTO);
+        }
+
         return Response.ok().build();
     }
 }

@@ -8,6 +8,11 @@
     "labels": ["workflow", "workflow-connector"],
     "releases": [
         {
+            "tagName": "v1.0.3",
+            "products": [
+                "IS 7.1.0"
+            ]
+        }, {
             "tagName": "v1.0.0",
             "products": [
                 "IS 7.0.0"

@@ -14,7 +14,7 @@ To use workflow with WSO2 Identity Server 7 onwards, you need to follow below st
 8. To enable APIs related to approval,
    - **For versions below IS-7.1.0**
       - add `<import resource="classpath:META-INF/cxf/user-approval-v1-cxf.xml"/>` under beans starting tag and add `<bean class="org.wso2.carbon.identity.rest.api.user.approval.v1.MeApi"/>` under <jaxrs:server id="users" address="/users/v1"> to beans.xml located in <IS_HOME>/repository/deployment/server/webapps/api/WEB-INF/beans.xml.
-   - **For IS-7.1.0 onwards For IS-7.1.0** 
+   - **For IS-7.1.0 onwards** 
       - add `org.wso2.carbon.identity.rest.api.user.approval.v1.MeApi` under <init-params> tag of <jaxrs.serviceClasses> under <servlet-name>UserV1Servlet</servlet-name> to beans.xml located in <IS_HOME>/repository/deployment/server/webapps/api/WEB-INF/web.xml.
 9. Add listener and handler to <IS_HOME>/repository/conf/deployment.toml
 

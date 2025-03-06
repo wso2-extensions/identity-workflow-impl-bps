@@ -394,6 +394,24 @@ public interface WorkflowListener {
     void doPostListAllAssociations(int tenantId, List<Association> result) throws WorkflowException;
 
     /**
+     * Trigger before getting an association
+     *
+     * @param associationId Association ID
+     * @throws WorkflowException
+     */
+    void doPreGetAssociation(String associationId) throws WorkflowException;
+
+
+    /**
+     * Trigger after getting an association
+     *
+     * @param associationId Association ID
+     * @throws WorkflowException
+     */
+    void doPostGetAssociation(String associationId) throws WorkflowException;
+
+
+    /**
      * Trigger before changing state of an association
      *
      * @param associationId Association ID
@@ -410,6 +428,35 @@ public interface WorkflowListener {
      * @throws WorkflowException
      */
     void doPostChangeAssociationState(String associationId, boolean isEnable) throws WorkflowException;
+
+
+    /**
+     * Trigger before changing an association
+     *
+     * @param associationId Association ID
+     * @param associationName      Association Name
+     * @param workflowId      Workflow ID
+     * @param eventId      Event ID
+     * @param condition Association Condition
+     * @param isEnable      New state
+     * @throws WorkflowException
+     */
+    void doPreChangeAssociation(String associationId, String associationName, String workflowId, String eventId, String condition, boolean isEnable);
+
+
+    /**
+     * Trigger after changing an association
+     *
+     * @param associationId Association ID
+     * @param associationName      Association Name
+     * @param workflowId      Workflow ID
+     * @param eventId      Event ID
+     * @param condition Association Condition
+     * @param isEnable      New state
+     * @throws WorkflowException
+     */
+    void doPostChangeAssociation(String associationId, String associationName, String workflowId, String eventId, String condition, boolean isEnable);
+
 
     /**
      * Trigger before addEntityRequestEntityRelationships

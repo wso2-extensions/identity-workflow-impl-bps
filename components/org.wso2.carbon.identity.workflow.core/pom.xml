@@ -28,13 +28,6 @@
     <artifactId>org.wso2.carbon.identity.workflow.core</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>org.wso2.carbon.identity.api.server.workflow.engine</module>
-        <module>
-            org.wso2.carbon.identity.api.server.workflow.engine/org.wso2.carbon.identity.rest.api.server.workflow.engine.v1
-        </module>
-        <module>org.wso2.carbon.identity.api.user.approval</module>
-        <module>org.wso2.carbon.identity.api.user.approval/org.wso2.carbon.identity.api.user.approval.common</module>
-        <module>org.wso2.carbon.identity.api.user.approval/org.wso2.carbon.identity.rest.api.user.approval.v1</module>
         <module>workflow-mgt-feature</module>
         <module>org.wso2.carbon.user.mgt.workflow.stub</module>
         <module>org.wso2.carbon.identity.workflow.mgt.stub</module>

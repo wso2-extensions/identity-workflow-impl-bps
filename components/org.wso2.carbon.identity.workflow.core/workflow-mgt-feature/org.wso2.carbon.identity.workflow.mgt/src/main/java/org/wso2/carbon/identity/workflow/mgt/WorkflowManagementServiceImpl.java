@@ -87,6 +87,9 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             }
         }
         Workflow workflowBean = workflowDAO.getWorkflow(workflowId);
+        if (workflowBean == null) {
+            throw new WorkflowClientException("Workflow with "+ workflowId + " doesn't exist");
+        }
         for (WorkflowListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
                 workflowListener.doPostGetWorkflow(workflowId, workflowBean);
@@ -355,9 +358,17 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             // deployed using previous workflow name.
         }
 
-        AbstractWorkflow abstractWorkflow =
-                WorkflowServiceDataHolder.getInstance().getWorkflowImpls().get(workflow.getTemplateId())
-                        .get(workflow.getWorkflowImplId());
+        //TODO - Handle Null Pointers throw client exception
+
+        Map<String, AbstractWorkflow> workflowImplementations =
+                WorkflowServiceDataHolder.getInstance().getWorkflowImpls().get(workflow.getTemplateId());
+        if (workflowImplementations == null) {
+            throw new WorkflowClientException("Workflow template: " + workflow.getTemplateId() + " doesn't exist");
+        }
+        AbstractWorkflow abstractWorkflow = workflowImplementations.get(workflow.getWorkflowImplId());
+        if (abstractWorkflow == null) {
+            throw new WorkflowClientException("Workflow engine: " + workflow.getWorkflowImplId() + " doesn't exist");
+        }
         //deploying the template
         abstractWorkflow.deploy(parameterList);
 
@@ -523,6 +534,9 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
     @Override
     public void removeWorkflow(String workflowId) throws WorkflowException {
         Workflow workflow = workflowDAO.getWorkflow(workflowId);
+        if (workflow == null) {
+            throw new WorkflowClientException("Workflow with ID: " + workflowId + " doesn't exist");
+        }
         //Deleting the role that is created for per workflow
         if (workflow != null) {
 
@@ -726,6 +740,34 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         return associations;
     }
 
+    /**
+     * Get a workflow association by id
+     *
+     * @param associationId  Association ID
+     * @return Association
+     * @throws WorkflowException
+     */
+    public Association getAssociation(String associationId) throws WorkflowException {
+
+        List<WorkflowListener> workflowListenerList =
+                WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
+        for (WorkflowListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPreGetAssociation(associationId);
+            }
+        }
+        Association association = associationDAO.getAssociation(associationId);
+        if (association == null) {
+            throw new WorkflowClientException("Workflow association with ID: " + associationId + " doesn't exist");
+        }
+        for (WorkflowListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPostGetAssociation(associationId);
+            }
+        }
+        return association;
+    }
+
 
     /**
      * Get associations count.
@@ -767,7 +809,63 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             }
         }
 
+    }
 
+    /**
+     * Partially change association.
+     *
+     * @param associationId  Association ID
+     * @param associationName  Association Name
+     * @param workflowId  Workflow ID
+     * @param eventId  Event ID
+     * @param condition  Association Condition
+     * @param isEnable Association Status
+     * @return
+     * @throws WorkflowException
+     */
+
+    @Override
+    public void changeAssociation(String associationId, String associationName, String workflowId, String eventId, String condition, boolean isEnable) throws WorkflowException {
+
+        List<WorkflowListener> workflowListenerList =
+                WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
+        for (WorkflowListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPreChangeAssociation(associationId, associationName, workflowId, eventId, condition, isEnable);
+            }
+        }
+        Association association = associationDAO.getAssociation(associationId);
+        if (association == null) {
+            throw new WorkflowClientException("Workflow association with ID: " + associationId + " doesn't exist");
+        }
+        if (associationName != null) {
+            association.setAssociationName(associationName);
+        }
+        if (workflowId != null) {
+            association.setWorkflowId(workflowId);
+        }
+        if (eventId != null) {
+            association.setEventId(eventId);
+        }
+        if (condition != null) {
+            //check for xpath syntax errors
+            XPathFactory factory = XPathFactory.newInstance();
+            XPath xpath = factory.newXPath();
+            try {
+                xpath.compile(condition);
+                association.setCondition(condition);
+            } catch (XPathExpressionException e) {
+                log.error("The condition:" + condition + " is not an valid xpath expression.", e);
+                throw new WorkflowRuntimeException("The condition is not a valid xpath expression.");
+            }
+        }
+        association.setEnabled(isEnable);
+        associationDAO.updateAssociation(association);
+        for (WorkflowListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPostChangeAssociation(associationId, associationName, workflowId, eventId, condition, isEnable);
+            }
+        }
     }
 
     /**

@@ -490,6 +490,27 @@ public abstract class AbstractWorkflowListener implements WorkflowListener {
     }
 
     /**
+     * Trigger before getting an association
+     *
+     * @param associationId Association ID
+     * @throws WorkflowException
+     */
+    public void doPreGetAssociation(String associationId) throws WorkflowException {
+
+    }
+
+    /**
+     * Trigger after getting an association
+     *
+     * @param associationId Association ID
+     * @throws WorkflowException
+     */
+    public void doPostGetAssociation(String associationId) throws WorkflowException {
+
+    }
+
+
+    /**
      * Trigger before changing state of an association
      *
      * @param associationId Association ID
@@ -500,6 +521,39 @@ public abstract class AbstractWorkflowListener implements WorkflowListener {
     public void doPreChangeAssociationState(String associationId, boolean isEnable) throws WorkflowException {
 
     }
+
+    /**
+     * Trigger before changing an association
+     *
+     * @param associationId Association ID
+     * @param associationName      Association Name
+     * @param workflowId      Workflow ID
+     * @param eventId      Event ID
+     * @param condition Association Condition
+     * @param isEnable      New state
+     * @throws WorkflowException
+     */
+    @Override
+    public void doPreChangeAssociation(String associationId, String associationName, String workflowId, String eventId, String condition, boolean isEnable){
+
+    }
+
+    /**
+     * Trigger before changing an association
+     *
+     * @param associationId Association ID
+     * @param associationName      Association Name
+     * @param workflowId      Workflow ID
+     * @param eventId      Event ID
+     * @param condition Association Condition
+     * @param isEnable      New state
+     * @throws WorkflowException
+     */
+    @Override
+    public void doPostChangeAssociation(String associationId, String associationName, String workflowId, String eventId, String condition, boolean isEnable){
+
+    }
+
 
     /**
      * Trigger after changing state of an association

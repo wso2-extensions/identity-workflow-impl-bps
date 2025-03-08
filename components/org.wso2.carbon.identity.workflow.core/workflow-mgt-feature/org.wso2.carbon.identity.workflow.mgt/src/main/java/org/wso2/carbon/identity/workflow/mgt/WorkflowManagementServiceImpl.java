@@ -88,7 +88,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         }
         Workflow workflowBean = workflowDAO.getWorkflow(workflowId);
         if (workflowBean == null) {
-            throw new WorkflowClientException("Workflow with "+ workflowId + " doesn't exist");
+            throw new WorkflowClientException("Workflow with ID: "+ workflowId + " doesn't exist");
         }
         for (WorkflowListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
@@ -363,11 +363,13 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         Map<String, AbstractWorkflow> workflowImplementations =
                 WorkflowServiceDataHolder.getInstance().getWorkflowImpls().get(workflow.getTemplateId());
         if (workflowImplementations == null) {
-            throw new WorkflowClientException("Workflow template: " + workflow.getTemplateId() + " doesn't exist");
+            throw new WorkflowClientException("Workflow template with name " + workflow.getTemplateId() + " doesn't " +
+                    "exist");
         }
         AbstractWorkflow abstractWorkflow = workflowImplementations.get(workflow.getWorkflowImplId());
         if (abstractWorkflow == null) {
-            throw new WorkflowClientException("Workflow engine: " + workflow.getWorkflowImplId() + " doesn't exist");
+            throw new WorkflowClientException("Workflow engine with name " + workflow.getWorkflowImplId() + " doesn't" +
+                    " exist");
         }
         //deploying the template
         abstractWorkflow.deploy(parameterList);

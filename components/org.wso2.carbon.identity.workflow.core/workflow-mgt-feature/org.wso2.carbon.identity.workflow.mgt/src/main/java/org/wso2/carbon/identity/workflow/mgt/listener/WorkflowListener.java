@@ -401,7 +401,9 @@ public interface WorkflowListener {
      * @param associationId Association ID
      * @throws WorkflowException
      */
-    void doPreGetAssociation(String associationId) throws WorkflowException;
+    default void doPreGetAssociation(String associationId) throws WorkflowException {
+
+    }
 
 
     /**
@@ -410,7 +412,9 @@ public interface WorkflowListener {
      * @param associationId Association ID
      * @throws WorkflowException
      */
-    void doPostGetAssociation(String associationId) throws WorkflowException;
+    default void doPostGetAssociation(String associationId) throws WorkflowException {
+
+    }
 
 
     /**
@@ -443,7 +447,10 @@ public interface WorkflowListener {
      * @param isEnable      New state
      * @throws WorkflowException
      */
-    void doPreChangeAssociation(String associationId, String associationName, String workflowId, String eventId, String condition, boolean isEnable);
+    default void doPreChangeAssociation(String associationId, String associationName, String workflowId, String eventId,
+                                 String condition, boolean isEnable) {
+
+    }
 
 
     /**
@@ -457,7 +464,10 @@ public interface WorkflowListener {
      * @param isEnable      New state
      * @throws WorkflowException
      */
-    void doPostChangeAssociation(String associationId, String associationName, String workflowId, String eventId, String condition, boolean isEnable);
+    default void doPostChangeAssociation(String associationId, String associationName, String workflowId,
+                                         String eventId, String condition, boolean isEnable) {
+
+    }
 
 
     /**

@@ -88,7 +88,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         }
         Workflow workflowBean = workflowDAO.getWorkflow(workflowId);
         if (workflowBean == null) {
-            throw new WorkflowClientException("Workflow with ID: "+ workflowId + " doesn't exist");
+            throw new WorkflowClientException("A workflow with ID: "+ workflowId + " doesn't exist.");
         }
         for (WorkflowListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
@@ -358,8 +358,6 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             // deployed using previous workflow name.
         }
 
-        //TODO - Handle Null Pointers throw client exception
-
         Map<String, AbstractWorkflow> workflowImplementations =
                 WorkflowServiceDataHolder.getInstance().getWorkflowImpls().get(workflow.getTemplateId());
         if (workflowImplementations == null) {
@@ -378,7 +376,6 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         Workflow oldWorkflow = workflowDAO.getWorkflow(workflow.getWorkflowId());
         if (oldWorkflow == null) {
             workflowDAO.addWorkflow(workflow, tenantId);
-//            WorkflowManagementUtil.createAppRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
         } else {
             workflowDAO.removeWorkflowParams(workflow.getWorkflowId());
             workflowDAO.updateWorkflow(workflow);
@@ -537,7 +534,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
     public void removeWorkflow(String workflowId) throws WorkflowException {
         Workflow workflow = workflowDAO.getWorkflow(workflowId);
         if (workflow == null) {
-            throw new WorkflowClientException("Workflow with ID: " + workflowId + " doesn't exist");
+            throw new WorkflowClientException("A workflow with ID: " + workflowId + " doesn't exist.");
         }
         //Deleting the role that is created for per workflow
         if (workflow != null) {
@@ -545,11 +542,11 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             List<WorkflowListener> workflowListenerList =
                     WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
 
-//            for (WorkflowListener workflowListener : workflowListenerList) {
-//                if (workflowListener.isEnable()) {
-//                    workflowListener.doPreDeleteWorkflow(workflow);
-//                }
-//            }
+            for (WorkflowListener workflowListener : workflowListenerList) {
+                if (workflowListener.isEnable()) {
+                    workflowListener.doPreDeleteWorkflow(workflow);
+                }
+            }
 
 //            WorkflowManagementUtil.deleteWorkflowRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
             workflowDAO.removeWorkflowParams(workflowId);
@@ -760,7 +757,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         }
         Association association = associationDAO.getAssociation(associationId);
         if (association == null) {
-            throw new WorkflowClientException("Workflow association with ID: " + associationId + " doesn't exist");
+            throw new WorkflowClientException("A workflow association with ID: " + associationId + " doesn't exist.");
         }
         for (WorkflowListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
@@ -838,7 +835,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         }
         Association association = associationDAO.getAssociation(associationId);
         if (association == null) {
-            throw new WorkflowClientException("Workflow association with ID: " + associationId + " doesn't exist");
+            throw new WorkflowClientException("A workflow association with ID: " + associationId + " doesn't exist.");
         }
         if (associationName != null) {
             association.setAssociationName(associationName);

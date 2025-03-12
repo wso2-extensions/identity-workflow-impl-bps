@@ -501,7 +501,6 @@ public abstract class AbstractWorkflowListener implements WorkflowListener {
 
     }
 
-
     /**
      * Trigger after changing state of an association
      *

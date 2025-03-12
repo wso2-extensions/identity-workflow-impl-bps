@@ -336,9 +336,7 @@ public interface WorkflowListener {
      * @param workflowId Workflow ID
      * @throws WorkflowException
      */
-    default void doPreGetAssociationsForWorkflow(String workflowId) throws WorkflowException {
-
-    }
+    void doPreGetAssociationsForWorkflow(String workflowId) throws WorkflowException;
 
     /**
      * Trigger before getting associations of a workflow

@@ -361,13 +361,13 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         Map<String, AbstractWorkflow> workflowImplementations =
                 WorkflowServiceDataHolder.getInstance().getWorkflowImpls().get(workflow.getTemplateId());
         if (workflowImplementations == null) {
-            throw new WorkflowClientException("Workflow template with name " + workflow.getTemplateId() + " doesn't " +
-                    "exist");
+            throw new WorkflowClientException("A workflow template with name: " + workflow.getTemplateId() +
+                    " doesn't exist.");
         }
         AbstractWorkflow abstractWorkflow = workflowImplementations.get(workflow.getWorkflowImplId());
         if (abstractWorkflow == null) {
-            throw new WorkflowClientException("Workflow engine with name " + workflow.getWorkflowImplId() + " doesn't" +
-                    " exist");
+            throw new WorkflowClientException("A workflow engine with name: " + workflow.getWorkflowImplId() +
+                    " doesn't exist.");
         }
         //deploying the template
         abstractWorkflow.deploy(parameterList);
@@ -548,7 +548,6 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
                 }
             }
 
-//            WorkflowManagementUtil.deleteWorkflowRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
             workflowDAO.removeWorkflowParams(workflowId);
             workflowDAO.removeWorkflow(workflowId);
 
@@ -811,7 +810,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
     }
 
     /**
-     * Partially change association.
+     * Partially update association.
      *
      * @param associationId  Association ID
      * @param associationName  Association Name
@@ -824,13 +823,15 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
      */
 
     @Override
-    public void changeAssociation(String associationId, String associationName, String workflowId, String eventId, String condition, boolean isEnable) throws WorkflowException {
+    public void updateAssociation(String associationId, String associationName, String workflowId, String eventId,
+                             String condition, boolean isEnable) throws WorkflowException {
 
         List<WorkflowListener> workflowListenerList =
                 WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
         for (WorkflowListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
-                workflowListener.doPreChangeAssociation(associationId, associationName, workflowId, eventId, condition, isEnable);
+                workflowListener.doPreUpdateAssociation(associationId, associationName, workflowId, eventId,
+                        condition, isEnable);
             }
         }
         Association association = associationDAO.getAssociation(associationId);
@@ -862,7 +863,8 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         associationDAO.updateAssociation(association);
         for (WorkflowListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
-                workflowListener.doPostChangeAssociation(associationId, associationName, workflowId, eventId, condition, isEnable);
+                workflowListener.doPostUpdateAssociation(associationId, associationName, workflowId, eventId,
+                        condition, isEnable);
             }
         }
     }

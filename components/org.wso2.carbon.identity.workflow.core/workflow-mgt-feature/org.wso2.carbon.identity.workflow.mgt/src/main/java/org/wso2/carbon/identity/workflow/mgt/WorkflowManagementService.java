@@ -234,7 +234,10 @@ public interface WorkflowManagementService {
      * @return Association
      * @throws WorkflowException
      */
-    Association getAssociation(String associationId) throws WorkflowException;
+    default Association getAssociation(String associationId) throws WorkflowException {
+
+        return null;
+    }
 
     /**
      * Get associations count.
@@ -259,7 +262,7 @@ public interface WorkflowManagementService {
     void changeAssociationState(String associationId, boolean isEnable) throws WorkflowException;
 
     /**
-     * Partially change association.
+     * Partially update association.
      *
      * @param associationId  Association ID
      * @param associationName  Association Name
@@ -271,8 +274,10 @@ public interface WorkflowManagementService {
      * @throws WorkflowException
      */
 
-    void changeAssociation(String associationId,String associationName, String workflowId, String eventId, String condition, boolean isEnable) throws
-            WorkflowException;
+    default void updateAssociation(String associationId,String associationName, String workflowId, String eventId,
+                      String condition, boolean isEnable) throws WorkflowException {
+
+    }
 
      /**
      * Add new relationships for entities

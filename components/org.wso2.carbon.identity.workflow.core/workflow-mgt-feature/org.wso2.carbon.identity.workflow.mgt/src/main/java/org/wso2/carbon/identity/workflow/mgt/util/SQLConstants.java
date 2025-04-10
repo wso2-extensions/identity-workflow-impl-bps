@@ -18,6 +18,9 @@
 
 package org.wso2.carbon.identity.workflow.mgt.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Holds the SQL queries and constants
  */
@@ -57,6 +60,17 @@ public class SQLConstants {
     public static final String REQUEST_ID_COLUMN = "REQUEST_ID";
     public static final String CREATED_BY_COLUMN = "CREATED_BY";
 
+    public static final String TEMPLATE = "Template";
+    public static final String USERANDROLE = "UserAndRole";
+    public static final String STEP = "Step-";
+    public static final String WORKFLOW_IMPL = "Workflowimpl";
+
+    public static final Map<String, String> PARAM_NAME_MAPPING = new HashMap<String, String>() {{
+        put("UserAndRole", "ApprovalSteps");
+        put("HTSubject", "ApprovalTaskSubject");
+        put("HTDescription", "ApprovalTaskDescription");
+        put("UserAndRole-step", "Step");
+    }};
 
     public static final String ADD_WORKFLOW_REQUEST_QUERY = "INSERT INTO WF_REQUEST(UUID, CREATED_BY, OPERATION_TYPE," +
             " CREATED_AT, UPDATED_AT, REQUEST, STATUS, TENANT_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

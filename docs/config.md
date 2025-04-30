@@ -67,12 +67,9 @@ architecture@wso2.com
 **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ### Security
-**BasicAuth**
+**Basic Authentication**
 
-|basic|*Basic*|
-|---|---|
-
-**OAuth2**
+**OAuth 2.0 Authentication**
 
 |oauth2|*OAuth 2.0*|
 |---|---|
@@ -94,19 +91,17 @@ Retrieve metadata information of all the workflow engines in the system.
 <b>Permission required:</b>
 * /permission/admin/manage/humantask/viewtasks
 
-
 ##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | search results matching criteria | [ [WorkFlowEngine](#WorkFlowEngine) ] |
-| 401 |  |  |
-| 403 |  |  |
-| 404 |  |  |
-| 500 |  |  |
+| 200 | Search results matching criteria | [ [WorkFlowEngine](#WorkFlowEngine) ] |
+| 401 | Unauthorized | [Error](#Error) |
+| 403 | Resource Forbidden | [Error](#Error) |
+| 404 | The specified resource is not found | [Error](#Error) |
+| 500 | Internal Server Error | [Error](#Error) |
 
 ### Models
-
 
 #### WorkFlowEngine
 
@@ -121,10 +116,10 @@ Retrieve metadata information of all the workflow engines in the system.
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| code | string |  | Yes |
-| message | string |  | Yes |
-| description | string |  | No |
-| traceId | string |  | No |
+| code | string | A short error code identifying the error type. | Yes |
+| message | string | A summary of the error. | Yes |
+| description | string | A detailed description of the error. | No |
+| traceId | string | An identifier for tracing the request | No |
 
 ## [WSO2 Identity Server - Workflow Approval API Definition](../components/org.wso2.carbon.identity.workflow.core/org.wso2.carbon.identity.api.user.approval/org.wso2.carbon.identity.rest.api.user.approval.v1/src/main/resources/approval.yaml)
 This is the RESTful API for a user to manage his/her pending approvals in WSO2 Identity Server. This API can be used to retrieve pending approvals and update the status of the approval tasks for the authenticated user.
@@ -140,12 +135,9 @@ architecture@wso2.org
 **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ### Security
-**BasicAuth**
+**Basic Authentication**
 
-|basic|*Basic*|
-|---|---|
-
-**OAuth2**
+**OAuth 2.0 Authentication**
 
 |oauth2|*OAuth 2.0*|
 |---|---|
@@ -169,6 +161,8 @@ Retrieve the available approval tasks in the system for the authenticated user. 
 
 <b>Permission required:</b>
 * /permission/admin/manage/humantask/viewtasks
+<br/>
+
 <b>Scope required:</b>
 * internal_humantask_view
 
@@ -177,21 +171,46 @@ A user can also invoke the endpoint with the following query parameters.
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-|  |  |  | No | [limitQueryParam](#limitQueryParam) |
-|  |  |  | No | [offsetQueryParam](#offsetQueryParam) |
-|  |  |  | No | [statusQueryParam](#statusQueryParam) |
+| Name   | Located in | Description                                  | Required | Schema |
+|--------|------------|----------------------------------------------|----------|--------|
+| limit  | query       | Maximum number of records to return.         | No       | [limitQueryParam](#limitQueryParam) |
+| offset | query       | Number of records to skip for pagination.    | No       | [offsetQueryParam](#offsetQueryParam) |
+| status | query       | Filter tasks by their current status.        | No       | [statusQueryParam](#statusQueryParam) |
 
 ##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Array of approval tasks matching the search criteria | [ [TaskSummary](#TaskSummary) ] |
-| 400 |  |  |
-| 401 |  |  |
-| 403 |  |  |
-| 500 |  |  |
+| 400 | Bad Request | [Error](#Error) |
+| 401 | Unauthorized | [Error](#Error) |
+| 403 | Resource Forbidden | [Error](#Error) |
+| 500 | Internal Server Error | [Error](#Error) |
+
+### Models
+
+
+#### TaskSummary
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | string | Unique ID to represent an Approval Task | No |
+| name | string | Unique name for the Approval Task | No |
+| presentationSubject | string | Display value for Approval Operation | No |
+| presentationName | string | Display value for Approval Task | No |
+| taskType | string | Type of the Approval | No |
+| status | string | State of the Approval task | No |
+| priority | integer | Priority of the Approval task | No |
+| createdTimeInMillis | string | The time that the operation for approval initiated | No |
+
+#### Error
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| code | string | A short error code identifying the error type. | Yes |
+| message | string | A summary of the error. | Yes |
+| description | string | A detailed description of the error. | No |
+| traceId | string | An identifier for tracing the request | No |
 
 ### /me/approval-tasks/{task-id}
 
@@ -203,29 +222,33 @@ Retrieves an approval task by the task-id
 ##### Description:
 
 Retrieves information of a specific approval task identified by the task-id <br/>
+
 <b>Permission required:</b>
 * /permission/admin/manage/humantask/viewtasks
+<br/>
+
 <b>Scope required:</b>
 * internal_humantask_view
 
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-|  |  |  | No | [taskIdPathParam](#taskIdPathParam) |
+| Name   | Located in | Description                           | Required | Schema                |
+|--------|------------|---------------------------------------|----------|-----------------------|
+| task-id | path       | Unique identifier of the approval task. | Yes      | [taskIdPathParam](#taskIdPathParam) |
+
 
 ##### Responses
-
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Detailed information of the approval task identified by the task-id | [TaskData](#TaskData) |
-| 400 |  |  |
-| 401 |  |  |
-| 403 |  |  |
-| 404 |  |  |
-| 409 |  |  |
-| 500 |  |  |
+| 400 | Bad Request | [Error](#Error)  |
+| 401 | Unauthorized | [Error](#Error)  |
+| 403 | Resource Forbidden | [Error](#Error)  |
+| 404 | The specified resource is not found| [Error](#Error)  |
+| 409 | Conflict | [Error](#Error)  |
+| 500 | Internal Server Error | [Error](#Error)  |
+
 
 ### /me/approval-tasks/{task-id}/state
 
@@ -245,43 +268,32 @@ Update the approval task status by defining one of the following actions:
 
 <b>Permission required:</b>
 * /permission/admin/manage/humantask/viewtasks
+<br/>
+
 <b>Scope required:</b>
 * internal_humantask_view
 
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-|  |  |  | No | [taskIdPathParam](#taskIdPathParam) |
-| next-state | body | To which state the task should be changed. | No | [State](#State) |
+| Name       | Located in | Description                              | Required | Schema                |
+|------------|------------|------------------------------------------|----------|-----------------------|
+| task-id     | path       | Unique identifier of the approval task.  | Yes      | [taskIdPathParam](#taskIdPathParam) |
+| next-state | body       | The state to which the task should be changed. | Yes      | [State](#State)       |
+
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 |  |
-| 400 |  |
-| 401 |  |
-| 403 |  |
-| 404 |  |
-| 500 |  |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Detailed information of the approval task identified by the task-id | [TaskData](#TaskData) |
+| 400 | Bad Request | [Error](#Error)  |
+| 401 | Unauthorized | [Error](#Error)  |
+| 403 | Resource Forbidden | [Error](#Error)  |
+| 404 | The specified resource is not found| [Error](#Error)  |
+| 500 | Internal Server Error | [Error](#Error)  |
 
 ### Models
-
-
-#### TaskSummary
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| id | string | Unique ID to represent an Approval Task | No |
-| name | string | Unique name for the Approval Task | No |
-| presentationSubject | string | Display value for Approval Operation | No |
-| presentationName | string | Display value for Approval Task | No |
-| taskType | string | Type of the Approval | No |
-| status | string | State of the Approval task | No |
-| priority | integer | Priority of the Approval task | No |
-| createdTimeInMillis | string | The time that the operation for approval initiated | No |
 
 #### TaskData
 
@@ -294,14 +306,14 @@ Update the approval task status by defining one of the following actions:
 | initiator | string | The user who initiated the task | No |
 | approvalStatus | string | Available only for the completed Tasks, APPROVED or REJECTED if the task has been completed, PENDING otherwise  | No |
 | assignees | [ [Property](#Property) ] | To whom the task is assigned:   * user - username(s) if the task is reserved for specific user(s).   * group - role name(s) if the task is assignable for group(s).  | No |
-| properties | [ [Property](#Property) ] |  | No |
+| properties | [ [Property](#Property) ] | A list of key-value pairs providing additional context or metadata about the approval task. These can include user-related information, request IDs, claims, etc.  | No |
 
 #### Property
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| key | string |  | No |
-| value | string |  | No |
+| key | string | A key or identifier for the property. This could represent a specific attribute, like "Username", "Request ID", etc. | No |
+| value | string | The value associated with the property key.  | No |
 
 #### State
 
@@ -313,10 +325,10 @@ Update the approval task status by defining one of the following actions:
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| code | string |  | Yes |
-| message | string |  | Yes |
-| description | string |  | No |
-| traceId | string |  | No |
+| code | string | A short error code identifying the error type. | Yes |
+| message | string | A summary of the error. | Yes |
+| description | string | A detailed description of the error. | No |
+| traceId | string | An identifier for tracing the request | No |
 
 
 

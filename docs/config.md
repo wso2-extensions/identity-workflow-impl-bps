@@ -1,6 +1,6 @@
 # Configuring the Workflow connector
 
-To use workflow with WSO2 Identity Server 7 onwards, you need to follow below steps. 
+To use workflow with WSO2 Identity Server 7.0.0 onwards, you need to follow below steps. 
 
 # Instructions to enable workflow
 

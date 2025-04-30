@@ -394,7 +394,7 @@
         <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
 
-        <cxf-bundle.version>3.5.0</cxf-bundle.version>
+        <cxf-bundle.version>3.5.9</cxf-bundle.version>
         <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <swagger-jaxrs.version>1.6.2</swagger-jaxrs.version>

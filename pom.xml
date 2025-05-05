@@ -217,11 +217,6 @@
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.identity.workflow.engine</groupId>
-                <artifactId>workflow.engine</artifactId>
-                <version>${carbon.workflow-engine.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.carbon.business-process</groupId>
                 <artifactId>org.wso2.carbon.humantask.skeleton</artifactId>
                 <version>${carbon.business-process.version}</version>
@@ -408,7 +403,6 @@
         <carbon.business-process.version>4.5.66</carbon.business-process.version>
         <jackson-databind.version>2.13.4.2</jackson-databind.version>
         <jackson-dataformat-xml.version>2.13.2</jackson-dataformat-xml.version>
-        <carbon.workflow-engine.version>1.0-SNAPSHOT</carbon.workflow-engine.version>
 
         <version.org.wso2.orbit.javax.xml.bind>2.3.1.wso2v1</version.org.wso2.orbit.javax.xml.bind>
         <encoder.wso2.version>1.2.0.wso2v1</encoder.wso2.version>

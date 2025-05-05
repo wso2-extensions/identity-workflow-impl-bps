@@ -405,7 +405,6 @@ public interface WorkflowListener {
 
     }
 
-
     /**
      * Trigger after getting an association.
      *
@@ -415,7 +414,6 @@ public interface WorkflowListener {
     default void doPostGetAssociation(String associationId) throws WorkflowException {
 
     }
-
 
     /**
      * Trigger before changing state of an association
@@ -435,7 +433,6 @@ public interface WorkflowListener {
      */
     void doPostChangeAssociationState(String associationId, boolean isEnable) throws WorkflowException;
 
-
     /**
      * Trigger before updating an association.
      *
@@ -452,7 +449,6 @@ public interface WorkflowListener {
 
     }
 
-
     /**
      * Trigger after updating an association.
      *
@@ -468,7 +464,6 @@ public interface WorkflowListener {
                                          String eventId, String condition, boolean isEnable) {
 
     }
-
 
     /**
      * Trigger before addEntityRequestEntityRelationships

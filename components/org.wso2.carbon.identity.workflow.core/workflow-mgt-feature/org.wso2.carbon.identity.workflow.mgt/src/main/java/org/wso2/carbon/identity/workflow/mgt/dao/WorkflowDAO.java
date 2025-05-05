@@ -37,8 +37,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.wso2.carbon.identity.workflow.mgt.util.SQLConstants.*;
-
 /**
  * Workflow related DAO operation provides by this class
  *
@@ -358,7 +356,8 @@ public class WorkflowDAO {
     }
     
     /**
-     * Add new parameter List to given workflow id
+     * Add new parameter List to given workflow id//import static org.wso2.carbon.identity.workflow.mgt.util.SQLConstants.*;
+
      *
      * @param parameterList Paramter List
      * @param workflowId Workflow Id
@@ -416,17 +415,17 @@ public class WorkflowDAO {
                 String paramQName = rs.getString(SQLConstants.PARAM_QNAME_COLUMN);
                 String paramHolder = rs.getString(SQLConstants.PARAM_HOLDER_COLUMN);
 
-                if (TEMPLATE.equals(paramHolder)) {
+                if (SQLConstants.TEMPLATE.equals(paramHolder)) {
                     String[] parts = paramQName.split("-");
-                    if (parts.length >= 4 && USERANDROLE.equals(parts[0])) {
-                        paramQName = "Step-" + parts[2] + "-" + parts[3];
+                    if (parts.length >= 4 && SQLConstants.USERANDROLE.equals(parts[0])) {
+                        paramQName = SQLConstants.STEP + parts[2] + "-" + parts[3];
                     }
-                } else if (paramQName.equals(WORKFLOW_IMPL)) {
-                    paramQName = PARAM_NAME_MAPPING.getOrDefault(paramQName, paramQName);
+                } else if (paramQName.equals(SQLConstants.WORKFLOW_IMPL)) {
+                    paramQName = SQLConstants.PARAM_NAME_MAPPING.getOrDefault(paramQName, paramQName);
                 }
 
                 if (StringUtils.isNotBlank(paramName)) {
-                    Parameter parameter = new Parameter(workflowId, PARAM_NAME_MAPPING.getOrDefault(paramName, paramName),
+                    Parameter parameter = new Parameter(workflowId, SQLConstants.PARAM_NAME_MAPPING.getOrDefault(paramName, paramName),
                             paramValue,
                             paramQName,
                             paramHolder);

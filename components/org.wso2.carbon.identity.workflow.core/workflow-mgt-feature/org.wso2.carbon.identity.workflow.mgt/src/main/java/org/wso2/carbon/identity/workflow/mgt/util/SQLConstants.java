@@ -67,8 +67,6 @@ public class SQLConstants {
 
     public static final Map<String, String> PARAM_NAME_MAPPING = new HashMap<String, String>() {{
         put("UserAndRole", "ApprovalSteps");
-        put("HTSubject", "ApprovalTaskSubject");
-        put("HTDescription", "ApprovalTaskDescription");
         put("UserAndRole-step", "Step");
     }};
 

@@ -847,18 +847,16 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         if (eventId != null) {
             association.setEventId(eventId);
         }
+
         if (condition != null) {
-            //check for xpath syntax errors
-            XPathFactory factory = XPathFactory.newInstance();
-            XPath xpath = factory.newXPath();
-            try {
-                xpath.compile(condition);
-                association.setCondition(condition);
-            } catch (XPathExpressionException e) {
-                log.error("The condition:" + condition + " is not an valid xpath expression.", e);
-                throw new WorkflowRuntimeException("The condition is not a valid xpath expression.");
+            if ("boolean(1)".equals(condition)) {
+                    association.setCondition(condition);
+            } else {
+                log.error("Conditions are not supported. Provided condition: " + condition);
+                throw new WorkflowRuntimeException("Conditions are not supported.");
             }
         }
+
         association.setEnabled(isEnable);
         associationDAO.updateAssociation(association);
         for (WorkflowListener workflowListener : workflowListenerList) {

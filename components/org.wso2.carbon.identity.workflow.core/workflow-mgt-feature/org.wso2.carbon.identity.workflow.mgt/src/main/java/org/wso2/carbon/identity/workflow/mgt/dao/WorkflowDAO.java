@@ -356,8 +356,7 @@ public class WorkflowDAO {
     }
     
     /**
-     * Add new parameter List to given workflow id//import static org.wso2.carbon.identity.workflow.mgt.util.SQLConstants.*;
-
+     * Add new parameter List to given workflow id
      *
      * @param parameterList Paramter List
      * @param workflowId Workflow Id

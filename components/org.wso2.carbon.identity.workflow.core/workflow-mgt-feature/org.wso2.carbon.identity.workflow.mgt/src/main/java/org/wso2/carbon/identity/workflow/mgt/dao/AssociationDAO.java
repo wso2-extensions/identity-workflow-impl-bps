@@ -35,6 +35,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Association related DAO operation provides by this class
@@ -127,11 +128,27 @@ public class AssociationDAO {
         String sqlQuery;
         List<Association> associations = new ArrayList<>();
         try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
-            String filterResolvedForSQL = resolveSQLFilter(filter);
-            sqlQuery = getSqlQuery();
-            try (PreparedStatement prepStmt = generatePrepStmt(connection, sqlQuery, tenantId,
-                    filterResolvedForSQL, offset, limit)) {
-                try (ResultSet resultSet = prepStmt.executeQuery()) {
+            String filterField = null;
+            String filterValue = null;
+            if (filter != null && filter.contains(":")) {
+                String[] parts = filter.split(":", 2);
+                filterField = parts[0];
+                filterValue = parts[1];
+            } else if (!Objects.equals(filter, "*")) {
+                filterField = filter;
+            }
+            String filterResolvedForSQL = resolveSQLFilter(filterValue);
+            sqlQuery = getSqlQuery(filterField);
+            PreparedStatement prepStmt;
+
+            if (SQLConstants.WORKFLOW_ID_FILTER.equalsIgnoreCase(filterField)) {
+                prepStmt = generatePrepStmtWithoutLimitOffset(connection, sqlQuery, tenantId, filterResolvedForSQL);
+            } else {
+                prepStmt = generatePrepStmt(connection, sqlQuery, tenantId, filterResolvedForSQL, offset, limit);
+            }
+
+            try (PreparedStatement stmt = prepStmt) {
+                try (ResultSet resultSet = stmt.executeQuery()) {
                     while (resultSet.next()) {
                         String condition = resultSet.getString(SQLConstants.CONDITION_COLUMN);
                         String eventId = resultSet.getString(SQLConstants.EVENT_ID_COLUMN);
@@ -349,6 +366,7 @@ public class AssociationDAO {
     }
 
     /**
+     * Generate an SQL query that allows filtering using association name.
      *
      * @throws InternalWorkflowException
      * @throws DataAccessException
@@ -371,6 +389,40 @@ public class AssociationDAO {
         } else {
             throw new InternalWorkflowException(WFConstant.Exceptions.ERROR_WHILE_LOADING_ASSOCIATIONS);
         }
+        return sqlQuery;
+    }
+
+    /**
+     * Generate an SQL query that allows filtering using either the association name or the workflow ID.
+     *
+     * @throws InternalWorkflowException
+     * @throws DataAccessException
+     */
+    private String getSqlQuery(String filterField) throws InternalWorkflowException, DataAccessException {
+
+        String sqlQuery ;
+        if (filterField == null || SQLConstants.ASSOCIATION_NAME_FILTER.equalsIgnoreCase(filterField)) {
+            if (JdbcUtils.isH2DB() || JdbcUtils.isMySQLDB() || JdbcUtils.isMariaDB()) {
+                sqlQuery = SQLConstants.GET_ASSOCIATIONS_BY_TENANT_AND_ASSOC_NAME_MYSQL;
+            } else if (JdbcUtils.isOracleDB()) {
+                sqlQuery = SQLConstants.GET_ASSOCIATIONS_BY_TENANT_AND_ASSOC_NAME_ORACLE;
+            } else if (JdbcUtils.isMSSqlDB()) {
+                sqlQuery = SQLConstants.GET_ASSOCIATIONS_BY_TENANT_AND_ASSOC_NAME_MSSQL;
+            } else if (JdbcUtils.isPostgreSQLDB()) {
+                sqlQuery = SQLConstants.GET_ASSOCIATIONS_BY_TENANT_AND_ASSOC_NAME_POSTGRESQL;
+            } else if (JdbcUtils.isDB2DB()) {
+                sqlQuery = SQLConstants.GET_ASSOCIATIONS_BY_TENANT_AND_ASSOC_NAME_DB2SQL;
+            } else if (JdbcUtils.isInformixDB()) {
+                sqlQuery = SQLConstants.GET_ASSOCIATIONS_BY_TENANT_AND_ASSOC_NAME_INFORMIX;
+            } else {
+                throw new InternalWorkflowException(WFConstant.Exceptions.ERROR_WHILE_LOADING_ASSOCIATIONS);
+            }
+        } else if (SQLConstants.WORKFLOW_ID_FILTER.equalsIgnoreCase(filterField)) {
+            sqlQuery = SQLConstants.GET_ASSOCIATIONS_BY_TENANT_AND_WORKFLOW;
+        } else {
+            throw new InternalWorkflowException("Unsupported filter field: " + filterField);
+        }
+
         return sqlQuery;
     }
 
@@ -405,6 +457,33 @@ public class AssociationDAO {
         }
         return prepStmt;
     }
+
+    /**
+     * Create PreparedStatement.
+     *
+     * @param connection db connection
+     * @param sqlQuery SQL query
+     * @param tenantId Tenant ID
+     * @param filterResolvedForSQL resolved filter for sql
+     * @return PreparedStatement
+     * @throws SQLException
+     * @throws DataAccessException
+     */
+    private PreparedStatement generatePrepStmtWithoutLimitOffset(Connection connection, String sqlQuery, int tenantId, String filterResolvedForSQL) throws SQLException, DataAccessException {
+
+        PreparedStatement prepStmt ;
+        if (JdbcUtils.isPostgreSQLDB()) {
+            prepStmt = connection.prepareStatement(sqlQuery);
+            prepStmt.setInt(1, tenantId);
+            prepStmt.setString(2, filterResolvedForSQL);
+        } else {
+            prepStmt = connection.prepareStatement(sqlQuery);
+            prepStmt.setInt(1, tenantId);
+            prepStmt.setString(2, filterResolvedForSQL);
+        }
+        return prepStmt;
+    }
+
 
     /**
      * Resolve SQL Filter.

@@ -64,6 +64,8 @@ public class SQLConstants {
     public static final String USERANDROLE = "UserAndRole";
     public static final String STEP = "Step-";
     public static final String WORKFLOW_IMPL = "Workflowimpl";
+    public static final String ASSOCIATION_NAME_FILTER = "associationName";
+    public static final String WORKFLOW_ID_FILTER = "workflowId";
 
     public static final Map<String, String> PARAM_NAME_MAPPING = new HashMap<String, String>() {{
         put("UserAndRole", "ApprovalSteps");
@@ -110,6 +112,15 @@ public class SQLConstants {
             "WF_WORKFLOW_ASSOCIATION.ID, WF_WORKFLOW_ASSOCIATION.ASSOC_NAME, WF_WORKFLOW_ASSOCIATION.EVENT_ID, " +
             "WF_WORKFLOW_ASSOCIATION.ASSOC_CONDITION, WF_WORKFLOW_ASSOCIATION.IS_ENABLED FROM WF_WORKFLOW, " +
             "WF_WORKFLOW_ASSOCIATION WHERE WF_WORKFLOW.ID = WF_WORKFLOW_ASSOCIATION.WORKFLOW_ID AND WF_WORKFLOW.ID = ?";
+
+    public static final String GET_ASSOCIATIONS_BY_TENANT_AND_WORKFLOW = "SELECT WF_WORKFLOW.WF_NAME, " +
+            "WF_WORKFLOW_ASSOCIATION.ID, WF_WORKFLOW_ASSOCIATION.ASSOC_NAME, " +
+            "WF_WORKFLOW_ASSOCIATION.EVENT_ID, WF_WORKFLOW_ASSOCIATION.ASSOC_CONDITION, " +
+            "WF_WORKFLOW_ASSOCIATION.IS_ENABLED " +
+            "FROM WF_WORKFLOW, WF_WORKFLOW_ASSOCIATION " +
+            "WHERE WF_WORKFLOW.ID = WF_WORKFLOW_ASSOCIATION.WORKFLOW_ID " +
+            "AND WF_WORKFLOW.TENANT_ID = ? " +
+            "AND WF_WORKFLOW.ID = ?";
 
     // Load association basic information for listing with pagination
     public static final String GET_ASSOCIATIONS_BY_TENANT_AND_ASSOC_NAME_MYSQL = "SELECT WF_WORKFLOW.WF_NAME, " +

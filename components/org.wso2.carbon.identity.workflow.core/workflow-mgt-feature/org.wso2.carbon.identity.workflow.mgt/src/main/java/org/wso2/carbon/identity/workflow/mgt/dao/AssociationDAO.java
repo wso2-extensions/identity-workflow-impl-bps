@@ -130,12 +130,12 @@ public class AssociationDAO {
         try (Connection connection = IdentityDatabaseUtil.getDBConnection(false)) {
             String filterField = null;
             String filterValue = null;
-            if (filter != null && filter.contains(":")) {
-                String[] parts = filter.split(":", 2);
-                filterField = parts[0];
-                filterValue = parts[1];
+            if (filter != null && filter.contains(" eq ")) {
+                String[] parts = filter.split(" eq ", 2);
+                filterField = parts[0].trim();
+                filterValue = parts[1].trim();
             } else if (!Objects.equals(filter, "*")) {
-                filterField = filter;
+                filterField = filter.trim();
             }
             String filterResolvedForSQL = resolveSQLFilter(filterValue);
             sqlQuery = getSqlQuery(filterField);

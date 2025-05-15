@@ -474,15 +474,9 @@ public class AssociationDAO {
             String filterResolvedForSQL) throws SQLException, DataAccessException {
 
         PreparedStatement prepStmt ;
-        if (JdbcUtils.isPostgreSQLDB()) {
-            prepStmt = connection.prepareStatement(sqlQuery);
-            prepStmt.setInt(1, tenantId);
-            prepStmt.setString(2, filterResolvedForSQL);
-        } else {
-            prepStmt = connection.prepareStatement(sqlQuery);
-            prepStmt.setInt(1, tenantId);
-            prepStmt.setString(2, filterResolvedForSQL);
-        }
+        prepStmt = connection.prepareStatement(sqlQuery);
+        prepStmt.setInt(1, tenantId);
+        prepStmt.setString(2, filterResolvedForSQL);
         return prepStmt;
     }
 

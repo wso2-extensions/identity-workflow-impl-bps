@@ -89,7 +89,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         }
         Workflow workflowBean = workflowDAO.getWorkflow(workflowId);
         if (workflowBean == null) {
-            throw new WorkflowClientException("A workflow with ID: "+ workflowId + " doesn't exist.");
+            throw new WorkflowClientException("A workflow with ID: " + workflowId + " doesn't exist.");
         }
         for (WorkflowListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
@@ -399,7 +399,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             WorkflowException {
 
         if (condition == null) {
-            condition = SQLConstants.DEFAULT_ASSOCIATION_CONDITION;
+            condition = WFConstant.DEFAULT_ASSOCIATION_CONDITION;
         }
         List<WorkflowListener> workflowListenerList =
                 WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
@@ -853,7 +853,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         }
 
         if (condition != null) {
-            if (SQLConstants.DEFAULT_ASSOCIATION_CONDITION.equals(condition)) {
+            if (WFConstant.DEFAULT_ASSOCIATION_CONDITION.equals(condition)) {
                     association.setCondition(condition);
             } else {
                 log.error("Conditions are not supported. Provided condition: " + condition);

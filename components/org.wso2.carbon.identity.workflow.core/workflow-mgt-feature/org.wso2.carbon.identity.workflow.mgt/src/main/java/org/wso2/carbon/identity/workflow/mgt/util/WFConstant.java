@@ -35,6 +35,7 @@ public class WFConstant {
 
     public static final String WORKFLOW_ENTITY_TYPE = "USER";
     public static final String WORKFLOW_REQUEST_TYPE = "ADD_USER";
+    public static final String DEFAULT_ASSOCIATION_CONDITION = "boolean(1)";
 
     public static final int DEFAULT_RESULTS_PER_PAGE = 15;
 

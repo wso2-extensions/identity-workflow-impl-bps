@@ -40,7 +40,6 @@ public class SQLConstants {
     public static final String HOST_URL_WORKER_COLUMN = "HOST_URL_WORKER";
     public static final String USERNAME_COLUMN = "USERNAME";
     public static final String PASSWORD_COLUMN = "PASSWORD";
-    public static final String DEFAULT_ASSOCIATION_CONDITION = "boolean(1)";
 
     public static final String WORKFLOW_ID_COLUMN = "WORKFLOW_ID";
     public static final String EVENT_ID_COLUMN = "EVENT_ID";

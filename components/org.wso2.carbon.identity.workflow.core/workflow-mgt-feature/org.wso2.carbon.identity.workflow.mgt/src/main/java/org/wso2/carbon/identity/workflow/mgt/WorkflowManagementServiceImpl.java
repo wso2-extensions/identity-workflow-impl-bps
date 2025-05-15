@@ -45,6 +45,7 @@ import org.wso2.carbon.identity.workflow.mgt.extension.WorkflowRequestHandler;
 import org.wso2.carbon.identity.workflow.mgt.internal.WorkflowServiceDataHolder;
 import org.wso2.carbon.identity.workflow.mgt.listener.WorkflowListener;
 import org.wso2.carbon.identity.workflow.mgt.template.AbstractTemplate;
+import org.wso2.carbon.identity.workflow.mgt.util.SQLConstants;
 import org.wso2.carbon.identity.workflow.mgt.util.WFConstant;
 import org.wso2.carbon.identity.workflow.mgt.util.WorkflowManagementUtil;
 import org.wso2.carbon.identity.workflow.mgt.util.WorkflowRequestStatus;
@@ -397,6 +398,9 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
     public void addAssociation(String associationName, String workflowId, String eventId, String condition) throws
             WorkflowException {
 
+        if (condition == null) {
+            condition = SQLConstants.DEFAULT_ASSOCIATION_CONDITION;
+        }
         List<WorkflowListener> workflowListenerList =
                 WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
         for (WorkflowListener workflowListener : workflowListenerList) {
@@ -849,7 +853,7 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         }
 
         if (condition != null) {
-            if ("boolean(1)".equals(condition)) {
+            if (SQLConstants.DEFAULT_ASSOCIATION_CONDITION.equals(condition)) {
                     association.setCondition(condition);
             } else {
                 log.error("Conditions are not supported. Provided condition: " + condition);

@@ -126,7 +126,6 @@ public interface WorkflowManagementService {
      */
     void addAssociation(String associationName, String workflowId, String eventId, String condition) throws
                                                                                                      WorkflowException;
-
     /**
      * List paginated Workflows of a tenant.
      *

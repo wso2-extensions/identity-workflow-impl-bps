@@ -126,6 +126,7 @@ public interface WorkflowManagementService {
      */
     void addAssociation(String associationName, String workflowId, String eventId, String condition) throws
                                                                                                      WorkflowException;
+
     /**
      * List paginated Workflows of a tenant.
      *
@@ -216,7 +217,7 @@ public interface WorkflowManagementService {
     }
 
     /**
-     * List all associations of a tenant
+     * List all associations of a tenant.
      *
      * @deprecated Use {@link #listPaginatedAssociations(int, int, int, String)} instead.
      * @param tenantId  Tenant ID
@@ -227,7 +228,7 @@ public interface WorkflowManagementService {
     List<Association> listAllAssociations(int tenantId) throws WorkflowException;
 
     /**
-     * Get a workflow association by id
+     * Get a workflow association by id.
      *
      * @param associationId  Association ID
      * @return Association
@@ -273,7 +274,7 @@ public interface WorkflowManagementService {
      * @throws WorkflowException
      */
 
-    default void updateAssociation(String associationId,String associationName, String workflowId, String eventId,
+    default void updateAssociation(String associationId, String associationName, String workflowId, String eventId,
                       String condition, boolean isEnable) throws WorkflowException {
 
     }

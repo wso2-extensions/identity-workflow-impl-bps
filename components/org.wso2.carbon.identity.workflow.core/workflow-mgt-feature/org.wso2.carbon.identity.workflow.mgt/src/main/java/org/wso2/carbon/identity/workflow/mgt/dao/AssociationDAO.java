@@ -471,8 +471,7 @@ public class AssociationDAO {
      * @throws DataAccessException
      */
     private PreparedStatement generatePrepStmtWithoutLimitOffset(Connection connection, String sqlQuery, int tenantId,
-                                                                 String filterResolvedForSQL)
-            throws SQLException, DataAccessException {
+            String filterResolvedForSQL) throws SQLException, DataAccessException {
 
         PreparedStatement prepStmt ;
         if (JdbcUtils.isPostgreSQLDB()) {

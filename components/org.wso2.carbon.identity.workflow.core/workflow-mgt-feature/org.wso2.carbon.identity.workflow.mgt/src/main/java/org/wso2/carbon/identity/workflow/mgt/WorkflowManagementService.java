@@ -217,7 +217,7 @@ public interface WorkflowManagementService {
     }
 
     /**
-     * List all associations of a tenant
+     * List all associations of a tenant.
      *
      * @deprecated Use {@link #listPaginatedAssociations(int, int, int, String)} instead.
      * @param tenantId  Tenant ID
@@ -226,6 +226,18 @@ public interface WorkflowManagementService {
      */
     @Deprecated
     List<Association> listAllAssociations(int tenantId) throws WorkflowException;
+
+    /**
+     * Get a workflow association by id.
+     *
+     * @param associationId  Association ID
+     * @return Association
+     * @throws WorkflowException
+     */
+    default Association getAssociation(String associationId) throws WorkflowException {
+
+        return null;
+    }
 
     /**
      * Get associations count.
@@ -248,6 +260,24 @@ public interface WorkflowManagementService {
      * @throws WorkflowException
      */
     void changeAssociationState(String associationId, boolean isEnable) throws WorkflowException;
+
+    /**
+     * Partially update association.
+     *
+     * @param associationId  Association ID
+     * @param associationName  Association Name
+     * @param workflowId  Workflow ID
+     * @param eventId  Event ID
+     * @param condition  Association Condition
+     * @param isEnable Association Status
+     * @return
+     * @throws WorkflowException
+     */
+
+    default void updateAssociation(String associationId, String associationName, String workflowId, String eventId,
+                      String condition, boolean isEnable) throws WorkflowException {
+
+    }
 
      /**
      * Add new relationships for entities

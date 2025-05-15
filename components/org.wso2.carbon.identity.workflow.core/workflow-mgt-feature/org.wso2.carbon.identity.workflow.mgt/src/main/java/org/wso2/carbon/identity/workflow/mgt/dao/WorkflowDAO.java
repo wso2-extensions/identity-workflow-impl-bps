@@ -413,8 +413,21 @@ public class WorkflowDAO {
                 String paramValue = rs.getString(SQLConstants.PARAM_VALUE_COLUMN);
                 String paramQName = rs.getString(SQLConstants.PARAM_QNAME_COLUMN);
                 String paramHolder = rs.getString(SQLConstants.PARAM_HOLDER_COLUMN);
+
+                if (SQLConstants.TEMPLATE.equals(paramHolder)) {
+                    String[] parts = paramQName.split("-");
+                    if (parts.length >= 4 && SQLConstants.USERANDROLE.equals(parts[0])) {
+                        paramQName = SQLConstants.STEP + parts[2] + "-" + parts[3];
+                    }
+                } else if (paramQName.equals(SQLConstants.WORKFLOW_IMPL)) {
+                    paramQName = SQLConstants.PARAM_NAME_MAPPING.getOrDefault(paramQName, paramQName);
+                }
+
                 if (StringUtils.isNotBlank(paramName)) {
-                    Parameter parameter = new Parameter(workflowId, paramName, paramValue, paramQName, paramHolder);
+                    Parameter parameter = new Parameter(workflowId, SQLConstants.PARAM_NAME_MAPPING.getOrDefault(paramName, paramName),
+                            paramValue,
+                            paramQName,
+                            paramHolder);
                     parameterList.add(parameter);
                 }
             }

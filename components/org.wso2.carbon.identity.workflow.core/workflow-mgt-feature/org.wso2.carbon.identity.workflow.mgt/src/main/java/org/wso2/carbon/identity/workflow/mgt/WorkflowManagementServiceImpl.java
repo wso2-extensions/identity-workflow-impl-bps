@@ -45,6 +45,7 @@ import org.wso2.carbon.identity.workflow.mgt.extension.WorkflowRequestHandler;
 import org.wso2.carbon.identity.workflow.mgt.internal.WorkflowServiceDataHolder;
 import org.wso2.carbon.identity.workflow.mgt.listener.WorkflowListener;
 import org.wso2.carbon.identity.workflow.mgt.template.AbstractTemplate;
+import org.wso2.carbon.identity.workflow.mgt.util.SQLConstants;
 import org.wso2.carbon.identity.workflow.mgt.util.WFConstant;
 import org.wso2.carbon.identity.workflow.mgt.util.WorkflowManagementUtil;
 import org.wso2.carbon.identity.workflow.mgt.util.WorkflowRequestStatus;
@@ -87,6 +88,9 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             }
         }
         Workflow workflowBean = workflowDAO.getWorkflow(workflowId);
+        if (workflowBean == null) {
+            throw new WorkflowClientException("A workflow with ID: " + workflowId + " doesn't exist.");
+        }
         for (WorkflowListener workflowListener : workflowListenerList) {
             if (workflowListener.isEnable()) {
                 workflowListener.doPostGetWorkflow(workflowId, workflowBean);
@@ -355,9 +359,17 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             // deployed using previous workflow name.
         }
 
-        AbstractWorkflow abstractWorkflow =
-                WorkflowServiceDataHolder.getInstance().getWorkflowImpls().get(workflow.getTemplateId())
-                        .get(workflow.getWorkflowImplId());
+        Map<String, AbstractWorkflow> workflowImplementations =
+                WorkflowServiceDataHolder.getInstance().getWorkflowImpls().get(workflow.getTemplateId());
+        if (workflowImplementations == null) {
+            throw new WorkflowClientException("A workflow template with name: " + workflow.getTemplateId() +
+                    " doesn't exist.");
+        }
+        AbstractWorkflow abstractWorkflow = workflowImplementations.get(workflow.getWorkflowImplId());
+        if (abstractWorkflow == null) {
+            throw new WorkflowClientException("A workflow engine with name: " + workflow.getWorkflowImplId() +
+                    " doesn't exist.");
+        }
         //deploying the template
         abstractWorkflow.deploy(parameterList);
 
@@ -365,7 +377,6 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         Workflow oldWorkflow = workflowDAO.getWorkflow(workflow.getWorkflowId());
         if (oldWorkflow == null) {
             workflowDAO.addWorkflow(workflow, tenantId);
-            WorkflowManagementUtil.createAppRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
         } else {
             workflowDAO.removeWorkflowParams(workflow.getWorkflowId());
             workflowDAO.updateWorkflow(workflow);
@@ -387,6 +398,9 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
     public void addAssociation(String associationName, String workflowId, String eventId, String condition) throws
             WorkflowException {
 
+        if (condition == null) {
+            condition = WFConstant.DEFAULT_ASSOCIATION_CONDITION;
+        }
         List<WorkflowListener> workflowListenerList =
                 WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
         for (WorkflowListener workflowListener : workflowListenerList) {
@@ -523,6 +537,9 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
     @Override
     public void removeWorkflow(String workflowId) throws WorkflowException {
         Workflow workflow = workflowDAO.getWorkflow(workflowId);
+        if (workflow == null) {
+            throw new WorkflowClientException("A workflow with ID: " + workflowId + " doesn't exist.");
+        }
         //Deleting the role that is created for per workflow
         if (workflow != null) {
 
@@ -535,7 +552,6 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
                 }
             }
 
-            WorkflowManagementUtil.deleteWorkflowRole(StringUtils.deleteWhitespace(workflow.getWorkflowName()));
             workflowDAO.removeWorkflowParams(workflowId);
             workflowDAO.removeWorkflow(workflowId);
 
@@ -726,6 +742,34 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
         return associations;
     }
 
+    /**
+     * Get a workflow association by id
+     *
+     * @param associationId  Association ID
+     * @return Association
+     * @throws WorkflowException
+     */
+    public Association getAssociation(String associationId) throws WorkflowException {
+
+        List<WorkflowListener> workflowListenerList =
+                WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
+        for (WorkflowListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPreGetAssociation(associationId);
+            }
+        }
+        Association association = associationDAO.getAssociation(associationId);
+        if (association == null) {
+            throw new WorkflowClientException("A workflow association with ID: " + associationId + " doesn't exist.");
+        }
+        for (WorkflowListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPostGetAssociation(associationId);
+            }
+        }
+        return association;
+    }
+
 
     /**
      * Get associations count.
@@ -767,7 +811,64 @@ public class WorkflowManagementServiceImpl implements WorkflowManagementService 
             }
         }
 
+    }
 
+    /**
+     * Partially update association.
+     *
+     * @param associationId  Association ID
+     * @param associationName  Association Name
+     * @param workflowId  Workflow ID
+     * @param eventId  Event ID
+     * @param condition  Association Condition
+     * @param isEnable Association Status
+     * @return
+     * @throws WorkflowException
+     */
+
+    @Override
+    public void updateAssociation(String associationId, String associationName, String workflowId, String eventId,
+                             String condition, boolean isEnable) throws WorkflowException {
+
+        List<WorkflowListener> workflowListenerList =
+                WorkflowServiceDataHolder.getInstance().getWorkflowListenerList();
+        for (WorkflowListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPreUpdateAssociation(associationId, associationName, workflowId, eventId,
+                        condition, isEnable);
+            }
+        }
+        Association association = associationDAO.getAssociation(associationId);
+        if (association == null) {
+            throw new WorkflowClientException("A workflow association with ID: " + associationId + " doesn't exist.");
+        }
+        if (associationName != null) {
+            association.setAssociationName(associationName);
+        }
+        if (workflowId != null) {
+            association.setWorkflowId(workflowId);
+        }
+        if (eventId != null) {
+            association.setEventId(eventId);
+        }
+
+        if (condition != null) {
+            if (WFConstant.DEFAULT_ASSOCIATION_CONDITION.equals(condition)) {
+                    association.setCondition(condition);
+            } else {
+                log.error("Conditions are not supported. Provided condition: " + condition);
+                throw new WorkflowRuntimeException("Conditions are not supported.");
+            }
+        }
+
+        association.setEnabled(isEnable);
+        associationDAO.updateAssociation(association);
+        for (WorkflowListener workflowListener : workflowListenerList) {
+            if (workflowListener.isEnable()) {
+                workflowListener.doPostUpdateAssociation(associationId, associationName, workflowId, eventId,
+                        condition, isEnable);
+            }
+        }
     }
 
     /**

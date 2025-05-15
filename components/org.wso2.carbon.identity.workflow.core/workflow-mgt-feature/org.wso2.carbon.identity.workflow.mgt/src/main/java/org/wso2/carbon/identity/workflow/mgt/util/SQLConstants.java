@@ -18,6 +18,9 @@
 
 package org.wso2.carbon.identity.workflow.mgt.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Holds the SQL queries and constants
  */
@@ -38,7 +41,6 @@ public class SQLConstants {
     public static final String USERNAME_COLUMN = "USERNAME";
     public static final String PASSWORD_COLUMN = "PASSWORD";
 
-
     public static final String WORKFLOW_ID_COLUMN = "WORKFLOW_ID";
     public static final String EVENT_ID_COLUMN = "EVENT_ID";
     public static final String PARAM_NAME_COLUMN = "PARAM_NAME";
@@ -57,6 +59,17 @@ public class SQLConstants {
     public static final String REQUEST_ID_COLUMN = "REQUEST_ID";
     public static final String CREATED_BY_COLUMN = "CREATED_BY";
 
+    public static final String TEMPLATE = "Template";
+    public static final String USERANDROLE = "UserAndRole";
+    public static final String STEP = "Step-";
+    public static final String WORKFLOW_IMPL = "Workflowimpl";
+    public static final String ASSOCIATION_NAME_FILTER = "associationName";
+    public static final String WORKFLOW_ID_FILTER = "workflowId";
+
+    public static final Map<String, String> PARAM_NAME_MAPPING = new HashMap<String, String>() {{
+        put("UserAndRole", "ApprovalSteps");
+        put("UserAndRole-step", "Step");
+    }};
 
     public static final String ADD_WORKFLOW_REQUEST_QUERY = "INSERT INTO WF_REQUEST(UUID, CREATED_BY, OPERATION_TYPE," +
             " CREATED_AT, UPDATED_AT, REQUEST, STATUS, TENANT_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -98,6 +111,15 @@ public class SQLConstants {
             "WF_WORKFLOW_ASSOCIATION.ID, WF_WORKFLOW_ASSOCIATION.ASSOC_NAME, WF_WORKFLOW_ASSOCIATION.EVENT_ID, " +
             "WF_WORKFLOW_ASSOCIATION.ASSOC_CONDITION, WF_WORKFLOW_ASSOCIATION.IS_ENABLED FROM WF_WORKFLOW, " +
             "WF_WORKFLOW_ASSOCIATION WHERE WF_WORKFLOW.ID = WF_WORKFLOW_ASSOCIATION.WORKFLOW_ID AND WF_WORKFLOW.ID = ?";
+
+    public static final String GET_ASSOCIATIONS_BY_TENANT_AND_WORKFLOW = "SELECT WF_WORKFLOW.WF_NAME, " +
+            "WF_WORKFLOW_ASSOCIATION.ID, WF_WORKFLOW_ASSOCIATION.ASSOC_NAME, " +
+            "WF_WORKFLOW_ASSOCIATION.EVENT_ID, WF_WORKFLOW_ASSOCIATION.ASSOC_CONDITION, " +
+            "WF_WORKFLOW_ASSOCIATION.IS_ENABLED " +
+            "FROM WF_WORKFLOW, WF_WORKFLOW_ASSOCIATION " +
+            "WHERE WF_WORKFLOW.ID = WF_WORKFLOW_ASSOCIATION.WORKFLOW_ID " +
+            "AND WF_WORKFLOW.TENANT_ID = ? " +
+            "AND WF_WORKFLOW.ID = ?";
 
     // Load association basic information for listing with pagination
     public static final String GET_ASSOCIATIONS_BY_TENANT_AND_ASSOC_NAME_MYSQL = "SELECT WF_WORKFLOW.WF_NAME, " +

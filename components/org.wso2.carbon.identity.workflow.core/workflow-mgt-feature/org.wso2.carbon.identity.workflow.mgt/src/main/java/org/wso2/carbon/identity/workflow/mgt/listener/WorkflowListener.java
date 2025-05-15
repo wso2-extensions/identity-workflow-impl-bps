@@ -296,9 +296,9 @@ public interface WorkflowListener {
     /**
      * Trigger before listing workflows of a tenant
      *
-     * @deprecated Use {@link #doPreListPaginatedWorkflows(int, int, int, String)} instead.
      * @param tenantId Tenant ID
      * @throws WorkflowException
+     * @deprecated Use {@link #doPreListPaginatedWorkflows(int, int, int, String)} instead.
      */
     @Deprecated
     void doPreListWorkflows(int tenantId) throws WorkflowException;
@@ -306,10 +306,10 @@ public interface WorkflowListener {
     /**
      * Trigger after listing workflows of a tenant
      *
-     * @deprecated Use {@link #doPostListPaginatedWorkflows(int, int, int, String, List)} instead.
      * @param tenantId Tenant ID
      * @param result   List of workflows returned by original method.
      * @throws WorkflowException
+     * @deprecated Use {@link #doPostListPaginatedWorkflows(int, int, int, String, List)} instead.
      */
     @Deprecated
     void doPostListWorkflows(int tenantId, List<Workflow> result) throws WorkflowException;
@@ -342,13 +342,14 @@ public interface WorkflowListener {
      * Trigger before getting associations of a workflow
      *
      * @param workflowId Workflow ID
-     * @param result Result of the original operation
+     * @param result     Result of the original operation
      * @throws WorkflowException
      */
     void doPostGetAssociationsForWorkflow(String workflowId, List<Association> result) throws WorkflowException;
 
     /**
      * Trigger before listing all associations.
+     *
      * @param tenantId Tenant ID
      * @param limit    Limit
      * @param offset   Offset
@@ -361,6 +362,7 @@ public interface WorkflowListener {
 
     /**
      * Trigger after listing all associations.
+     *
      * @param tenantId Tenant ID
      * @param limit    Limit
      * @param offset   Offset
@@ -375,9 +377,9 @@ public interface WorkflowListener {
     /**
      * Trigger before listing all associations
      *
-     * @deprecated Use {@link #doPreListPaginatedAssociations(int, int, int, String)} instead.
      * @param tenantId Tenant ID
      * @throws WorkflowException
+     * @deprecated Use {@link #doPreListPaginatedAssociations(int, int, int, String)} instead.
      */
     @Deprecated
     void doPreListAllAssociations(int tenantId) throws WorkflowException;
@@ -385,13 +387,33 @@ public interface WorkflowListener {
     /**
      * Trigger after listing all associations
      *
-     * @deprecated Use {@link #doPostListPaginatedAssociations(int, int, int, String, List)} instead.
      * @param tenantId Tenant ID
      * @param result   Result of the original operation
      * @throws WorkflowException
+     * @deprecated Use {@link #doPostListPaginatedAssociations(int, int, int, String, List)} instead.
      */
     @Deprecated
     void doPostListAllAssociations(int tenantId, List<Association> result) throws WorkflowException;
+
+    /**
+     * Trigger before getting an association.
+     *
+     * @param associationId Association ID
+     * @throws WorkflowException
+     */
+    default void doPreGetAssociation(String associationId) throws WorkflowException {
+
+    }
+
+    /**
+     * Trigger after getting an association.
+     *
+     * @param associationId Association ID
+     * @throws WorkflowException
+     */
+    default void doPostGetAssociation(String associationId) throws WorkflowException {
+
+    }
 
     /**
      * Trigger before changing state of an association
@@ -410,6 +432,38 @@ public interface WorkflowListener {
      * @throws WorkflowException
      */
     void doPostChangeAssociationState(String associationId, boolean isEnable) throws WorkflowException;
+
+    /**
+     * Trigger before updating an association.
+     *
+     * @param associationId   Association ID
+     * @param associationName Association Name
+     * @param workflowId      Workflow ID
+     * @param eventId         Event ID
+     * @param condition       Association Condition
+     * @param isEnable        New state
+     * @throws WorkflowException
+     */
+    default void doPreUpdateAssociation(String associationId, String associationName, String workflowId, String eventId,
+                                        String condition, boolean isEnable) {
+
+    }
+
+    /**
+     * Trigger after updating an association.
+     *
+     * @param associationId   Association ID
+     * @param associationName Association Name
+     * @param workflowId      Workflow ID
+     * @param eventId         Event ID
+     * @param condition       Association Condition
+     * @param isEnable        New state
+     * @throws WorkflowException
+     */
+    default void doPostUpdateAssociation(String associationId, String associationName, String workflowId,
+                                         String eventId, String condition, boolean isEnable) {
+
+    }
 
     /**
      * Trigger before addEntityRequestEntityRelationships

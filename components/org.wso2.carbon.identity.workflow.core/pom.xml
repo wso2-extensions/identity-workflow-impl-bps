@@ -20,7 +20,7 @@
     <parent>
         <artifactId>identity-workflow-impl-bps</artifactId>
         <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
-        <version>5.5.22-SNAPSHOT</version>
+        <version>5.5.22</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

@@ -371,7 +371,7 @@
         <identity.framework.imp.pkg.version.range>[5.14.67, 8.0.0)</identity.framework.imp.pkg.version.range>
         <carbon.base.imp.pkg.version.range>[1.0.0, 2.0.0)</carbon.base.imp.pkg.version.range>
         <carbon.kernel.package.import.version.range>[4.5.0, 5.0.0)</carbon.kernel.package.import.version.range>
-        <carbon.identity.workflow.impl.bps.import.version.range>[5.3.0, 6.0.0)
+        <carbon.identity.workflow.impl.bps.import.version.range>[5.3.0, 8.0.0)
         </carbon.identity.workflow.impl.bps.import.version.range>
         <carbon.user.api.imp.pkg.version.range>[1.0.1, 2.0.0)</carbon.user.api.imp.pkg.version.range>
         <carbon.commons.imp.pkg.version>[4.7.0, 5.0.0)</carbon.commons.imp.pkg.version>

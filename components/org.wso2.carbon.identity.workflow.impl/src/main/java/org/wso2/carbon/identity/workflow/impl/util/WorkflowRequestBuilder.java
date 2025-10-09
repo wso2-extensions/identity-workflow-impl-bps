@@ -143,6 +143,17 @@ public class WorkflowRequestBuilder {
         WorkflowRequestBuilder requestBuilder = new WorkflowRequestBuilder(workFlowRequest.getUuid(),
                                                                            workFlowRequest.getEventType());
 
+        for (Parameter parameter : parameterList) {
+            if (parameter.getParamName().equals(WFImplConstant.ParameterName.UPDATED_STEPS_USER_AND_ROLE)) {
+                parameter.setParamName(WFImplConstant.ParameterName.STEPS_USER_AND_ROLE);
+                String qName = parameter.getqName();
+                if (qName != null && qName.startsWith(WFImplConstant.ParameterName.APPROVAL_STEPS_SEPARATOR)) {
+                    qName = qName.replace(WFImplConstant.ParameterName.APPROVAL_STEPS_SEPARATOR,
+                            WFImplConstant.ParameterName.STEPS_USER_AND_ROLE + "-step-");
+                    parameter.setqName(qName);                }
+            }
+        }
+
         for (RequestParameter parameter : workFlowRequest.getRequestParameters()) {
             if (parameter.isRequiredInWorkflow()) {
                 switch (parameter.getValueType()) {

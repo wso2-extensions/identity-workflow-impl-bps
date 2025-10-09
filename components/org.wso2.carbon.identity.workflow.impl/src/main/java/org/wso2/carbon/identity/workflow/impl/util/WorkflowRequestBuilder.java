@@ -69,6 +69,9 @@ public class WorkflowRequestBuilder {
     private static final String WF_REQ_KEY_ATTRIB = "itemName";
     private static final String WF_REQ_VALUE_ELEM = "value";
 
+    private static final String UPDATED_KEY_FOR_STEPS_USER_AND_ROLE = "ApprovalSteps";
+    private static final String APPROVAL_STEPS_SEPARATOR = "Step-";
+
     private static final Set<Class> SUPPORTED_CLASS_TYPES;
 
     static {
@@ -142,6 +145,18 @@ public class WorkflowRequestBuilder {
 
         WorkflowRequestBuilder requestBuilder = new WorkflowRequestBuilder(workFlowRequest.getUuid(),
                                                                            workFlowRequest.getEventType());
+
+        for (Parameter parameter : parameterList) {
+            if (parameter.getParamName().equals(UPDATED_KEY_FOR_STEPS_USER_AND_ROLE)) {
+                parameter.setParamName(WFImplConstant.ParameterName.STEPS_USER_AND_ROLE);
+                String qName = parameter.getqName();
+                if (qName != null && qName.startsWith(APPROVAL_STEPS_SEPARATOR)) {
+                    qName = qName.replace(APPROVAL_STEPS_SEPARATOR,
+                            WFImplConstant.ParameterName.STEPS_USER_AND_ROLE + "-step-");
+                    parameter.setqName(qName);
+                }
+            }
+        }
 
         for (RequestParameter parameter : workFlowRequest.getRequestParameters()) {
             if (parameter.isRequiredInWorkflow()) {

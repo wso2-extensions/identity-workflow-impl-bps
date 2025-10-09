@@ -49,10 +49,6 @@ public class WFImplConstant {
         public static final String HT_SUBJECT = "HTSubject";
         public static final String HT_DESCRIPTION = "HTDescription";
 
-        public static final String UPDATED_STEPS_USER_AND_ROLE = "ApprovalSteps";
-        public static final String APPROVAL_STEPS_SEPARATOR = "Step-";
-
-
     }
     public static final String DEFAULT_APPROVAL_BPEL_SOAP_ACTION = "http://bpel.mgt.workflow.carbon.wso2" +
                                                                    ".org/approvalProcess/initiate";

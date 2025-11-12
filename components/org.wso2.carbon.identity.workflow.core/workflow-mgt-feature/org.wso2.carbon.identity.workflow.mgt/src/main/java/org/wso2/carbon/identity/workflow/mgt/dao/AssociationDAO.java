@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.workflow.mgt.dao;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.database.utils.jdbc.exceptions.DataAccessException;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
 import org.wso2.carbon.identity.core.util.JdbcUtils;
@@ -255,6 +256,7 @@ public class AssociationDAO {
             prepStmt = connection.prepareStatement(query);
             // As the WF_WORKFLOW_ASSOCIATION.ID is integer, this has to be set as a int to work with postgre
             prepStmt.setInt(1, Integer.parseInt(associationId));
+            prepStmt.setInt(2, PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId());
 
             rs = prepStmt.executeQuery();
 
@@ -300,6 +302,7 @@ public class AssociationDAO {
         try {
             prepStmt = connection.prepareStatement(query);
             prepStmt.setInt(1, id);
+            prepStmt.setInt(2, PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId());
             prepStmt.executeUpdate();
             IdentityDatabaseUtil.commitTransaction(connection);
         } catch (SQLException e) {
@@ -327,6 +330,7 @@ public class AssociationDAO {
         try {
             prepStmt = connection.prepareStatement(query);
             prepStmt.setString(1, workflowId);
+            prepStmt.setInt(2, PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId());
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 String condition = rs.getString(SQLConstants.CONDITION_COLUMN);

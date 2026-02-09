@@ -413,6 +413,7 @@
 
         <!-- Pax Logging Version -->
         <pax.logging.api.version>1.10.1</pax.logging.api.version>
+        <project.scm.id>my-scm-server</project.scm.id>
     </properties>
 
 </project>

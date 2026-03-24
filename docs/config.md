@@ -15,7 +15,7 @@ To use workflow with WSO2 Identity Server 7.0.0 onwards, you need to follow belo
    - **For versions below IS-7.1.0**
       - Add `<import resource="classpath:META-INF/cxf/user-approval-v1-cxf.xml"/>` under beans starting tag and add `<bean class="org.wso2.carbon.identity.rest.api.user.approval.v1.MeApi"/>` under `<jaxrs:server id="users" address="/users/v1">` to beans.xml located in `<IS_HOME>/repository/deployment/server/webapps/api/WEB-INF/beans.xml`.
    - **For IS-7.1.0 onwards** 
-      - Add `org.wso2.carbon.identity.rest.api.user.approval.v1.MeApi` under `<init-params>` tag of `<jaxrs.serviceClasses>` under `<servlet-name>UserV1Servlet</servlet-name>` to beans.xml located in `<IS_HOME>/repository/deployment/server/webapps/api/WEB-INF/web.xml`.
+      - Add `org.wso2.carbon.identity.rest.api.user.approval.v1.MeApi` under `<init-param>` tag of `<jaxrs.serviceClasses>` under `<servlet-name>UserV1Servlet</servlet-name>` to beans.xml located in `<IS_HOME>/repository/deployment/server/webapps/api/WEB-INF/web.xml`.
 9. Add listener and handler to `<IS_HOME>/repository/conf/deployment.toml`
 
 ```
@@ -28,12 +28,11 @@ order = 10
 [[event_handler]]
 name= "WorkflowPendingUserAuthnHandler"
 subscriptions =["PRE_AUTHENTICATION"]
-
 ```
 10. Add below config to `<IS_HOME>/repository/conf/deployment.toml` and enable approval from UI console.
 ```
-    [console.approvals]
-    enabled=true
+[console.approvals]
+enabled=true
 ```
 
 11. Re-enable workflow approval API by adding the configuration below to the `<IS_HOME>/repository/conf/deployment.toml`
@@ -49,8 +48,19 @@ description = "API representation of the workflow Approval API"
 [[api_resources.scopes]]
 displayName = "View Workflow Approvals"
 name = "internal_humantask_view"
-
 ```
+
+### Please note the following based on your IS version:
+- `wso2is-7.0.0`
+  - Use the **legacy Management Console** for user management operations.
+- `wso2is-7.1.0`
+   - To use the **new Console** for user management operations with active workflow configurations, update the product to **level 54** (`wso2is-7.1.0.54`) or later.
+   - The new Console supports only the following user management operations with workflows:
+      - `Add user`
+      - `Update User Claims`
+      - `Delete user`
+      - `Add role`
+      - `Update Users Of Role`
 
 # [Related REST APIs to workflow](https://is.docs.wso2.com/en/latest/apis/approvals-rest-api/)
 

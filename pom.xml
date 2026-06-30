@@ -401,7 +401,7 @@
         <jackson-jaxrs-json-provider.version>2.13.2</jackson-jaxrs-json-provider.version>
         <identity.governance.version>1.8.62</identity.governance.version>
         <carbon.business-process.version>4.5.66</carbon.business-process.version>
-        <jackson-databind.version>2.13.4.2</jackson-databind.version>
+        <jackson-databind.version>2.22.0</jackson-databind.version>
         <jackson-dataformat-xml.version>2.13.2</jackson-dataformat-xml.version>
 
         <version.org.wso2.orbit.javax.xml.bind>2.3.1.wso2v1</version.org.wso2.orbit.javax.xml.bind>

@@ -66,7 +66,7 @@ public class SSLContextFactory {
     /**
      * Default ssl protocol for client
      */
-    private static final String protocol = "TLSv1";
+    private static final String protocol = "TLSv1.2";
 
     public static SSLContext getSslContext() throws WorkflowImplException {
         if (sslContext == null) {

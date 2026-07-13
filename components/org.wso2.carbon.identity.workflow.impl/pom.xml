@@ -21,7 +21,7 @@
         <artifactId>identity-workflow-impl-bps</artifactId>
         <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
         <relativePath>../../pom.xml</relativePath>
-        <version>5.6.7-SNAPSHOT</version>
+        <version>5.7.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -68,7 +68,7 @@
             <artifactId>org.wso2.carbon.identity.workflow.mgt.bps.stub</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.workflow.impl.bps</groupId>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.workflow.mgt</artifactId>
         </dependency>
         <dependency>
@@ -140,7 +140,7 @@
                             org.wso2.carbon.core.util; version="${carbon.kernel.package.import.version.range}",
                             org.wso2.carbon.stratos.common.*; version="${carbon.commons.imp.pkg.version}",
                             org.wso2.carbon.identity.workflow.mgt.*;
-                            version="${carbon.identity.workflow.impl.bps.import.version.range}",
+                            version="${identity.framework.imp.pkg.version.range}",
                             org.wso2.carbon.humantask.deployer; resolution:=optional,
                             org.wso2.carbon; version="${carbon.kernel.package.import.version.range}",
                             org.apache.axiom.om.util; version="${axiom.osgi.version.range}"

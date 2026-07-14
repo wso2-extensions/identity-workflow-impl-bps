@@ -29,6 +29,7 @@ import org.wso2.carbon.identity.workflow.mgt.stub.metadata.Template;
 import org.wso2.carbon.identity.workflow.mgt.stub.metadata.WorkflowWizard;
 import org.wso2.carbon.identity.workflow.mgt.stub.metadata.WorkflowEvent;
 import org.wso2.carbon.identity.workflow.mgt.stub.metadata.WorkflowImpl;
+import org.wso2.carbon.identity.workflow.mgt.stub.bean.Parameter;
 import org.wso2.carbon.identity.workflow.mgt.stub.bean.WorkflowRequest;
 import org.wso2.carbon.identity.workflow.mgt.stub.bean.WorkflowRequestAssociation;
 import org.wso2.carbon.identity.workflow.mgt.stub.WorkflowAdminServiceStub;
@@ -40,6 +41,14 @@ public class WorkflowAdminServiceClient {
 
     private WorkflowAdminServiceStub stub;
     private static final Log log = LogFactory.getLog(WorkflowAdminServiceClient.class);
+
+    // The backend persists the approval-step parameter as "UserAndRole" (qName "UserAndRole-step-...")
+    // but the DAO read path translates it to "ApprovalSteps" (qName "Step-...") before returning it
+    // over the admin service. The edit-view JSP still keys its lookup on the original "UserAndRole"
+    // naming to re-populate the previously saved approval list, so that translation is reverted here.
+    private static final String STEPS_USER_AND_ROLE_PARAM_NAME = "UserAndRole";
+    private static final String LEGACY_APPROVAL_STEPS_PARAM_NAME = "ApprovalSteps";
+    private static final String LEGACY_APPROVAL_STEP_QNAME_PREFIX = "Step-";
 
     /**
      * @param cookie
@@ -162,7 +171,37 @@ public class WorkflowAdminServiceClient {
     public WorkflowWizard getWorkflow(String workflowId)
             throws RemoteException, WorkflowAdminServiceWorkflowException {
 
-        return stub.getWorkflow(workflowId);
+        WorkflowWizard workflow = stub.getWorkflow(workflowId);
+        if (workflow != null) {
+            revertApprovalStepsParamNaming(workflow.getTemplateParameters());
+        }
+        return workflow;
+    }
+
+    /**
+     * Revert the "ApprovalSteps"/"Step-" naming applied by the backend DAO read path back to the
+     * "UserAndRole"/"UserAndRole-step-" naming that the edit-view JSPs expect, so previously saved
+     * approval lists are correctly re-populated when editing a workflow definition. The approval
+     * steps parameter is persisted under the TEMPLATE holder, so it comes back via
+     * {@code getTemplateParameters()} rather than {@code getWorkflowImplParameters()}.
+     *
+     * @param parameters template parameters wizard fetched from the admin service, fixed up in place.
+     */
+    private static void revertApprovalStepsParamNaming(Parameter[] parameters) {
+
+        if (parameters == null) {
+            return;
+        }
+        for (Parameter parameter : parameters) {
+            if (LEGACY_APPROVAL_STEPS_PARAM_NAME.equals(parameter.getParamName())) {
+                parameter.setParamName(STEPS_USER_AND_ROLE_PARAM_NAME);
+                String qName = parameter.getQName();
+                if (qName != null && qName.startsWith(LEGACY_APPROVAL_STEP_QNAME_PREFIX)) {
+                    parameter.setQName(qName.replace(LEGACY_APPROVAL_STEP_QNAME_PREFIX,
+                            STEPS_USER_AND_ROLE_PARAM_NAME + "-step-"));
+                }
+            }
+        }
     }
 
     /**

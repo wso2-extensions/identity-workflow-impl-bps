@@ -172,7 +172,9 @@ public class WorkflowAdminServiceClient {
             throws RemoteException, WorkflowAdminServiceWorkflowException {
 
         WorkflowWizard workflow = stub.getWorkflow(workflowId);
-        revertApprovalStepsParamNaming(workflow);
+        if (workflow != null) {
+            revertApprovalStepsParamNaming(workflow.getTemplateParameters());
+        }
         return workflow;
     }
 
@@ -183,16 +185,8 @@ public class WorkflowAdminServiceClient {
      * steps parameter is persisted under the TEMPLATE holder, so it comes back via
      * {@code getTemplateParameters()} rather than {@code getWorkflowImplParameters()}.
      *
-     * @param workflow Workflow wizard fetched from the admin service, fixed up in place.
+     * @param parameters Workflow parameters fetched from the admin service, fixed up in place.
      */
-    private static void revertApprovalStepsParamNaming(WorkflowWizard workflow) {
-
-        if (workflow == null) {
-            return;
-        }
-        revertApprovalStepsParamNaming(workflow.getTemplateParameters());
-    }
-
     private static void revertApprovalStepsParamNaming(Parameter[] parameters) {
 
         if (parameters == null) {

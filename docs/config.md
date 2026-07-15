@@ -51,6 +51,11 @@ displayName = "View Workflow Approvals"
 name = "internal_humantask_view"
 
 ```
+### Please note the following based on your IS version:
+
+- WSO2 Identity Server 7.2.0 onwards:
+
+  - In the WSO2 Identity Server Management Console, when creating a Workflow Definition, select the `ApprovalWorkflow` template in the Workflow Template step. This workflow definition can then be associated with any identity operation that supports workflows.
 
 # [Related REST APIs to workflow](https://is.docs.wso2.com/en/latest/apis/approvals-rest-api/)
 
